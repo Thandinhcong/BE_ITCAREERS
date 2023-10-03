@@ -17,8 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone', 12);
+            $table->string('avatar', 255)->nullable();
+            $table->integer('status')->default(1)->comment('0:block, 1:active');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
