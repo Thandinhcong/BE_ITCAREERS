@@ -1,3 +1,7 @@
+SETUP Laravel 10
+
+    Kiểm tra phiên bản php: php -v ( từ 8.1 - 8.2)
+    Kiểm tra phiên bản composer: composer -v ( > 2.0)
 
     1: composer install
 
