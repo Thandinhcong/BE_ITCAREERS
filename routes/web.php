@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Packages\AuthController;
+use App\Models\Packages;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layout.main');
 });
+Route::get('/package', [AuthController::class, 'index'])->name('package.index');
+Route::match(['GET', 'POST'], '/package/add', [AuthController::class, 'store'])->name('package.add');
+Route::match(['GET', 'POST'], '/package/edit/{id}', [AuthController::class, 'edit'])->name('package.edit');
+Route::get('/package/delete/{id}', [AuthController::class, 'destroy'])->name('package.delete');
