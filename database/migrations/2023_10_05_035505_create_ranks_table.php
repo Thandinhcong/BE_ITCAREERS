@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('academic_ranks', function (Blueprint $table) {
+        Schema::create('ranks', function (Blueprint $table) {
             $table->id();
             $table->string('ranks')->unique()->comment('cấp bậc');
             $table->string('description')->nullable()->comment('mô tả');
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('academic_ranks');
+        Schema::dropIfExists('ranks');
     }
 };
