@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('level', function (Blueprint $table) {
+        Schema::create('project', function (Blueprint $table) {
             $table->id();
-            $table->string('level', 55)->unique();
-            $table->string('description')->nullable()->comment('mô tả');
+            $table->string('project_name', 55);
+            $table->string('instructor', 55);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->text('desc');
+            $table->string('phone_instructor', 20);
+            $table->string('email_instructor', 55);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('level');
+        Schema::dropIfExists('project');
     }
 };

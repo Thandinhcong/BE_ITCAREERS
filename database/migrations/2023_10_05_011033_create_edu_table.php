@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('level', function (Blueprint $table) {
+        Schema::create('edu', function (Blueprint $table) {
             $table->id();
-            $table->string('level', 55)->unique();
-            $table->string('description')->nullable()->comment('mô tả');
+            $table->string('name',50);
+            $table->double('gpa');
+            $table->string('type_degree',55);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->bigInteger('major_id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('level');
+        Schema::dropIfExists('edu');
     }
 };

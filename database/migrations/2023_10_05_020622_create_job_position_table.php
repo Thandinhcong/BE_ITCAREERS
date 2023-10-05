@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('level', function (Blueprint $table) {
+        Schema::create('job_position', function (Blueprint $table) {
             $table->id();
-            $table->string('level', 55)->unique();
+            $table->string('job_position')->unique();
             $table->string('description')->nullable()->comment('mô tả');
             $table->timestamps();
             $table->softDeletes();
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('level');
+        Schema::dropIfExists('job_position');
     }
 };

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('academic_level', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name', 50);
-            $table->string('tax_code', 50);
+            $table->string('academic_level', 100)->unique();
+            $table->string('description')->nullable()->comment('mô tả');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('academic_level');
     }
 };
