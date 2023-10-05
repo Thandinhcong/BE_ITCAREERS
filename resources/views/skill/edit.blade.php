@@ -1,7 +1,7 @@
 @extends('layout.main')
 @section('content')
 <h1>Thêm mới gói nạp</h1>
-<form action="{{ route('skill.edit') }}" enctype="multipart/form-data" method="post">
+<form action="{{ route('skill.edit',['id'=>$skill->id]) }}" enctype="multipart/form-data" method="post">
     @csrf
     <div class="form-group mt-3 mt-3">
         <label for="my-input">Tên kỹ năng:</label>
