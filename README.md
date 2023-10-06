@@ -12,3 +12,10 @@ SETUP Laravel 10
     4: php artisan migrate
 
     6: php artisan ser
+
+http code
+200: tìm thấy bản ghi
+201: update,create thành công
+404: Không tìm thấy bản ghi nào
+422-400: Dữ liệu trong form gửi đi có vấn đề
+500: lỗi bên phía server khi gửi form

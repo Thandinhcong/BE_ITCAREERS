@@ -51,7 +51,7 @@ class MajorController extends Controller
         }
         if ($major) {
             return response()->json([
-                'status' => 200,
+                'status' => 201,
                 'message' => 'Tạo thành công'
             ], 200);
         } else {
@@ -112,7 +112,7 @@ class MajorController extends Controller
                 ]
             );
             return response()->json([
-                'status' => 200,
+                'status' => 201,
                 'message' => 'Sửa thành công'
             ], 200);
         } else {
