@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('working_form', function (Blueprint $table) {
             $table->id();
-            $table->string('working_form')->unique();
+            $table->string('working_form')->unique()->comment("hình thức lànm việc");
             $table->string('description')->nullable()->comment('mô tả');
             $table->timestamps();
             $table->softDeletes();
