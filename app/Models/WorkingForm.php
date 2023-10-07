@@ -10,4 +10,5 @@ class WorkingForm extends Model
     use HasFactory;
     protected $table = "working_form";
     protected $fillable = ['id', 'working_form','description'];
+    //
 }

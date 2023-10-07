@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class WorkingFormController extends Controller
 {
+    //
     public function index()
     {
         $workingForm = WorkingFormResources::collection(WorkingForm::all());
@@ -42,6 +43,7 @@ class WorkingFormController extends Controller
                 [
                     'working_form' => $request->working_form,
                     'description' => $request->description,
+                    
                 ]
             );
         }

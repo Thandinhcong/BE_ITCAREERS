@@ -20,5 +20,6 @@ class WorkingFormResources extends JsonResource
             'working_form' => $this->working_form,
             'description'=>$this->description
         ];
+        //
     }
 }

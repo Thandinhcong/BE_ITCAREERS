@@ -16,8 +16,9 @@ class MajorResource extends JsonResource
     {
         // return parent::toArray($request);
         return [
-                     'id'=>$this->id,
-                     'major'=>$this->major
-                   ];
+            'id' => $this->id,
+            'major' => $this->major,
+            'description'=>$this->description
+        ];
     }
 }
