@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('skill', function (Blueprint $table) {
             $table->id();
             $table->string('skill')->unique();
-
+            $table->string('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

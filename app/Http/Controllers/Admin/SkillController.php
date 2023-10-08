@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SkillResource;
-use App\Models\Skills;
+use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SkillController extends Controller
 {
@@ -13,14 +14,17 @@ class SkillController extends Controller
     // danh sach hien thi kỹ năng
     public function index()
     {
-        $skill = Skills::all();
+        $skill = Skill::all();
         return SkillResource::collection($skill);
     }
 
     // thêm kỹ năng
     public function store(Request $request)
     {
-        $skill = Skills::create($request->all());
+        $validator = Validator::make($request->all(), [
+            'skill' => 'required|string|unique:skill',
+        ]);
+        $skill = Skill::create($request->all());
         if ($skill) {
             return response()->json(['status' => 201, 'message' => "thêm kỹ năng thành công"]);
         }
@@ -30,7 +34,7 @@ class SkillController extends Controller
     // chi tiết 
     public function show(string $id)
     {
-        $skill = Skills::find($id);
+        $skill = Skill::find($id);
         if (!$skill) {
             return response()->json(['status' => 404, 'message' => "không tìm thấy kỹ năng"]);
         }
@@ -40,7 +44,7 @@ class SkillController extends Controller
     // sửa kỹ năng
     public function update(Request $request, string $id)
     {
-        $skill = Skills::find($id);
+        $skill = Skill::find($id);
         if (!$skill) {
             return response()->json(['status' => 404, 'message' => "không tìm thấy kỹ năng"]);
         }
@@ -51,7 +55,7 @@ class SkillController extends Controller
     // xóa kỹ năng
     public function destroy(string $id)
     {
-        $skill = Skills::find($id);
+        $skill = Skill::find($id);
         if (!$skill) {
             return response()->json(['status' => 404, 'message' => "không tìm thấy kỹ năng"]);
         }

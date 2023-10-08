@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\DegreeController;
+use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\SkillController;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('skill', SkillController::class);
-Route::resource('degree', DegreeController::class);
+Route::resource('exp', ExpController::class);
 Route::resource('experience', ExperienceController::class);
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
