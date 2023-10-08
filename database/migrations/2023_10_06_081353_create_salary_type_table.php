@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('working_form', function (Blueprint $table) {
+        Schema::create('salary_type', function (Blueprint $table) {
             $table->id();
-            $table->string('working_form')->unique()->comment("hình thức lànm việc");
-            $table->string('description')->nullable()->comment('mô tả');
+            $table->string('salary_type');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,7 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('working_form');
+        Schema::dropIfExists('salary_type');
     }
-    //
 };

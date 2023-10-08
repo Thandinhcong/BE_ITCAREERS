@@ -24,3 +24,5 @@ Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('skill', SkillController::class);
 Route::resource('degree', DegreeController::class);
 Route::resource('experience', ExperienceController::class);
+Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);

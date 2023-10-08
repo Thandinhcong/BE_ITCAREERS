@@ -10,5 +10,5 @@ class Major extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = "major";
-    protected $fillable = ['id', 'major'];
+    protected $fillable = ['id', 'major','description'];
 }

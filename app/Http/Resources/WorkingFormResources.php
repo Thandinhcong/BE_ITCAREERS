@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MajorResource extends JsonResource
+class WorkingFormResources extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,9 @@ class MajorResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'major' => $this->major,
+            'working_form' => $this->working_form,
             'description'=>$this->description
         ];
+        //
     }
 }
