@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\ExpController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\SkillController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('package', PackageController::class);
+Route::resource('skill', SkillController::class);
+Route::resource('exp', ExpController::class);
+Route::resource('experience', ExperienceController::class);
+Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
+Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);

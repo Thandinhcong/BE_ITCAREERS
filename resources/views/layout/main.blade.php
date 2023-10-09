@@ -20,10 +20,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{route('package.index')}}">Danh sách</a>
+                            <a class="nav-link active" aria-current="page" href="{{route('package.index')}}">Danh sách gói nạp</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Thêm mới</a>
+                            <a class="nav-link active" aria-current="page" href="{{route('skill.index')}}">Danh sách kỹ năng</a>
                         </li>
 
                     </ul>
