@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('experiences', function (Blueprint $table) {
             $table->id();
             $table->string('experience');
+            $table->string('description');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
