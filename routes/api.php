@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\DegreeController;
+use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\SkillController;
@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+Route::resource('package', PackageController::class);
 Route::resource('skill', SkillController::class);
 Route::resource('exp', ExpController::class);
 Route::resource('experience', ExperienceController::class);
