@@ -6,57 +6,93 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ExpResource;
 use App\Models\Exp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ExpController extends Controller
+
 {
-    // hiển thị danh sách trình độ 
     public function index()
     {
         $exp = Exp::all();
         return ExpResource::collection($exp);
     }
 
-
-    // thêm trình độ 
     public function store(Request $request)
     {
-        $exp = Exp::create($request->all());
+        $validator = Validator::make($request->all(), [
+            'company_name' => 'required|string|unique:exp',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages()
+            ], 400);
+        } else {
+            $exp = Exp::create($request->all());
+        }
         if ($exp) {
-            return response()->json(['status' => 201, 'message' => "thêm trình độ thành công"]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thành công'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'error'
+            ], 500);
         }
-        return new ExpResource($exp);
     }
-
-    // chi tiêts trình độ 
-    public function show(string $id)
+    public function show($id)
     {
         $exp = Exp::find($id);
-        if (!$exp) {
-            return response()->json(['status' => 404, 'message' => "không tìm thấy trình độ"]);
+        if ($exp) {
+            return response()->json([
+                'status' => 200,
+                'exp' => $exp
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'exp' => 'Exp Not Found'
+            ], 404);
         }
-        return new ExpResource($exp);
     }
-
-    // uodate trình độ 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'company_name' => 'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages()
+            ], 400);
+        }
 
         $exp = Exp::find($id);
-        if (!$exp) {
-            return response()->json(['status' => 404, 'message' => "không tìm thấy trình độ"]);
+        if ($exp) {
+            $exp->update($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Success'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Exp Not Found'
+            ], 404);
         }
-        $exp->update($request->all());
-        return response()->json(['status' => 200, 'message' => 'sửa trình độ thành công']);
     }
 
-    // xóa trình độ 
     public function destroy(string $id)
     {
         $exp = Exp::find($id);
         if (!$exp) {
-            return response()->json(['status' => 404, 'message' => "không tìm thấy trình độ"]);
+            return response()->json([
+                "message" => 'Exp not found'
+            ], 404);
         }
         $exp->delete();
-        return response()->json(['status' => 200, 'message' => 'xóa trình độ thành công']);
+        return response()->json(['status' => 204, 'message' => 'xoá thành công']);
     }
 }
