@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+Route::resource('salary-type', \App\Http\Controllers\Admin\SalaryTypeController::class);
+Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
 Route::resource('skill', SkillController::class);
 Route::resource('exp', ExpController::class);
 Route::resource('experience', ExperienceController::class);
