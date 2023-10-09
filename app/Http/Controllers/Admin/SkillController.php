@@ -33,9 +33,15 @@ class SkillController extends Controller
             $skill = Skill::create($request->all());
         }
         if ($skill) {
-            return response()->json(['status' => 'success', 'message' => 'Thêm thành công'], 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thành công'
+            ], 200);
         } else {
-            return response()->json(['status' => 'fail', 'message' => 'error'], 500);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'error'
+            ], 500);
         }
     }
 
