@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('type_account');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
