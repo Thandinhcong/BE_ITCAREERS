@@ -14,6 +14,15 @@ class PackageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        // return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'coin' => $this->coin,
+            'price' => $this->price,
+            'reduced_price' => $this->reduced_price,
+            'status' => $this->status,
+            'type_account' => $this->type_account
+        ];
     }
 }
