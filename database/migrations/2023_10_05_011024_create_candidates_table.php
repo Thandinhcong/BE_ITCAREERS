@@ -13,14 +13,18 @@ return new class extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
-            $table->string('name',50);
-            $table->string('email',50);
-            $table->string('phone',20)->unique();
-            $table->string('address',250);
-            $table->integer('gender');
-            $table->integer('type');
+            $table->string('name', 50);
+            $table->string('email', 50)->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('phone', 20)->unique()->nullable();
+            $table->string('password')->nullable();
+            $table->string('google_id')->nullable();
+            $table->rememberToken();
+            $table->string('address', 250)->nullable();
+            $table->integer('gender')->nullable();
+            $table->integer('type')->default(0);
             $table->integer('status')->default(1);
-            $table->double('coin');
+            $table->double('coin')->default(0);
             $table->timestamps();
         });
     }

@@ -28,3 +28,7 @@ Route::resource('experience', ExperienceController::class);
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
 Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+
+
+Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
