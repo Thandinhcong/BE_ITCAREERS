@@ -43,7 +43,7 @@ class WorkingFormController extends Controller
                 [
                     'working_form' => $request->working_form,
                     'description' => $request->description,
-                    
+
                 ]
             );
         }
@@ -90,11 +90,8 @@ class WorkingFormController extends Controller
                 ], 422);
             } else {
                 $workingForm->update(
-                    [
-                        // 'working_form' => $request->working_form,
-                        // 'description' => $request->description,
-                        'working_form' => $request->all()
-                    ]
+                    $request->all()
+
                 );
                 return response()->json([
                     'status' => 201,
