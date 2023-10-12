@@ -94,7 +94,7 @@ class MajorController extends Controller
     public function update(Request $request, $id)
     {
         $valdator = Validator::make($request->all(), [
-            'major' => 'required|string|max:55'
+            'major' => 'required|string|max:55,unique:major,'.$id
         ]);
         if ($valdator->fails()) {
             return response()->json([
