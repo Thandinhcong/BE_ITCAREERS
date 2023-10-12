@@ -30,5 +30,7 @@ Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormControlle
 Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
 
 
+
+// Login google candidate 
 Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);

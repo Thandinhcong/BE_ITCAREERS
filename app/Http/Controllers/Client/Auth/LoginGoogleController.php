@@ -26,13 +26,8 @@ class LoginGoogleController extends Controller
                 'email' => $google_user->getEmail(),
                 'google_id' => $google_user->getId()
             ]);
-            // $newUser = new Candidates();
-            // $newUser->name = $google_user->getName();
-            // $newUser->email = $google_user->getEmail();
-            // $newUser->google_id = $google_user->getId();
-            // $newUser->save();
-            auth()->login($new_user);
-            // auth()->login($newUser);
+
+            // auth()->login($new_user);
         }
     }
 }
