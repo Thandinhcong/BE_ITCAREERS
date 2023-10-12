@@ -21,16 +21,31 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
-Route::resource('skill', SkillController::class);
-Route::resource('exp', ExpController::class);
-Route::resource('experience', ExperienceController::class);
-Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
-Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
-Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+
 
 
 
 // Login google candidate 
 Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
+
+
+//Admin
+Route::group([
+    'prefix' => 'admin'
+], function () {
+    Route::post('login', [\App\Http\Controllers\Admin\LoginController::class, 'login']);
+    Route::group([
+        'middleware' => 'auth:api'
+    ], function () {
+        Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+        Route::resource('skill', SkillController::class);
+        Route::resource('exp', ExpController::class);
+        Route::resource('experience', ExperienceController::class);
+        Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+        Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
+        Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+        Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
+        Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
+    });
+});
