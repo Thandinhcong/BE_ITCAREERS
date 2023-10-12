@@ -24,7 +24,7 @@ class JobPositionController extends Controller
         }
         return response()->json([
             'status' => 'success',
-            'Job Position' => JobPositionResource::collection($job_position),
+            'Job_Position' => JobPositionResource::collection($job_position),
         ], 200);
     }
 
@@ -71,7 +71,7 @@ class JobPositionController extends Controller
         } else {
             return response()->json([
                 'status' => 'fail',
-                'major' => 'Job Position Not Found'
+                'message' => 'Job Position Not Found'
             ], 404);
         }
     }
