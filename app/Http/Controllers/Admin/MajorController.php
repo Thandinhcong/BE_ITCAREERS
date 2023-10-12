@@ -74,9 +74,9 @@ class MajorController extends Controller
     }
     public function update(Request $request, $id)
     {
+        //Lỗi
         $valdator = Validator::make($request->all(), [
-            'major' => 'required|string|max:55|unique:major|min:4',
-            'description' => 'string|max:191'
+            'major' => 'required|string|max:55,unique:major,' . $id
         ]);
         if ($valdator->fails()) {
             return response()->json([
