@@ -90,7 +90,7 @@ class JobPositionController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'job_position' => 'required|string'
+            'job_position' => 'required|string|unique:job_position,job_position,' . $id,
         ]);
         if ($validator->fails()) {
             return response()->json([
