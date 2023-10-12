@@ -43,7 +43,7 @@ class WorkingFormController extends Controller
                 [
                     'working_form' => $request->working_form,
                     'description' => $request->description,
-                    
+
                 ]
             );
         }
@@ -76,8 +76,9 @@ class WorkingFormController extends Controller
     }
     public function update(Request $request, $id)
     {
+        //lỗi 
         $valdator = Validator::make($request->all(), [
-            'working_form' => 'required|string|max:55|unique:working_form',
+            'working_form' => 'required|string|max:55|unique:working_form,working_form,' . $id,
             'description' => 'string|max:191'
         ]);
 
@@ -90,11 +91,9 @@ class WorkingFormController extends Controller
                 ], 422);
             } else {
                 $workingForm->update(
-                    [
-                        // 'working_form' => $request->working_form,
-                        // 'description' => $request->description,
-                        'working_form' => $request->all()
-                    ]
+                    // 'working_form' => $request->working_form,
+                    // 'description' => $request->description,
+                    $request->all()
                 );
                 return response()->json([
                     'status' => 201,

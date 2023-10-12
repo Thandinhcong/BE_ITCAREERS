@@ -19,8 +19,8 @@ return new class extends Migration
             $table->integer('skill_id');
             $table->integer('quantity')->comment('số lượng');
             $table->integer('gender')->nullable()->comment('0: male, 1:female');
-            $table->double('salary');
-            $table->integer('pay_form');
+            $table->double('salary')->nullable();
+            $table->integer('pay_form')->nullable();
             $table->string('require');
             $table->string('interest');
             $table->integer('level_id');
