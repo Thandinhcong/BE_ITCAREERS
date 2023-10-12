@@ -93,6 +93,7 @@ class MajorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Lỗi
         $valdator = Validator::make($request->all(), [
             'major' => 'required|string|max:55,unique:major,'.$id
         ]);

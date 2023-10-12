@@ -76,6 +76,7 @@ class WorkingFormController extends Controller
     }
     public function update(Request $request, $id)
     {
+        //lỗi 
         $valdator = Validator::make($request->all(), [
             'working_form' => 'required|string|max:55|unique:working_form,working_form,'.$id,
             'description' => 'string|max:191'
