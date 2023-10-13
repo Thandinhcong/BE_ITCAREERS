@@ -32,7 +32,7 @@ return new class extends Migration
             $table->integer('major_id');
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('status')->comment('0:block, 1:active');
+            $table->integer('status')->default(0)->comment('0:pending, 1:active, 2:block');
             $table->timestamps();
             $table->softDeletes();
         });
