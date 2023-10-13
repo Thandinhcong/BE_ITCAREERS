@@ -79,6 +79,7 @@ class WorkingFormController extends Controller
         //lỗi 
         $valdator = Validator::make($request->all(), [
             'working_form' => 'required|string|max:55|unique:working_form,working_form,' . $id,
+            // 'working_form' => 'required|string|max:55|unique:working_form,' . $id,
             'description' => 'string|max:191'
         ]);
 
