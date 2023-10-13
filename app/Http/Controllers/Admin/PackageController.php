@@ -3,24 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ExpResource;
-use App\Models\Exp;
+use App\Http\Resources\PackageResource;
+use App\Models\Packages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ExpController extends Controller
-
+class PackageController extends Controller
 {
+
+    // trang hiển thị
     public function index()
     {
-        $exp = Exp::all();
-        return ExpResource::collection($exp);
+        $package = Packages::all();
+        return PackageResource::collection($package);
     }
 
+    //trang thêm
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required|string|unique:exp',
+            'title' => 'required|string|max:55'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -28,12 +30,12 @@ class ExpController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         } else {
-            $exp = Exp::create($request->all());
+            $package = Packages::create($request->all());
         }
-        if ($exp) {
+        if ($package) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Thêm thành công'
+                'message' => 'Add new success',
             ], 200);
         } else {
             return response()->json([
@@ -42,25 +44,29 @@ class ExpController extends Controller
             ], 500);
         }
     }
-    public function show($id)
+
+    // trang hiển thị chi tiết
+    public function show(string $id)
     {
-        $exp = Exp::find($id);
-        if ($exp) {
+        $package = Packages::find($id);
+        if ($package) {
             return response()->json([
                 'status' => 200,
-                'exp' => $exp
+                'package' => $package
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
-                'exp' => 'Exp Not Found'
+                'major' => 'Job Position Not Found'
             ], 404);
         }
     }
-    public function update(Request $request, $id)
+
+    // trang sửa
+    public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required|string'
+            'package' => 'required|string'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -69,9 +75,9 @@ class ExpController extends Controller
             ], 400);
         }
 
-        $exp = Exp::find($id);
-        if ($exp) {
-            $exp->update($request->all());
+        $package = Packages::find($id);
+        if ($package) {
+            $package->update($request->all());
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success'
@@ -79,20 +85,20 @@ class ExpController extends Controller
         } else {
             return response()->json([
                 'status' => 'fail',
-                'message' => 'Exp Not Found'
+                'message' => 'Job Position Not Found'
             ], 404);
         }
     }
 
+
+    //  trang xóa
     public function destroy(string $id)
     {
-        $exp = Exp::find($id);
-        if (!$exp) {
-            return response()->json([
-                "message" => 'Exp not found'
-            ], 404);
+        $package = Packages::find($id);
+        if (!$package) {
+            return response()->json(['status' => 404, 'message' => "Không tìm thấy gói nạp"], 404);
         }
-        $exp->delete();
-        return response()->json(['status' => 204, 'message' => 'xoá thành công']);
+        $package->delete();
+        return response()->json(['status' => 204, 'message' => "Xóa gói nạp thành công"]);
     }
 }

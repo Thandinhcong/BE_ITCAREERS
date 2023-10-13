@@ -17,7 +17,6 @@ class ExpResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'skill' => $this->skill,
             'company_name' => $this->company_name,
             'postion' => $this->postion,
             'start_date' => $this->start_date,
