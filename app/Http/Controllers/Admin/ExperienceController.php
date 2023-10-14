@@ -19,7 +19,7 @@ class ExperienceController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'experience' => 'required|string|unique:experience',
+            'experience' => 'required|string|max:55',
         ]);
         if ($validator->fails()) {
             return response()->json([
