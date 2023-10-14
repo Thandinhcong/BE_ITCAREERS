@@ -43,20 +43,44 @@ class ExperienceController extends Controller
     {
         $experience = Experience::find($id);
         if ($experience) {
-            return response()->json(['status' => 404, 'message' => "không tìm thấy kinh nghiệm "]);
+            return response()->json([
+                'status' => 200,
+                'experience' => $experience
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'experience' => 'Experience Not Found'
+            ], 404);
         }
-        return new ExperienceResource($experience);
     }
 
 
     public function update(Request $request, string $id)
     {
+        $validator = Validator::make($request->all(), [
+            'experience' => 'required|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages()
+            ], 400);
+        }
+
         $experience = Experience::find($id);
         if ($experience) {
-            return response()->json(['status' => 404, 'message' => "không tìm thấy kinh nghiệm "]);
+            $experience->update($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Success'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Experience Not Found'
+            ], 404);
         }
-        $experience->update($request->all());
-        return response()->json(['status' => 200, 'message' => 'sửa kinh nghiệm thành công']);
     }
 
 
