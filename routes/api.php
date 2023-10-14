@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\DegreeController;
+use App\Http\Controllers\admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\SkillController;
