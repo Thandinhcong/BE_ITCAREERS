@@ -30,6 +30,7 @@ class CompanyResource extends JsonResource
             'logo' => $this->logo,
             'link_web' => $this->link_web,
             'image_paper' => $this->image_paper,
+            'desc' => $this->desc,
             'coin' => $this->coin,
             'token' => $this->token,
             'status' => $this->status
