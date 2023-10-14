@@ -34,3 +34,17 @@ Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionControlle
 // Login google candidate 
 Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
+
+
+//Candidates
+Route::group([
+    'prefix' => 'candidate'
+], function () {
+    Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
+    Route::group([
+        'middleware' => 'auth:candidate-api'
+    ], function () {
+        Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
+        Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
+    });
+});
