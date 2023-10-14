@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('image_paper');
             $table->string('desc');
             $table->integer('coin')->default(0);
-            $table->string('token');
+            $table->rememberToken();
             $table->integer('status')->default(0)->comment('0:pending, 1:active ,2:block');
             $table->timestamps();
             $table->softDeletes();

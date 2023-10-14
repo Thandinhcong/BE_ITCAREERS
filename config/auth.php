@@ -43,6 +43,10 @@ return [
         'api' => [
             'driver' => 'passport',
             'provider' => 'users',
+        ], 
+        'company' => [
+            'driver' => 'passport',
+            'provider' => 'companies',
         ],
 
     ],
@@ -68,8 +72,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ], 'companies' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Company::class,
         ],
-
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

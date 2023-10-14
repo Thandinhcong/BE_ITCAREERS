@@ -30,3 +30,8 @@ Route::resource('experience', ExperienceController::class);
 Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
 Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+
+Route::group(['middleware' => ['auth:company']], function () {
+    Route::post('register', [\App\Http\Controllers\Company\LoginController::class, 'register']);
+    Route::post('login', [\App\Http\Controllers\Company\LoginController::class, 'login']);
+});
