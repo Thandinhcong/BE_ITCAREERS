@@ -68,9 +68,4 @@ class LoginController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function user(Request $request)
-    {
-
-        return response()->json($request->user());
-    }
 }
