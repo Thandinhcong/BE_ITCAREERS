@@ -1,9 +1,6 @@
 <?php
 
-<<<<<<< HEAD
-=======
 use App\Http\Controllers\Admin\PackageController;
->>>>>>> 11ee8d7499c0f6bb10e0d9e294677a97daa03c0e
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\SkillController;
