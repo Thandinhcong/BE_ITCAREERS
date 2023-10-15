@@ -53,11 +53,11 @@ class SalaryTypeController extends Controller
     }
     public function show($id)
     {
-        $salaryType = new SalaryTypeResource(SalaryType::find($id));
+        $salaryType = SalaryType::find($id);
         if ($salaryType) {
             return response()->json([
                 'status' => 200,
-                'salaryType' => $salaryType
+                'salaryType' => new SalaryTypeResource($salaryType),
             ], 200);
         } else {
             return response()->json([
