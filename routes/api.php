@@ -46,5 +46,6 @@ Route::group([
         Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
+        Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
     });
 });
