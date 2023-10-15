@@ -42,7 +42,6 @@ class WorkingFormController extends Controller
                 [
                     'working_form' => $request->working_form,
                     'description' => $request->description,
-
                 ]
             );
         }
