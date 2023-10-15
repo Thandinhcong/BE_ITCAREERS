@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\SkillController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,5 +50,6 @@ Route::group([
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
         Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
+        Route::resource('level', LevelController::class);
     });
 });
