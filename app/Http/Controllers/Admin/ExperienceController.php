@@ -87,10 +87,12 @@ class ExperienceController extends Controller
     public function destroy(string $id)
     {
         $experience = Experience::find($id);
-        if ($experience) {
+        // dd($experience);
+        if (!$experience) {
             return response()->json(['status' => 404, 'message' => "không tìm thấy kinh nghiệm "]);
         }
         $experience->delete();
         return response()->json(['status' => 204, 'message' => 'xóa kinh nghiệm thành công']);
     }
 }
+
