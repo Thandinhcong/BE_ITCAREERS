@@ -59,11 +59,11 @@ class MajorController extends Controller
     }
     public function show($id)
     {
-        $major = new SalaryTypeResource(Major::find($id));
+        $major = Major::find($id);
         if ($major) {
             return response()->json([
                 'status' => 200,
-                'major' => $major
+                'major' => new MajorResource($major)
             ], 200);
         } else {
             return response()->json([

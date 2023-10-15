@@ -9,7 +9,21 @@ use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
 {
-  
+    public function index()
+    {
+        $jobPost = JobPost::all();
+        if ($jobPost->count() > 0) {
+            return response()->json([
+                'status' => 200,
+                'major' => $jobPost
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'error' => 'không có bản ghi nào'
+            ], 404);
+        }
+    }
 
     public function update(Request $request, $id)
     {

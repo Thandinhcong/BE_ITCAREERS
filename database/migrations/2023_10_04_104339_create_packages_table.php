@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('coin');
             $table->string('price');
             $table->string('reduced_price');
-            $table->string('status');
+            $table->string('status')->default(0);
             $table->string('type_account');
             $table->timestamps();
             $table->softDeletes();

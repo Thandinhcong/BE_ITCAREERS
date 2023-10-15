@@ -66,7 +66,7 @@ class PackageController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'package' => 'required|string'
+            'title' => 'required|string'
         ]);
         if ($validator->fails()) {
             return response()->json([

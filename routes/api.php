@@ -43,8 +43,10 @@ Route::group([
         Route::resource('exp', ExpController::class);
         Route::resource('experience', ExperienceController::class);
         Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
+        Route::resource('salary_type', \App\Http\Controllers\Admin\SalaryTypeController::class);
         Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+        Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
     });
 });
