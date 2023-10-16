@@ -51,5 +51,6 @@ Route::group([
         Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
+        Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
     });
 });
