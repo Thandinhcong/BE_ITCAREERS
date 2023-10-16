@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\Admin\CandidatesController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
@@ -53,3 +55,4 @@ Route::group([
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
     });
 });
+Route::resource('candidates', CandidatesController::class);
