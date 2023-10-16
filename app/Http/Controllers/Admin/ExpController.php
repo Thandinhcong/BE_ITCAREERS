@@ -21,6 +21,10 @@ class ExpController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'company_name' => 'required|string|unique:exp',
+            'postion' => 'required|string',
+            'start_date' => 'required',
+            'end_date' => 'required',
+
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -60,7 +64,10 @@ class ExpController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required|string'
+            'company_name' => 'required|string',
+            'postion' => 'required|string',
+            'start_date' => 'required',
+            'end_date' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
