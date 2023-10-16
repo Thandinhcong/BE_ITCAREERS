@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JobPositionResource extends JsonResource
+class SalaryTypeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,7 @@ class JobPositionResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'job_position' => $this->job_position,
-            'description' => $this->description
+            'salary_type' => $this->salary_type,
         ];
     }
 }

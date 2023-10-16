@@ -3,26 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PackageResource;
-use App\Models\Packages;
+use App\Http\Resources\LevelResource;
+use App\Models\Level;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class PackageController extends Controller
+class LevelController extends Controller
 {
-
-    // trang hiển thị
+    // trang hien thi
     public function index()
     {
-        $package = Packages::all();
-        return PackageResource::collection($package);
+        $level = Level::all();
+        return LevelResource::collection($level);
     }
 
-    //trang thêm
+
+    // trang them
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:55'
+            'level' => 'required|string|max:55'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -30,43 +30,40 @@ class PackageController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         } else {
-            $package = Packages::create($request->all());
+            $level = Level::create($request->all());
         }
-        if ($package) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Add new success',
-            ], 200);
+        if ($level) {
+            return response()->json(['status' => 'success', 'message' => 'Thêm thành công'], 200);
         } else {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'error'
-            ], 500);
+            return response()->json(['status' => 'fail', 'message' => 'error'], 500);
         }
     }
 
-    // trang hiển thị chi tiết
+    // trang hien thi chi tiet
     public function show(string $id)
     {
-        $package = Packages::find($id);
-        if ($package) {
+        $level = Level::find($id);
+        if ($level) {
             return response()->json([
                 'status' => 200,
-                'package' => $package
+                'level' => $level
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
-                'major' => 'Job Position Not Found'
+                'level' => 'Level Not Found'
             ], 404);
         }
+        //
     }
 
-    // trang sửa
+
+
+    // trang sua
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string'
+            'level' => 'required|string'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -74,10 +71,9 @@ class PackageController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-
-        $package = Packages::find($id);
-        if ($package) {
-            $package->update($request->all());
+        $level = Level::find($id);
+        if ($level) {
+            $level->update($request->all());
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success'
@@ -85,20 +81,21 @@ class PackageController extends Controller
         } else {
             return response()->json([
                 'status' => 'fail',
-                'message' => 'Job Position Not Found'
+                'message' => 'Level Not Found'
             ], 404);
         }
     }
 
-
-    //  trang xóa
+    //    trang xoa
     public function destroy(string $id)
     {
-        $package = Packages::find($id);
-        if (!$package) {
-            return response()->json(['status' => 404, 'message' => "Không tìm thấy gói nạp"], 404);
+        $level = Level::find($id);
+        if (!$level) {
+            return response()->json([
+                "message" => 'Level not found'
+            ], 404);
         }
-        $package->delete();
-        return response()->json(['status' => 204, 'message' => "Xóa gói nạp thành công"]);
+        $level->delete();
+        return response()->json(['status' => 204, 'message' => "xoá thành công"]);
     }
 }

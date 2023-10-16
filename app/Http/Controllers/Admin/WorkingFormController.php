@@ -14,7 +14,6 @@ class WorkingFormController extends Controller
     public function index()
     {
         $workingForm = WorkingFormResources::collection(WorkingForm::all());
-
         if ($workingForm->count() > 0) {
             return response()->json([
                 'status' => 200,
@@ -43,7 +42,7 @@ class WorkingFormController extends Controller
                 [
                     'working_form' => $request->working_form,
                     'description' => $request->description,
-                    
+
                 ]
             );
         }
@@ -77,7 +76,7 @@ class WorkingFormController extends Controller
     public function update(Request $request, $id)
     {
         $valdator = Validator::make($request->all(), [
-            'working_form' => 'required|string|max:55|unique:working_form',
+            'working_form' => 'required|string|max:55|unique:working_form,working_form,' . $id,
             'description' => 'string|max:191'
         ]);
 
@@ -90,11 +89,7 @@ class WorkingFormController extends Controller
                 ], 422);
             } else {
                 $workingForm->update(
-                    [
-                        // 'working_form' => $request->working_form,
-                        // 'description' => $request->description,
-                        'working_form' => $request->all()
-                    ]
+                    $request->all()
                 );
                 return response()->json([
                     'status' => 201,

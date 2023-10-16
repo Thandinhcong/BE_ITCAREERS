@@ -24,7 +24,7 @@ class JobPositionController extends Controller
         }
         return response()->json([
             'status' => 'success',
-            'Job Position' => JobPositionResource::collection($job_position),
+            'Job_position' => JobPositionResource::collection($job_position),
         ], 200);
     }
 
@@ -65,13 +65,13 @@ class JobPositionController extends Controller
         $job_position = JobPosition::find($id);
         if ($job_position) {
             return response()->json([
-                'status' => 200,
-                'job_position' => $job_position
+                'status' => 'success',
+                'Job_position' => new JobPositionResource($job_position)
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
-                'major' => 'Job Position Not Found'
+                'message' => 'Job Position Not Found'
             ], 404);
         }
     }
@@ -90,7 +90,7 @@ class JobPositionController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'job_position' => 'required|string'
+            'job_position' => 'required|string|unique:job_position,job_position,' . $id,
         ]);
         if ($validator->fails()) {
             return response()->json([
