@@ -65,10 +65,8 @@ class LoginController extends Controller
         ]);
     }
 
-    public function user()
+    public function user(Request $request)
     {
-        response()->json([
-            'user' =>  'success',
-        ]);
+        return response()->json(Auth::guard('candidate')->user());
     }
 }
