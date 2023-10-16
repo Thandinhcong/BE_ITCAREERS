@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
-class Candidates extends Authenticatable
+class Companies extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     /**
@@ -16,19 +16,27 @@ class Candidates extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $table = "candidates";
+    protected $table = "companies";
 
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
+        'company_name',
+        'tax_code',
         'address',
-        'gender',
-        'type',
-        'status',
-        'coin',
+        'founded_in',
+        'name',
+        'office',
+        'email',
         'password',
-        'google_id',
+        'phone',
+        'map',
+        'logo',
+        'link_web',
+        'image_paper',
+        'desc',
+        'coin',
+        'status',
+
+
     ];
     /**
      * The attributes that should be hidden for serialization.

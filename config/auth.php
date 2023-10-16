@@ -44,6 +44,22 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
+        'candidate-api' => [
+            'driver' => 'passport',
+            'provider' => 'candidates',
+        ],
+        'candidate' => [
+            'driver' => 'session',
+            'provider' => 'candidates',
+        ],
+        'company-api' => [
+            'driver' => 'passport',
+            'provider' => 'company',
+        ],
+        'company' => [
+            'driver' => 'session',
+            'provider' => 'company',
+        ],
 
     ],
 
@@ -68,6 +84,14 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'candidates' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Candidates::class,
+        ],
+        'company' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Companies::class,
         ],
 
         // 'users' => [

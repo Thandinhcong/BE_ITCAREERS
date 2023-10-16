@@ -31,6 +31,7 @@ Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleControl
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
 
 
+
 //Admin
 Route::group([
     'prefix' => 'admin'
@@ -51,5 +52,31 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
+    });
+});
+
+//Candidates
+Route::group([
+    'prefix' => 'candidate'
+], function () {
+    Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
+    Route::group([
+        'middleware' => 'auth:candidate-api'
+    ], function () {
+        Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
+        Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
+    });
+});
+
+//Company
+Route::group([
+    'prefix' => 'company'
+], function () {
+    Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
+    Route::group([
+        'middleware' => 'auth:company-api'
+    ], function () {
+        Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
+        Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
