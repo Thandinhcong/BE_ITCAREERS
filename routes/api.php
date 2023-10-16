@@ -53,6 +53,6 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
+        Route::resource('candidates', CandidatesController::class);
     });
 });
-Route::resource('candidates', CandidatesController::class);
