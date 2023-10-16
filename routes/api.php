@@ -31,7 +31,25 @@ Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
 Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
 Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
 
+<<<<<<< Updated upstream
 Route::group(['middleware' => ['auth:company']], function () {
     Route::post('register', [\App\Http\Controllers\Company\LoginController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Company\LoginController::class, 'login']);
 });
+=======
+Route::group([
+    'prefix' => 'company'
+], function () {
+    Route::post('login', [\App\Http\Controllers\Company\AuthController::class, 'login']);
+    Route::group([
+        'middleware' => 'auth:apicompany'
+    ], function () {
+        Route::get('user', [\App\Http\Controllers\Company\AuthController::class, 'user']);
+        Route::delete('logout', [\App\Http\Controllers\Company\AuthController::class, 'logout']);
+
+
+        // Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+
+    });
+});
+>>>>>>> Stashed changes

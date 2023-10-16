@@ -48,6 +48,10 @@ return [
             'driver' => 'passport',
             'provider' => 'companies',
         ],
+        'api-company' => [
+            'driver' => 'passport',
+            'provider' => 'companies',
+        ],
 
     ],
 
