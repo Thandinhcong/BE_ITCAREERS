@@ -48,3 +48,18 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
     });
 });
+
+
+
+//Company
+Route::group([
+    'prefix' => 'company'
+], function () {
+    Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
+    Route::group([
+        'middleware' => 'auth:company-api'
+    ], function () {
+        Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
+        Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
+    });
+});

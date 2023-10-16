@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('tax_code', 50);
             $table->string('address')->nullable();
             $table->date('founded_in')->comment('ngày thành lập');
-            $table->string('name');
+            $table->string('name')->nullable()->comment('Người dại diện');
             $table->string('office');
             $table->string('email')->unique();
             $table->string('password');
@@ -28,7 +28,8 @@ return new class extends Migration
             $table->string('image_paper');
             $table->string('desc');
             $table->integer('coin')->default(0);
-            $table->string('token');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->integer('status')->default(0)->comment('0:pending, 1:active ,2:block');
             $table->timestamps();
             $table->softDeletes();

@@ -52,6 +52,14 @@ return [
             'driver' => 'session',
             'provider' => 'candidates',
         ],
+        'company-api' => [
+            'driver' => 'passport',
+            'provider' => 'company',
+        ],
+        'company' => [
+            'driver' => 'session',
+            'provider' => 'company',
+        ],
 
     ],
 
@@ -80,6 +88,10 @@ return [
         'candidates' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Candidates::class,
+        ],
+        'company' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Companies::class,
         ],
 
         // 'users' => [
