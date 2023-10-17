@@ -58,7 +58,7 @@ Route::group([
         Route::resource('company', CompanyController::class);
     });
 });
-
+Route::resource('company', CompanyController::class);
 //Candidates
 Route::group([
     'prefix' => 'candidate'
@@ -83,7 +83,6 @@ Route::group([
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
-});
 });
 Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
