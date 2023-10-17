@@ -80,6 +80,7 @@ Route::group([
     Route::group([
         'middleware' => 'auth:company-api'
     ], function () {
+        Route::resource('company_information',\App\Http\Controllers\Company\CompanyInformationController::class);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
