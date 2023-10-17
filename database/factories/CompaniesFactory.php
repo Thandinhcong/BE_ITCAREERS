@@ -27,7 +27,7 @@ class CompaniesFactory extends Factory
             'office' => 'Hà Nội',
             'email' => fake()->email(),
             'password' => Hash::make(123456),
-            'phone' => fake()->phoneNumber(),
+            'phone' => "0123456789",
             'map' => fake()->address(),
             'logo' => fake()->image(),
             'link_web' => 'link_web',

@@ -21,4 +21,12 @@ http code
 500: lỗi bên phía server khi gửi form
 
 
+    php artisan migrate:fresh
+    php artisan passport:install
     php artisan db:seed
+
+    Nếu lỗi chạy:
+    php artisan config:cache
+    php artisan cache:clear
+    //Nếu chạy dòng 25 lỗi: 
+    php artisan passport:install --uuids
