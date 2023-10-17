@@ -42,7 +42,6 @@ class WorkingFormController extends Controller
                 [
                     'working_form' => $request->working_form,
                     'description' => $request->description,
-
                 ]
             );
         }
@@ -60,11 +59,11 @@ class WorkingFormController extends Controller
     }
     public function show($id)
     {
-        $workingForm = new WorkingFormResources(WorkingForm::find($id));
+        $workingForm =WorkingForm::find($id);
         if ($workingForm) {
             return response()->json([
                 'status' => 200,
-                'workingForm' => $workingForm
+                'workingForm' => new WorkingFormResources($workingForm)
             ], 200);
         } else {
             return response()->json([

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SkillProfile extends Model
 {
-    use HasFactory;     protected $table = "skill_post";
+    use HasFactory;     
+    protected $table = "skill_post";
 
 }

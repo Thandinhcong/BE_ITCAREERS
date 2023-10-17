@@ -83,3 +83,5 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
+Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
+Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);

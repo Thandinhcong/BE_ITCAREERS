@@ -93,7 +93,7 @@ class SalaryTypeController extends Controller
             ], 404);
         }
     }
-    public function destroy($id)
+public function destroy($id)
     {
         $salaryType = SalaryType::find($id);
         if (!$salaryType) {
