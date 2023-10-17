@@ -53,3 +53,6 @@ Route::group([
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
     });
 });
+Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
+Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
+
