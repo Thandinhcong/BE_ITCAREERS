@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
+use App\Models\Companies;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -73,7 +74,7 @@ class CompanyController extends Controller
             ], 400);
         }
 
-        $company = company::find($id);
+        $company = Company::find($id);
         if ($company) {
             $company->update($request->all());
             return response()->json([

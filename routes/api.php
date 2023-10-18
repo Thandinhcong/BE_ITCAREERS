@@ -58,7 +58,7 @@ Route::group([
         Route::resource('company', CompanyController::class);
     });
 });
-
+Route::resource('company', CompanyController::class);
 //Candidates
 Route::group([
     'prefix' => 'candidate'
