@@ -87,11 +87,11 @@ return [
         ],
         'candidates' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\Candidates::class,
+            'model' => \App\Models\Candidate::class,
         ],
         'company' => [
             'driver' => 'eloquent',
-            'model' => \App\Models\Companies::class,
+            'model' => \App\Models\Company::class,
         ],
 
         // 'users' => [
