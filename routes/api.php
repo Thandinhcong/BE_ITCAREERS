@@ -80,10 +80,15 @@ Route::group([
     Route::group([
         'middleware' => 'auth:company-api'
     ], function () {
-        Route::resource('company_information',\App\Http\Controllers\Company\CompanyInformationController::class);
+        Route::resource('company_information', \App\Http\Controllers\Company\CompanyInformationController::class);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
 Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
+
+
+
+//client/company
+Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);

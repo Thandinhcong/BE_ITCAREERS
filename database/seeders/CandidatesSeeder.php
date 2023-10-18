@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Candidates;
+use App\Models\Candidate;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +13,6 @@ class CandidatesSeeder extends Seeder
      */
     public function run(): void
     {
-        Candidates::factory()->count(1)->create();
+        Candidate::factory()->count(1)->create();
     }
 }
