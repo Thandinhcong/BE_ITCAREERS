@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Candidates>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Candidate>
  */
-class CandidatesFactory extends Factory
+class CandidateFactory extends Factory
 {
     /**
      * Define the model's default state.
