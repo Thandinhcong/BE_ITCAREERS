@@ -17,7 +17,6 @@ class Candidate extends Authenticatable
      * @var array<int, string>
      */
     protected $table = "candidates";
-
     protected $fillable = [
         'name',
         'email',

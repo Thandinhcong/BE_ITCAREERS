@@ -34,9 +34,7 @@ class Company extends Authenticatable
         'image_paper',
         'desc',
         'coin',
-        'status',
-
-
+        'status'
     ];
     /**
      * The attributes that should be hidden for serialization.

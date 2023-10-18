@@ -21,9 +21,10 @@ class MajorController extends Controller
             ], 200);
         } else {
             return response()->json([
-                'status' => 404,
-                'major' => 'không có bản ghi nào'
-            ], 404);
+                'status' => 400,
+                'message'=> "Không có dữ liệu",
+                'major' => []
+            ], 40);
         }
     }
     public function store(Request $request)
