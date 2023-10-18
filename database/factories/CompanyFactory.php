@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Companies>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Company>
  */
 class CompanyFactory extends Factory
 {
@@ -36,7 +36,6 @@ class CompanyFactory extends Factory
             'coin' => 0,
             'email_verified_at' => now(),
             'status' => 0,
-            'remember_token' => Str::random(10),
-        ];
+            'remember_token' => Str::random(10),        ];
     }
 }
