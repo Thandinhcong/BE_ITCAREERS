@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Candidate\CandidateInformationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +68,7 @@ Route::group([
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
+        Route::resource('candidate_information', CandidateInformationController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
     });
