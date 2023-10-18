@@ -27,10 +27,10 @@ class CandidateInformationController extends Controller
             'email' => 'required|email',
             'phone' => 'required|unique:candidates,phone,' . $id,
             'address' => 'required|string',
-            'gender' => 'required|string',
-            'type' => 'required|string',
-            'status' => 'required|string',
-            'coin' => 'required|string',
+            'gender' => '',
+            'type' => '',
+            'status' => '',
+            'coin' => '',
         ]);
         if ($validator->fails()) {
             return response()->json([
