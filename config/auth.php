@@ -54,11 +54,11 @@ return [
         ],
         'company-api' => [
             'driver' => 'passport',
-            'provider' => 'company',
+            'provider' => 'companies',
         ],
         'company' => [
             'driver' => 'session',
-            'provider' => 'company',
+            'provider' => 'companies',
         ],
 
     ],
@@ -93,8 +93,7 @@ return [
             'driver' => 'eloquent',
             'model' => \App\Models\Company::class,
         ],
-
-        // 'users' => [
+// 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
