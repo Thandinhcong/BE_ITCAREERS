@@ -68,7 +68,9 @@ class JobPostController extends Controller
             'min_salary' => 'lte:max_salary',
             'require' => 'required|',
             'interest' => 'required|',
-            'level_id' => 'required|',
+          'gender'=>'required',
+          'gender'=>'in:0,1,2',
+          //Bắt buộc 1 trong 3 số trên 
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',

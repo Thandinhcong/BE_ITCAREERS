@@ -89,7 +89,7 @@ return [
             'driver' => 'eloquent',
             'model' => \App\Models\Candidate::class,
         ],
-        'company' => [
+        'companies' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Company::class,
         ],

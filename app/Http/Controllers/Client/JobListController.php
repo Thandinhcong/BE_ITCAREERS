@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobPost;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -53,7 +54,7 @@ class JobListController extends Controller
         }
     }
     public function job_list() {
-        $job_list=DB::table('job_post')
+        $job_list=DB::table('job_post')->where('start_date','<=',now()->format('Y-m-d'))
         // ->join('area', 'area.id', '=', 'job_post.area_id')
       
         ->join('companies', 'companies.id', '=', 'job_post.company_id')
