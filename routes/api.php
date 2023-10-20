@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CandidatesController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\CompanyManagementController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
@@ -56,7 +57,7 @@ Route::group([
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
         Route::resource('candidates', CandidatesController::class);
-        Route::resource('company', CompanyController::class);
+        Route::resource('company-management', CompanyManagementController::class);
     });
 });
 Route::resource('company', CompanyController::class);
