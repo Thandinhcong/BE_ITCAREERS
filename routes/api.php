@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Candidate\CandidateInformationController;
+use App\Http\Controllers\Candidate\CandidateApplyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,7 +56,7 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
-        Route::resource('candidates', CandidatesController::class);
+        Route::resource('candidate', CandidatesController::class);
         Route::resource('company', CompanyController::class);
     });
 });
@@ -68,11 +69,13 @@ Route::group([
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
+        Route::resource('candidate_apply', CandidateApplyController::class);
         Route::resource('candidate_information', CandidateInformationController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
     });
 });
+
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
 
