@@ -26,7 +26,7 @@ class LoginController extends Controller
             ]);
         }
         $credentials = request(['email', 'password']);
-        if (!Auth::guard('candidate')->attempt($credentials)) {
+        if (!Auth::guard('candidate')->attempt($credentials, $remember = true)) {
             return response()->json([
                 'status' => 'fails',
                 'message' => 'Unauthorized'

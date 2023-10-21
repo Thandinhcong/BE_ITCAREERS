@@ -65,6 +65,7 @@ Route::resource('company', CompanyController::class);
 Route::group([
     'prefix' => 'candidate'
 ], function () {
+    Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
     Route::group([
         'middleware' => 'auth:candidate-api'

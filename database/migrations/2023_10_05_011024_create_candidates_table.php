@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
+            $table->string('name', 50)->nullable();
             $table->string('email', 50)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone', 20)->unique()->nullable();
@@ -21,11 +21,12 @@ return new class extends Migration
             $table->string('google_id')->nullable();
             $table->rememberToken();
             $table->string('address', 250)->nullable();
-            $table->integer('gender')->nullable();
+            $table->integer('gender')->nullable()->default(0)->comment('0: male, 1: female');
             $table->integer('type')->default(0);
-            $table->integer('status')->default(1);
+            $table->integer('status')->default(1)->comment('0: pending, 1: active, 2: block');
             $table->double('coin')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
