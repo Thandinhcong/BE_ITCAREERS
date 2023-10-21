@@ -23,7 +23,7 @@ class CandidateFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('123456'), // password
-            'phone' => "0123456789",
+            'phone' => "0333087024",
             'gender' => 1,
             'status' => 1,
             'address' => fake()->address(),

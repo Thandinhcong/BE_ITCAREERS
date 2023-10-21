@@ -20,6 +20,7 @@ class CandidateApplyResource extends JsonResource
             'name' => $this->name,
             'phone' => $this->phone,
             'email' => $this->email,
+            'desc' => $this->desc,
         ];
     }
 }

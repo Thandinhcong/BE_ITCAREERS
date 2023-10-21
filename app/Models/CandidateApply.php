@@ -10,5 +10,5 @@ class CandidateApply extends Model
 {
     use HasFactory;
     protected $table = 'candidates';
-    protected $fillable = ['id', 'name', 'phone', 'email'];
+    protected $fillable = ['id', 'name', 'phone', 'email', 'desc'];
 }
