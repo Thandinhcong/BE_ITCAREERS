@@ -12,7 +12,7 @@ class JobListController extends Controller
 {
     public function job_detail(string $id)
     {
-        $job_detail = DB::table('job_post')->where('job_post.id',$id)
+        $job_detail = DB::table('job_post')->where('job_post.id', $id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('level', 'level.id', '=', 'job_post.level_id')
@@ -53,21 +53,22 @@ class JobListController extends Controller
             ], 404);
         }
     }
-    public function job_list() {
-        $job_list=DB::table('job_post')->where('start_date','<=',now()->format('Y-m-d'))
-        // ->join('area', 'area.id', '=', 'job_post.area_id')
-      
-        ->join('companies', 'companies.id', '=', 'job_post.company_id')
-       
-        ->select(
-            'job_post.id',
-            'job_post.title',
-            // 'area.area',
-            'job_post.min_salary',
-            'job_post.max_salary',
-            'companies.name as company_name',
-            'companies.logo',
-        )->get();
+    public function job_list()
+    {
+        $job_list = DB::table('job_post')->where('start_date', '<=', now()->format('Y-m-d'))
+            // ->join('area', 'area.id', '=', 'job_post.area_id')
+            ->where('job_post.status',1)
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+
+            ->select(
+                'job_post.id',
+                'job_post.title',
+                // 'area.area',
+                'job_post.min_salary',
+                'job_post.max_salary',
+                'companies.name as company_name',
+                'companies.logo',
+            )->get();
         if ($job_list) {
             return response()->json([
                 'status' => 200,
