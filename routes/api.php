@@ -93,6 +93,7 @@ Route::group([
 });
 Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
+Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
 
 
 

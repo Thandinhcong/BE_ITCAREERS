@@ -5,17 +5,44 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
 {
     public function index()
     {
-        $jobPost = JobPost::all();
+        $jobPost = DB::table('job_post')->where('job_post.status', 0)
+            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
+            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
+            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
+            ->join('major', 'major.id', '=', 'job_post.major_id')
+            ->select(
+                'job_post.id',
+                'job_post.title',
+                'job_post.min_salary',
+                'job_post.max_salary',
+                'job_position.job_position',
+                'experiences.experience',
+                'companies.name as company_name',
+                'companies.desc',
+                'companies.address',
+                'working_form.working_form',
+                'academic_level.academic_level',
+                'major.major',
+                'job_post.start_date',
+                'job_post.end_date',
+                'job_post.quantity',
+                'job_post.require',
+                'job_post.interest',
+            )->get();
+
         if ($jobPost->count() > 0) {
             return response()->json([
                 'status' => 200,
-                'major' => $jobPost
+                'jobPost' => $jobPost
             ], 200);
         } else {
             return response()->json([
@@ -39,7 +66,7 @@ class JobPostController extends Controller
             $jobPost = jobPost::find($id);
         }
         if ($jobPost) {
-            $jobPost->update(['status'=>$request->status]);
+            $jobPost->update(['status' => $request->status]);
             return response()->json([
                 'status' => 201,
                 'message' => 'Sửa thành công',
