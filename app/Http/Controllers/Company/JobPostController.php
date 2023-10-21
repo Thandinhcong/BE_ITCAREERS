@@ -68,9 +68,9 @@ class JobPostController extends Controller
             'min_salary' => 'lte:max_salary',
             'require' => 'required|',
             'interest' => 'required|',
-          'gender'=>'required',
-          'gender'=>'in:0,1,2',
-          //Bắt buộc 1 trong 3 số trên 
+            'gender' => 'required',
+            'gender' => 'in:0,1,2',
+            //Bắt buộc 1 trong 3 số trên 
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',
@@ -162,11 +162,24 @@ class JobPostController extends Controller
     }
     function list_candidate_apply_job(string $id)
     {
-        $company_id = 1;
         // Auth::guard('company')->user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
-            ->join('job_post', 'job_position.id', '=', 'job_post.job_position_id')
-            ->where('company_id', $company_id)->where('job_post_id', $id);
+        ->join('profile', 'job_post_apply.profile_id', '=', 'profile.id')
+        ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+        ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+        ->select(
+            'job_post.title as job_post_name',
+            'job_post_apply.created_at as time_apply',
+            'job_post_apply.qualifying_round_id',
+            'job_post_apply.id as candidate_code',
+            'job_post_apply.status',
+            // 'profile.email',
+            // 'profile.phone',
+            // 'profile.name',
+           
+
+        )
+        ->where('job_post_id', $id)->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,
