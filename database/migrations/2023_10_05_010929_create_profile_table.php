@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('profile', function (Blueprint $table) {
             $table->id();
-            $table->string('title',55);
-            $table->date('bỉth');
-            $table->string('address',55);
-            $table->string('image',255);
-            $table->string('path_cv',255);
-            $table->string('career_goal',255);
-            $table->bigInteger('candidate_id');
-            $table->bigInteger('major_id');
-            $table->bigInteger('edu_id');
-            $table->bigInteger('exp_id');
-            $table->bigInteger('project_id');
-
+            $table->string('title')->nullable()->default('Untitled CV');
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address', 55)->nullable();
+            $table->string('image', 255)->nullable();
+            $table->string('path_cv', 255)->nullable();
+            $table->text('career_goal')->comment('Mục tiêu nghề nghiệp');
+            $table->bigInteger('candidate_id')->nullable();
+            $table->bigInteger('major_id')->nullable();
+            $table->bigInteger('edu_id')->nullable();
+            $table->bigInteger('exp_id')->nullable();
+            $table->bigInteger('project_id')->nullable();
             $table->timestamps();
         });
     }

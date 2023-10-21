@@ -7,6 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    use HasFactory;    protected $table = "profile";
-
+    use HasFactory;
+    protected $table = "profile";
+    protected $fillable = [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'image',
+        'path_cv',
+        'career_goal',
+        'candidate_id',
+        'major_id',
+        'edu_id',
+        'exp_id',
+        'project_id',
+    ];
 }
