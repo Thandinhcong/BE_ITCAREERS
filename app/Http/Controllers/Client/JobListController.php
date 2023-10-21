@@ -15,7 +15,6 @@ class JobListController extends Controller
         $job_detail = DB::table('job_post')->where('job_post.id', $id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
-            ->join('level', 'level.id', '=', 'job_post.level_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
@@ -25,7 +24,6 @@ class JobListController extends Controller
                 'job_post.title',
                 'job_post.min_salary',
                 'job_post.max_salary',
-                'level.level',
                 'job_position.job_position',
                 'experiences.experience',
                 'companies.name as company_name',
@@ -63,7 +61,7 @@ class JobListController extends Controller
             ->select(
                 'job_post.id',
                 'job_post.title',
-                // 'area.area',
+                'area.area',
                 'job_post.min_salary',
                 'job_post.max_salary',
                 'companies.name as company_name',
