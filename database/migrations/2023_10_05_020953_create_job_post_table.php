@@ -21,10 +21,9 @@ return new class extends Migration
             $table->integer('working_form_id');
             $table->double('min_salary');
             $table->double('max_salary');
-            $table->integer('salary_type');
             $table->string('require');
             $table->string('interest');
-            $table->integer('level_id');
+            $table->integer('gender');
             $table->integer('area_id');
             $table->integer('major_id');
             $table->date('start_date');
