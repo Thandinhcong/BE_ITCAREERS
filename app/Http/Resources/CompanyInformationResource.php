@@ -29,7 +29,10 @@ class CompanyInformationResource extends JsonResource
             'logo' => $this->logo,
             'link_web' => $this->link_web,
             'image_paper' => $this->image_paper,
-            'desc ' => $this->desc,
+            'description' => $this->description,
+            'company_size_max' => $this->company_size_max,
+            'company_size_min' => $this->company_size_min,
+            'status' => $this->status,
         ];
     }
 }

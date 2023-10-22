@@ -63,7 +63,7 @@ Route::group([
         Route::resource('company', CompanyController::class);
     });
 });
-Route::resource('company', CompanyController::class);
+// Route::resource('company', CompanyController::class);
 //Candidates
 Route::group([
     'prefix' => 'candidate'
@@ -87,6 +87,7 @@ Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::c
 Route::group([
     'prefix' => 'company'
 ], function () {
+    Route::post('register', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
     Route::group([
         'middleware' => 'auth:company-api'

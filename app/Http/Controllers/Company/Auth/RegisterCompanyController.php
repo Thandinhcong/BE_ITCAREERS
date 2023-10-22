@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Candidate\Auth;
+namespace App\Http\Controllers\Company\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Candidate;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RegisterCandidateController extends Controller
+class RegisterCompanyController extends Controller
 {
     public function register(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:candidates',
+            'company_name' => 'required|string',
+            'email' => 'required|string|email|unique:companies',
             'password' => 'required|string|confirmed',
-            'phone' => 'required|string|unique:candidates',
-          
+            'phone' => 'required|string|unique:companies',
+            'link_web' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -29,14 +27,14 @@ class RegisterCandidateController extends Controller
                 'errors' => $validator->errors()->toArray(),
             ]);
         }
-        $candidate = new Candidate([
-            'name' => $request->input('name'),
+        $company = new Company([
+            'company_name' => $request->input('company_name'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'phone' => $request->input('phone'),
-        
+            'link_web' => $request->input('link_web'),
         ]);
-        $candidate->save();
+        $company->save();
         return response()->json([
             'status' => 'success',
         ], 200);

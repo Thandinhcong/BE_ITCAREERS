@@ -42,7 +42,9 @@ class CompanyInformationController extends Controller
             'logo' => 'required|string',
             'link_web' => 'required|string',
             'image_paper' => 'required|string',
-            'desc ' => 'required|string',
+            'description' => 'required|string',
+            'company_size_max' => 'required',
+            'company_size_min' => 'required|lte:company_size_max'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -55,7 +57,8 @@ class CompanyInformationController extends Controller
             $data->update($request->all());
             return response()->json([
                 'status' => 'success',
-                'message' => 'Update Success'
+                'message' => 'Update Success',
+                'company' => CompanyInformationResource::make($data),
             ], 200);
         } else {
             return response()->json([
