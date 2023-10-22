@@ -19,7 +19,7 @@ class RegisterCandidateController extends Controller
             'email' => 'required|string|email|unique:candidates',
             'password' => 'required|string|confirmed',
             'phone' => 'required|string|unique:candidates',
-            'gender' => 'required',
+          
         ]);
 
         if ($validator->fails()) {
@@ -34,7 +34,7 @@ class RegisterCandidateController extends Controller
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'phone' => $request->input('phone'),
-            'gender' => $request->input('gender'),
+        
         ]);
         $candidate->save();
         return response()->json([
