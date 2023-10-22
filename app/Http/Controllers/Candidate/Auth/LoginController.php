@@ -28,9 +28,9 @@ class LoginController extends Controller
         $credentials = request(['email', 'password']);
         if (!Auth::guard('candidate')->attempt($credentials, $remember = true)) {
             return response()->json([
-                'status' => 'fails',
-                'message' => 'Unauthorized'
-            ], 401);
+                'status' => false,
+                'message' => 'Tài khoản hoặc mật khẩu không đúng'
+            ], 400);
         }
         $user = Auth::guard('candidate')->user();
         $tokenResult = $user->createToken('Personal Access Token');

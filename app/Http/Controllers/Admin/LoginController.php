@@ -26,11 +26,11 @@ class LoginController extends Controller
             ]);
         }
         $credentials = request(['email', 'password']);
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials, $remember = true)) {
             return response()->json([
-                'status' => 'fails',
-                'message' => 'Unauthorized'
-            ], 401);
+                'status' => false,
+                'message' => 'incorrect account and password'
+            ], 400);
         }
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');

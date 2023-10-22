@@ -25,11 +25,11 @@ class LoginController extends Controller
             ]);
         }
         $credentials = request(['email', 'password']);
-        if (!Auth::guard('company')->attempt($credentials)) {
+        if (!Auth::guard('company')->attempt($credentials, $remember = true)) {
             return response()->json([
-                'status' => 'fails',
-                'message' => 'Unauthorized'
-            ], 401);
+                'status' => false,
+                'message' => 'Tài khoản hoặc mật khẩu không đúng'
+            ], 400);
         }
         $user = Auth::guard('company')->user();
         $tokenResult = $user->createToken('Personal Access Token');
@@ -61,7 +61,7 @@ class LoginController extends Controller
         $request->user()->token()->revoke();
         return response()->json([
             'status' => 'success',
-        ]);
+        ], 200);
     }
 
     public function user(Request $request)
