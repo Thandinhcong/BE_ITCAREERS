@@ -25,6 +25,8 @@ class CandidateFactory extends Factory
             'password' => Hash::make('123456'), // password
             'phone' => "012345678",
             'gender' => 1,
+            'desc' => "abc16",
+            'image' => "asda",
             'status' => 1,
             'address' => fake()->address(),
             'type' => 1,

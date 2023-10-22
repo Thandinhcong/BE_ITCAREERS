@@ -22,6 +22,8 @@ class CandidatesResource extends JsonResource
             'phone' => $this->phone,
             'address' => $this->address,
             'gender' => $this->gender,
+            'desc' => $this->desc,
+            'image' => $this->image,
             'type' => $this->type,
             'status' => $this->status,
             'coin' => $this->coin
