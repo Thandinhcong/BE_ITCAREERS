@@ -14,8 +14,9 @@ class CandidateApplyController extends Controller
     //
     public function index()
     {
-        $candidate_apply = Auth::guard('candidate')->user();
-        return response()->json(['candidate' => CandidateApplyResource::make($candidate_apply)]);
+      $candidate_apply=CandidateApply::all();
+      return CandidateApplyResource::collection($candidate_apply);
+      
     }
 
     public function store(Request $request)
