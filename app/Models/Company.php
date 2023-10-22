@@ -36,9 +36,11 @@ class Company extends Authenticatable
         'logo',
         'link_web',
         'image_paper',
-        'desc',
+        'description',
         'coin',
-        'status'
+        'status',
+        'company_size_max',
+        'company_size_min'
     ];
     /**
      * The attributes that should be hidden for serialization.

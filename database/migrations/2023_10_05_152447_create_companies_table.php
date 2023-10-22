@@ -26,11 +26,13 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->string('link_web');
             $table->string('image_paper')->nullable();
-            $table->string('desc')->nullable();
+            $table->longText('description')->nullable();
             $table->integer('coin')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->integer('status')->default(0)->comment('0:pending, 1:active ,2:block');
+            $table->integer('company_size_max')->nullable();
+            $table->integer('company_size_min')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
