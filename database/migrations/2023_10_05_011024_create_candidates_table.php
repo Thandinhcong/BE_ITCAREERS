@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('google_id')->nullable();
             $table->rememberToken();
             $table->string('address', 250)->nullable();
+            $table->text('desc');
+            $table->string('image', 255);
             $table->integer('gender')->nullable();
             $table->integer('type')->default(0);
             $table->integer('status')->default(1);
