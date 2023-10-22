@@ -61,7 +61,7 @@ class JobListController extends Controller
             ->select(
                 'job_post.id',
                 'job_post.title',
-                'area.area',
+                // 'area.area',
                 'job_post.min_salary',
                 'job_post.max_salary',
                 'companies.name as company_name',
