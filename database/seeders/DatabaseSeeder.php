@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         \App\Models\User::factory(1)->create();
-        \App\Models\Candidate::factory(1)->create();
+        \App\Models\Candidate::factory(2)->create();
         \App\Models\Company::factory(1)->create();
 
         AcademicLevel::create(
@@ -91,7 +91,8 @@ class DatabaseSeeder extends Seeder
         Major::create([
             'major' => 'Thiết game 2d',
             'description' => 'test',
-        ]);WorkingForm::create([
+        ]);
+        WorkingForm::create([
             'working_form' => 'OnLine',
             'description' => 'test',
         ]);
@@ -112,7 +113,7 @@ class DatabaseSeeder extends Seeder
             'interest' => 'Đãi ngộ1',
             'min_salary' => '20000',
             'max_salary' => '30000',
-            'salary_type'=>12,
+            'salary_type' => 12,
             'level_id' => 3,
             'company_id' => 1,
             'working_form_id' => 3,

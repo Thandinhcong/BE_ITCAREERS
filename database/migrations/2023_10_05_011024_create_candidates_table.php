@@ -22,6 +22,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('address', 250)->nullable();
             $table->integer('gender')->nullable()->default(0)->comment('0: male, 1: female');
+            $table->text('desc');
+            $table->string('image', 255);
             $table->integer('type')->default(0);
             $table->integer('status')->default(1)->comment('0: pending, 1: active, 2: block');
             $table->double('coin')->default(0);

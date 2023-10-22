@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CandidatesResource;
+use App\Models\Candidate;
 use App\Models\Candidates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +15,7 @@ class CandidatesController extends Controller
     // danh sach ung vien
     public function index()
     {
-        $candidate = Candidates::all();
+        $candidate = Candidate::all();
         return CandidatesResource::collection($candidate);
     }
 
@@ -41,7 +42,7 @@ class CandidatesController extends Controller
     // chi tiet ung vien
     public function show(string $id)
     {
-        $candidate = Candidates::find($id);
+        $candidate = Candidate::find($id);
         if ($candidate) {
             return response()->json([
                 'status' => 200,
@@ -69,7 +70,7 @@ class CandidatesController extends Controller
             ], 400);
         }
 
-        $candidate = Candidates::find($id);
+        $candidate = Candidate::find($id);
         if ($candidate) {
             $candidate->update($request->all());
             return response()->json([

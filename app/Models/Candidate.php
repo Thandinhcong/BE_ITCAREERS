@@ -26,6 +26,8 @@ class Candidate extends Authenticatable
         'gender',
         'type',
         'status',
+        'desc',
+        'image',
         'coin',
         'password',
         'google_id',
