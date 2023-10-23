@@ -32,7 +32,7 @@ class CompanyFactory extends Factory
             'logo' => fake()->image(),
             'link_web' => 'link_web',
             'image_paper' => fake()->image(),
-            'desc' => 0,
+            'description' => 0,
             'coin' => 0,
             'email_verified_at' => now(),
             'status' => 0,
