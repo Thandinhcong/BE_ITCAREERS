@@ -14,7 +14,7 @@ class CandidateInformationController extends Controller
 
     public function index()
     {
-        $candidate = Auth::guard('candidate')->user();
+        $candidate = Auth::user();
         return response()->json(['candidate' => CandidatesResource::make($candidate)]);
     }
 

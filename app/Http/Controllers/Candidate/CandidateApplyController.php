@@ -25,7 +25,7 @@ class CandidateApplyController extends Controller
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            'desc' => 'required',
+            'desc' => '',
             'image' => 'required'
         ]);
         if ($validator->fails()) {
