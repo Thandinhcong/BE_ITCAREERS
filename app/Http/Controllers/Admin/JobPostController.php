@@ -12,7 +12,7 @@ class JobPostController extends Controller
 {
     public function index()
     {
-        $jobPost = DB::table('job_post')->where('job_post.status', 0)
+        $jobPost = DB::table('job_post')
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
@@ -32,12 +32,13 @@ class JobPostController extends Controller
                 'companies.logo',
                 'working_form.working_form',
                 'academic_level.academic_level',
-                'major.major',
+                // 'major.major',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
                 'job_post.require',
                 'job_post.interest',
+                'job_post.status',
             )->get();
 
         if ($jobPost->count() > 0) {
