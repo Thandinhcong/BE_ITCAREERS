@@ -16,10 +16,6 @@ class CandidateApplyResource extends JsonResource
     {
         // return parent::toArray($request);
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
             'desc' => $this->desc,
             'image' => $this->image
         ];
