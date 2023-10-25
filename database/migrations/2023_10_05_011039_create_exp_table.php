@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('postion', 55);
             $table->date('start_date');
             $table->date('end_date');
-            $table->bigInteger('major_id');
+            $table->bigInteger('profile_id');
             $table->timestamps();
         });
     }

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('desc');
             $table->string('phone_instructor', 20);
             $table->string('email_instructor', 55);
+            $table->bigInteger('profile_id');
             $table->timestamps();
         });
     }

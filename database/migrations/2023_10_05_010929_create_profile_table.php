@@ -22,10 +22,7 @@ return new class extends Migration
             $table->string('path_cv', 255)->nullable();
             $table->text('career_goal')->comment('Mục tiêu nghề nghiệp');
             $table->bigInteger('candidate_id')->nullable();
-            $table->bigInteger('major_id')->nullable();
-            $table->bigInteger('edu_id')->nullable();
-            $table->bigInteger('exp_id')->nullable();
-            $table->bigInteger('project_id')->nullable();
+          
             $table->timestamps();
         });
     }
