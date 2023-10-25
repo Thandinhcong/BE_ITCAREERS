@@ -100,8 +100,20 @@ Route::group([
 Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
 Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
+//Xem hồ sơ ứng viên gửi email cho ứng viên biết
+Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
+//Đánh giá ứng viên gửi email
+Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
 
 
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
+
+
+
+
+
+
+
+
