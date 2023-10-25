@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Candidate\CandidateInformationController;
 use App\Http\Controllers\Candidate\CandidateApplyController;
+use App\Http\Controllers\Client\JobPostApplyController;
+use App\Models\JobPostApply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -79,7 +81,6 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
     });
 });
-
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
 
