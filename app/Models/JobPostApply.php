@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class JobPostApply extends Model
 {
     use HasFactory;
+    protected $table = 'job_post_apply';
 
     protected $fillable=['profile_id','job_post_apply','evaluate','status','qualifying_round_id'];
 }
