@@ -27,7 +27,7 @@ class JobListController extends Controller
                 'job_position.job_position',
                 'experiences.experience',
                 'companies.name as company_name',
-                'companies.desc',
+                'companies.description',
                 'companies.address',
                 'working_form.working_form',
                 'academic_level.academic_level',
