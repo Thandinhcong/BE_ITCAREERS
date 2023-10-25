@@ -154,7 +154,7 @@ class JobPostController extends Controller
             return response()->json([
                 'status' => 'fail',
                 'errors' => $validator->messages(),
-                'data1' => $job_post
+                'data' => $job_post
             ], 400);
         }
 
