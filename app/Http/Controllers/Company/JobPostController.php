@@ -24,7 +24,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
-{
+{        
+
+    
     public function index()
     {
         $company_id = Auth::guard('company')->user()->id;
