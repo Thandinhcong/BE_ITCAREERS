@@ -130,7 +130,7 @@ class JobPostController extends Controller
     {
         $job_post = JobPost::find($id);
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
+            'title' => 'required|',
             'job_position_id' => 'required|',
             'quantity' => 'required|integer',
             'academic_level_id' => 'required|',
@@ -141,7 +141,9 @@ class JobPostController extends Controller
             'min_salary' => 'lte:max_salary',
             'require' => 'required|',
             'interest' => 'required|',
-            'level_id' => 'required|',
+            'gender' => 'required',
+            'gender' => 'in:0,1,2',
+            //Bắt buộc 1 trong 3 số trên 
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',
@@ -152,7 +154,7 @@ class JobPostController extends Controller
             return response()->json([
                 'status' => 'fail',
                 'errors' => $validator->messages(),
-                'data' => $job_post
+                'data1' => $job_post
             ], 400);
         }
 
