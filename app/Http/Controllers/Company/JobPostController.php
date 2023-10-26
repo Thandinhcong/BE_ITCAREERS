@@ -31,7 +31,7 @@ class JobPostController extends Controller
     public function index()
     {
         $company_id = Auth::guard('company')->user()->id;
-        $job_post = DB::table('job_post')->where('company_id',  $company_id )
+        $job_post = DB::table('job_post')->where('company_id',  $company_id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')

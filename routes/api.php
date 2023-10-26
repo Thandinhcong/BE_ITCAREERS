@@ -110,11 +110,3 @@ Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostContr
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
-
-
-
-
-
-
-
-
