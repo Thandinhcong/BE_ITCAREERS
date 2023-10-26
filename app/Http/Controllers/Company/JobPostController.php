@@ -31,7 +31,7 @@ class JobPostController extends Controller
     public function index()
     {
         $company_id = Auth::guard('company')->user()->id;
-        $job_post = DB::table('job_post')->where('company_id', $company_id)
+        $job_post = DB::table('job_post')->where('company_id',  $company_id )
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
@@ -39,7 +39,7 @@ class JobPostController extends Controller
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'province.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -55,14 +55,13 @@ class JobPostController extends Controller
                 'academic_level.academic_level',
                 'major.major',
                 'district.name',
-                'province.name',
+                'province.province',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
                 'job_post.require',
                 'job_post.interest',
                 'job_post.status',
-
             )->get();
         if ($job_post->count() == 0) {
             return response()->json([

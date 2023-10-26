@@ -22,193 +22,193 @@ class DatabaseSeeder extends Seeder
      */
     protected  $province = [
         [
-            "name" => " Hà Nội",
+            "province" => " Hà Nội",
         ],
         [
-            "name" => " Hà Giang",
+            "province" => " Hà Giang",
         ],
         [
-            "name" => " Cao Bằng"
+            "province" => " Cao Bằng"
         ],
         [
-            "name" => " Bắc Kạn"
+            "province" => " Bắc Kạn"
         ],
         [
-            "name" => " Tuyên Quang"
+            "province" => " Tuyên Quang"
         ],
         [
-            "name" => " Lào Cai"
+            "province" => " Lào Cai"
         ],
         [
-            "name" => " Điện Biên"
+            "province" => " Điện Biên"
         ],
         [
-            "name" => " Lai Châu"
+            "province" => " Lai Châu"
         ],
         [
-            "name" => " Sơn La"
+            "province" => " Sơn La"
         ],
         [
-            "name" => " Yên Bái"
+            "province" => " Yên Bái"
         ],
         [
-            "name" => " Hoà Bình"
+            "province" => " Hoà Bình"
         ],
         [
-            "name" => " Thái Nguyên"
+            "province" => " Thái Nguyên"
         ],
         [
-            "name" => " Lạng Sơn"
+            "province" => " Lạng Sơn"
         ],
         [
-            "name" => " Quảng Ninh"
+            "province" => " Quảng Ninh"
         ],
         [
-            "name" => " Bắc Giang"
+            "province" => " Bắc Giang"
         ],
         [
-            "name" => " Phú Thọ"
+            "province" => " Phú Thọ"
         ],
         [
-            "name" => " Vĩnh Phúc"
+            "province" => " Vĩnh Phúc"
         ],
         [
-            "name" => " Bắc Ninh"
+            "province" => " Bắc Ninh"
         ],
         [
-            "name" => " Hải Dương"
+            "province" => " Hải Dương"
         ],
         [
-            "name" => " Hải Phòng"
+            "province" => " Hải Phòng"
         ],
         [
-            "name" => " Hưng Yên"
+            "province" => " Hưng Yên"
         ],
         [
-            "name" => " Thái Bình"
+            "province" => " Thái Bình"
         ],
         [
-            "name" => " Hà Nam"
+            "province" => " Hà Nam"
         ],
         [
-            "name" => " Nam Định"
+            "province" => " Nam Định"
         ],
         [
-            "name" => " Ninh Bình"
+            "province" => " Ninh Bình"
         ],
         [
-            "name" => " Thanh Hóa"
+            "province" => " Thanh Hóa"
         ],
         [
-            "name" => " Nghệ An"
+            "province" => " Nghệ An"
         ],
         [
-            "name" => " Hà Tĩnh"
+            "province" => " Hà Tĩnh"
         ],
         [
-            "name" => " Quảng Bình"
+            "province" => " Quảng Bình"
         ],
         [
-            "name" => " Quảng Trị"
+            "province" => " Quảng Trị"
         ],
         [
-            "name" => " Thừa Thiên Huế"
+            "province" => " Thừa Thiên Huế"
         ],
         [
-            "name" => " Đà Nẵng"
+            "province" => " Đà Nẵng"
         ],
         [
-            "name" => " Quảng Nam"
+            "province" => " Quảng Nam"
         ],
         [
-            "name" => " Quảng Ngãi"
+            "province" => " Quảng Ngãi"
         ],
         [
-            "name" => " Bình Định"
+            "province" => " Bình Định"
         ],
         [
-            "name" => " Phú Yên"
+            "province" => " Phú Yên"
         ],
         [
-            "name" => " Khánh Hòa"
+            "province" => " Khánh Hòa"
         ],
         [
-            "name" => " Ninh Thuận"
+            "province" => " Ninh Thuận"
         ],
         [
-            "name" => " Bình Thuận"
+            "province" => " Bình Thuận"
         ],
         [
-            "name" => " Kon Tum"
+            "province" => " Kon Tum"
         ],
         [
-            "name" => " Gia Lai"
+            "province" => " Gia Lai"
         ],
         [
-            "name" => " Đắk Lắk"
+            "province" => " Đắk Lắk"
         ],
         [
-            "name" => " Đắk Nông"
+            "province" => " Đắk Nông"
         ],
         [
-            "name" => " Lâm Đồng"
+            "province" => " Lâm Đồng"
         ],
         [
-            "name" => " Bình Phước"
+            "province" => " Bình Phước"
         ],
         [
-            "name" => " Tây Ninh"
+            "province" => " Tây Ninh"
         ],
         [
-            "name" => " Bình Dương"
+            "province" => " Bình Dương"
         ],
         [
-            "name" => " Đồng Nai"
+            "province" => " Đồng Nai"
         ],
         [
-            "name" => " Bà Rịa - Vũng Tàu"
+            "province" => " Bà Rịa - Vũng Tàu"
         ],
         [
-            "name" => " Hồ Chí Minh"
+            "province" => " Hồ Chí Minh"
         ],
         [
-            "name" => " Long An"
+            "province" => " Long An"
         ],
         [
-            "name" => " Tiền Giang"
+            "province" => " Tiền Giang"
         ],
         [
-            "name" => " Bến Tre"
+            "province" => " Bến Tre"
         ],
         [
-            "name" => " Trà Vinh"
+            "province" => " Trà Vinh"
         ],
         [
-            "name" => " Vĩnh Long"
+            "province" => " Vĩnh Long"
         ],
         [
-            "name" => " Đồng Tháp"
+            "province" => " Đồng Tháp"
         ],
         [
-            "name" => " An Giang"
+            "province" => " An Giang"
         ],
         [
-            "name" => " Kiên Giang"
+            "province" => " Kiên Giang"
         ],
         [
-            "name" => " Cần Thơ"
+            "province" => " Cần Thơ"
         ],
         [
-            "name" => " Hậu Giang"
+            "province" => " Hậu Giang"
         ],
         [
-            "name" => " Sóc Trăng"
+            "province" => " Sóc Trăng"
         ],
         [
-            "name" => " Bạc Liêu"
+            "province" => " Bạc Liêu"
         ],
         [
-            "name" => " Cà Mau"
+            "province" => " Cà Mau"
         ]
     ];
     protected $district = [
