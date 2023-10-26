@@ -93,19 +93,18 @@ Route::group([
         'middleware' => 'auth:company-api'
     ], function () {
         Route::resource('company_information', \App\Http\Controllers\Company\CompanyInformationController::class);
+        Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
+
     });
 });
-Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
 Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
 //Xem hồ sơ ứng viên gửi email cho ứng viên biết
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //Đánh giá ứng viên gửi email
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
-
-
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);

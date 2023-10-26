@@ -29,7 +29,7 @@ class JobPostController extends Controller
     
     public function index()
     {
-        $company_id = Auth::guard('company')->user()->id;
+        $company_id = Auth::user()->id;
         $job_post = DB::table('job_post')->where('company_id', $company_id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
@@ -50,7 +50,7 @@ class JobPostController extends Controller
                 'companies.logo',
                 'working_form.working_form',
                 'academic_level.academic_level',
-                'major.major',
+                // 'major.major',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
@@ -203,6 +203,7 @@ class JobPostController extends Controller
             'job_post.require',
             'job_post.interest',
             'job_post.status',
+            'job_post.gender',
         )->get();;
         if ($job_post) {
             return response()->json([

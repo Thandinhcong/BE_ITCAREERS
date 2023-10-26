@@ -16,7 +16,7 @@ class CompanyInformationController extends Controller
 
     public function index()
     {
-        $data = Auth::guard('company')->user();
+        $data = Auth::user();
         return response()->json([
             'company' => CompanyInformationResource::make($data),
         ]);
