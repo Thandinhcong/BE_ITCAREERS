@@ -82,6 +82,7 @@ Route::group([
 
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
+Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
 
 //Company
 Route::group([

@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('job_post_id');
             $table->bigInteger('profile_id');
-            $table->string('evaluate')->comment('đánh giá');
+            $table->string('evaluate')->nullable()->comment('đánh giá');
+            $table->string('name');
+            $table->string('phone');
+            $table->string('email');
+            $table->bigInteger('candidate_id');
+
             $table->integer('status')->default(0)->comment('1: đã xem, 0: chưa xem');
             $table->integer('qualifying_round_id')->default('0')->comment('vòng hồ sơ');
             $table->timestamps();
