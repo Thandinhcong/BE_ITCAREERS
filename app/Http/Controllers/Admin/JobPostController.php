@@ -19,6 +19,9 @@ class JobPostController extends Controller
             ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->join('major', 'major.id', '=', 'job_post.major_id')
+            // ->join('desc', 'major.id', '=', 'job_post.major_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -32,7 +35,9 @@ class JobPostController extends Controller
                 'companies.logo',
                 'working_form.working_form',
                 'academic_level.academic_level',
-                // 'major.major',
+                'major.major',
+                'district.name',
+                'province.province',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',

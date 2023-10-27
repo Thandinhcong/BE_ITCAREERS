@@ -14,6 +14,7 @@ use App\Models\JobPostApply;
 use App\Models\Level;
 use App\Models\Major;
 use App\Models\Project;
+use App\Models\Area;
 use App\Models\SkillPost;
 use App\Models\SkillProfile;
 use App\Models\WorkingForm;
@@ -24,19 +25,23 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
-{        
+{
 
-    
+
     public function index()
     {
         $company_id = Auth::user()->id;
-        $job_post = DB::table('job_post')->where('company_id', $company_id)
+        // $job_post = DB::table('job_post')->where('company_id', $company_id)
+        // $company_id = Auth::guard('company')->user()->id;
+        $job_post = DB::table('job_post')->where('company_id',  $company_id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->join('major', 'major.id', '=', 'job_post.major_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -51,6 +56,8 @@ class JobPostController extends Controller
                 'working_form.working_form',
                 'academic_level.academic_level',
                 'major.major',
+                'district.name',
+                'province.province',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
@@ -78,6 +85,8 @@ class JobPostController extends Controller
         $d['working_form'] = WorkingForm::all();
         $d['academic_level'] = AcademicLevel::all();
         $d['major_id'] = Major::all();
+        // $d['area_id'] = Area::all();
+        // $d['major_id'] = Major::all();
         return response()->json([
             'status' => 'success',
             'data' => $d,
@@ -145,6 +154,7 @@ class JobPostController extends Controller
             'require' => 'required|',
             'interest' => 'required|',
             'gender' => 'required',
+            'area' => 'required',
             'gender' => 'in:0,1,2',
             //Bắt buộc 1 trong 3 số trên 
             'area_id' => 'required|',
@@ -177,34 +187,37 @@ class JobPostController extends Controller
     public function show(string $id)
     {
         $job_post = DB::table('job_post')->where('job_post.id', $id)
-        ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
-        ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
-        ->join('companies', 'companies.id', '=', 'job_post.company_id')
-        ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
-        ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
-        ->join('major', 'major.id', '=', 'job_post.major_id')
-        ->select(
-            'job_post.id',
-            'job_post.title',
-            'job_post.min_salary',
-            'job_post.max_salary',
-            'job_position.job_position',
-            'experiences.experience',
-            'companies.name as company_name',
-            'companies.description',
-            'companies.address',
-            'companies.logo',
-            'working_form.working_form',
-            'academic_level.academic_level',
-            'major.major',
-            'job_post.start_date',
-            'job_post.end_date',
-            'job_post.quantity',
-            'job_post.require',
-            'job_post.interest',
-            'job_post.status',
-            'job_post.gender',
-        )->get();;
+            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
+            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
+            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
+            ->join('major', 'major.id', '=', 'job_post.major_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'province.id', '=', 'job_post.area_id')
+            ->select(
+                'job_post.id',
+                'job_post.title',
+                'job_post.min_salary',
+                'job_post.max_salary',
+                'job_position.job_position',
+                'experiences.experience',
+                'companies.name as company_name',
+                'companies.description',
+                'companies.address',
+                'companies.logo',
+                'working_form.working_form',
+                'academic_level.academic_level',
+                'major.major',
+                'district.province_id',
+                'job_post.area_id',
+                'job_post.start_date',
+                'job_post.end_date',
+                'job_post.quantity',
+                'job_post.require',
+                'job_post.interest',
+                'job_post.status',
+            )->get();;
         if ($job_post) {
             return response()->json([
                 'status' => 200,
