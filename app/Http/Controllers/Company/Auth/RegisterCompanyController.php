@@ -33,6 +33,8 @@ class RegisterCompanyController extends Controller
             'password' => bcrypt($request->input('password')),
             'phone' => $request->input('phone'),
             'link_web' => $request->input('link_web'),
+            'name' => $request->input('name'),
+            'address' => $request->input('address'),
         ]);
         $company->save();
         return response()->json([

@@ -50,7 +50,7 @@ class JobPostController extends Controller
                 'companies.logo',
                 'working_form.working_form',
                 'academic_level.academic_level',
-                // 'major.major',
+                'major.major',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
