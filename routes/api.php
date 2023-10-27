@@ -63,7 +63,6 @@ Route::group([
         Route::resource('company', CompanyController::class);
     });
 });
-// Route::resource('company', CompanyController::class);
 //Candidates
 Route::group([
     'prefix' => 'candidate'
@@ -73,7 +72,7 @@ Route::group([
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
-        Route::resource('candidate_apply', CandidateApplyController::class);
+        Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
         Route::resource('candidate_information', CandidateInformationController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
@@ -82,7 +81,6 @@ Route::group([
 
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
-Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
 
 //Company
 Route::group([
