@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\District;
+use App\Models\Province;
 class JobPostController extends Controller
 {
 
@@ -56,7 +57,7 @@ class JobPostController extends Controller
                 'working_form.working_form',
                 'academic_level.academic_level',
                 'major.major',
-                'district.name',
+                'district.name as district',
                 'province.province',
                 'job_post.start_date',
                 'job_post.end_date',
@@ -85,6 +86,9 @@ class JobPostController extends Controller
         $d['working_form'] = WorkingForm::all();
         $d['academic_level'] = AcademicLevel::all();
         $d['major_id'] = Major::all();
+        $d['district_id'] = District::all();
+        $d['province_id'] = Province::all();
+
         // $d['area_id'] = Area::all();
         // $d['major_id'] = Major::all();
         return response()->json([
