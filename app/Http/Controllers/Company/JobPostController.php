@@ -15,6 +15,8 @@ use App\Models\Level;
 use App\Models\Major;
 use App\Models\Project;
 use App\Models\Area;
+use App\Models\District;
+use App\Models\Province;
 use App\Models\SkillPost;
 use App\Models\SkillProfile;
 use App\Models\WorkingForm;
@@ -27,12 +29,11 @@ use App\Models\District;
 use App\Models\Province;
 class JobPostController extends Controller
 {
-
-
     public function index()
     {
         $company_id = Auth::user()->id;
         // $job_post = DB::table('job_post')->where('company_id', $company_id)
+        // $company_id = Auth::guard('company')->user()->id;
         // $company_id = Auth::guard('company')->user()->id;
         $job_post = DB::table('job_post')->where('company_id',  $company_id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
@@ -191,34 +192,44 @@ class JobPostController extends Controller
     public function show(string $id)
     {
         $job_post = DB::table('job_post')->where('job_post.id', $id)
-        ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
-        ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
-        ->join('companies', 'companies.id', '=', 'job_post.company_id')
-        ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
-        ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
-        ->join('major', 'major.id', '=', 'job_post.major_id')
-        ->select(
-            'job_post.id',
-            'job_post.title',
-            'job_post.min_salary',
-            'job_post.max_salary',
-            'job_position.job_position',
-            'experiences.experience',
-            'companies.name',
-            'companies.description',
-            'companies.address',
-            'companies.logo',
-            'working_form.working_form',
-            'academic_level.academic_level',
-            'major.major',
-            'job_post.start_date',
-            'job_post.end_date',
-            'job_post.quantity',
-            'job_post.require',
-            'job_post.interest',
-            'job_post.status',
-            'job_post.gender',
-        )->get();;
+            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
+            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
+            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
+            ->join('major', 'major.id', '=', 'job_post.major_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->select(
+                'job_post.id',
+                'job_post.title',
+                'job_post.min_salary',
+                'job_post.max_salary',
+                'job_position.job_position',
+                'experiences.experience',
+                'companies.name as company_name',
+                'companies.description',
+                'companies.address',
+                'companies.logo',
+                'working_form.working_form',
+                'academic_level.academic_level',
+                'major.major',
+                'province.province',
+                'district.name as district',
+                'job_post.start_date',
+                'job_post.end_date',
+                'job_post.quantity',
+                'job_post.require',
+                'job_post.interest',
+                'job_post.status',
+                'job_post.job_position_id',
+                'job_post.exp_id',
+                'job_post.working_form_id',
+                'job_post.academic_level_id',
+                'job_post.major_id',
+                'district.province_id',
+                'district.id as district_id',
+            )->first();
         if ($job_post) {
             return response()->json([
                 'status' => 200,
@@ -231,25 +242,24 @@ class JobPostController extends Controller
                 'job_post' => $job_post
             ], 404);
         }
-        //
     }
     function list_candidate_apply_job(string $id)
     {
         // Auth::guard('company')->user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
-            ->join('profile', 'job_post_apply.profile_id', '=', 'profile.id')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+            ->join('candidates', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
                 'job_post_apply.status',
-                // 'profile.email',
-                // 'profile.phone',
-                // 'profile.name',
-                'profile.id'
+                'job_post_apply.email',
+                'job_post_apply.phone',
+                'job_post_apply.name',
+                'curriculum_vitae.path_cv'
             )
             ->where('job_post_id', $id)->get();
         if ($list_candidate_apply_job) {
@@ -283,16 +293,16 @@ class JobPostController extends Controller
         if ($assses_candidate) {
             $assses_candidate->update($request->all());
             $candidate = Db::table('job_post_apply')->where('job_post_apply.id', $id)
-                ->join('profile', 'job_post_apply.profile_id', '=', 'profile.id')
                 ->join('job_post', 'job_post_apply.job_post_id', '=', 'job_post.id')
                 ->join('companies', 'companies.id', '=', 'job_post.company_id')
-                ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+                ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
                 ->select(
                     'job_post.title as job_post_title',
                     'companies.name as company_name',
                     'candidates.email as  candidate_email',
                     'job_post_apply.status',
                     'job_post_apply.evaluate',
+                    'job_post_apply.email',
                 )
                 ->first();
             Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
@@ -309,39 +319,15 @@ class JobPostController extends Controller
     public function candidate_detail(string $id)
     {
         $data = [];
-        $data['profile'] = Db::table('profile')->where('profile.id', $id)
-            ->join('job_post_apply', 'profile.id', '=', 'job_post_apply.profile_id')
+        $data['profile'] = Db::table('curriculum_vitae')->where('curriculum_vitae.id', $id)
+            ->join('job_post_apply', 'curriculum_vitae.id', '=', 'curriculum_vitae.id')
             ->select(
-                'profile.title',
-                'profile.name',
-                'profile.email',
-                'profile.address',
-                'profile.path_cv',
-                'profile.phone',
-                'profile.image',
-                'profile.career_goal',
+                'job_post_apply.name',
+                'job_post_apply.email',
+                'job_post_apply.phone',
+                'curriculum_vitae.path_cv',
             )
             ->first();
-        $data['exp'] = Exp::all()->where('profile_id', $id);
-        $data['edu'] = Db::table('edu')->where('profile_id', $id)
-            ->join('major', 'major.id', '=', 'edu.major_id')
-            ->select(
-                'edu.name',
-                'edu.gpa',
-                'edu.type_degree',
-                'edu.start_date',
-                'edu.end_date',
-                'edu.profile_id',
-                'major.major'
-            )
-            ->get();;
-        $data['project'] = Project::all()->where('profile_id', $id);
-        $data['skill'] = Db::table('skill_profile')->where('profile_id', $id)
-            ->join('skill', 'skill.id', '=', 'skill_profile.skill_id')
-            ->select(
-                'skill.skill',
-            )
-            ->get();
         if ($data) {
             JobPostApply::where('id', $id)->update(['status' => 1]);
             Mail::send('emails.demo', compact('candidate'), function ($email) use ($data) {

@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('district', function (Blueprint $table) {
+        Schema::create('curriculum_vitae', function (Blueprint $table) {
             $table->id();
-            $table->integer('province_id');
-            $table->string('name');
+            $table->string('path_cv');
+            $table->integer('candidate_id');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('district');
+        Schema::dropIfExists('curriculum_vitae');
     }
 };

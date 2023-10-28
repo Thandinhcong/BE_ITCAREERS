@@ -79,9 +79,12 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
     });
 });
-    Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
+//Việc làm đã ứng tuyển
+Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
+Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
-Route::get('job_apply', [\App\Http\Controllers\Client\JobListController::class, 'job_apply']);
+//ứng viên ứng tuyển
+// Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
 
 //Company
 Route::group([
@@ -105,6 +108,9 @@ Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPo
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //Đánh giá ứng viên gửi email
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
+//hiển thị ứng viên mở tìm kiếm viwwcj
+Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
