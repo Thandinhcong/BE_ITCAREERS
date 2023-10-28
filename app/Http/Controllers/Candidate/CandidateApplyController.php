@@ -57,7 +57,7 @@ class CandidateApplyController extends Controller
             ->get();
         if ($data_check->count() > 0) {
             return response()->json([
-                'message' => 'Bạn đã ứng tuyển',
+                'error' => 'Bạn đã ứng tuyển',
             ], 400);
         } else {
             $validator = Validator::make($request->all(), [
@@ -65,7 +65,7 @@ class CandidateApplyController extends Controller
                 'phone' => 'required',
                 'email' => 'required',
                 'path_cv' => 'required_without:curriculum_vitae_id',
-                'path_cv' => 'mimes:pdf'
+                // 'path_cv' => 'mimes:pdf'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -73,17 +73,23 @@ class CandidateApplyController extends Controller
                     'errors' => $validator->messages()
                 ], 400);
             }
-            if ($request['path_cv']) {
-                $request['curriculum_vitae_id'] = DB::table('curriculum_vitae')->insertGetId(
-                    [
-                        'path_cv' => $request['path_cv'],
-                        'candidate_id' => 1
-                    ]
-                );
-                $candidate_apply = JobPostApply::create($request->all());
-            }
-            if ($request['curriculum_vitae_id']) {
-                $candidate_apply = JobPostApply::create($request->all());
+            if ($request['path_cv'] && $request['curriculum_vitae_id']) {
+                return response()->json([
+                    'status' => 'fail',
+                    'errors' => 'Không được chọn cả 2 '
+                ], 400);
+            } else {
+                if ($request['path_cv']) {
+                    $request['curriculum_vitae_id'] = DB::table('curriculum_vitae')->insertGetId(
+                        [
+                            'path_cv' => $request['path_cv'],
+                            'candidate_id' => 1
+                        ]
+                    );
+                    $candidate_apply = JobPostApply::create($request->all());
+                } else {
+                    $candidate_apply = JobPostApply::create($request->all());
+                }
             }
             if ($candidate_apply) {
                 return response()->json([
