@@ -79,9 +79,9 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
     });
 });
-
-Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
+    Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
+Route::get('job_apply', [\App\Http\Controllers\Client\JobListController::class, 'job_apply']);
 
 //Company
 Route::group([
