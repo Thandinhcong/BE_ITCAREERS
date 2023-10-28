@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('district', function (Blueprint $table) {
+        Schema::create('saved_profile', function (Blueprint $table) {
             $table->id();
-            $table->integer('province_id');
-            $table->string('name');
+            $table->integer('company_id');
+            $table->integer('curriculum_vitae_id');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('district');
+        Schema::dropIfExists('saved_profile');
     }
 };

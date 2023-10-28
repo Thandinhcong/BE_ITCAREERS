@@ -19,6 +19,8 @@ class JobListController extends Controller
             ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->join('major', 'major.id', '=', 'job_post.major_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -37,8 +39,10 @@ class JobListController extends Controller
                 'job_post.quantity',
                 'job_post.require',
                 'job_post.interest',
+                'district.name as district',
+                'province.province',
             )->first();
-        if ($job_detail) {
+        if ($job_detail!=[]) {
             return response()->json([
                 'status' => 200,
                 'job_detail' => $job_detail
@@ -54,20 +58,21 @@ class JobListController extends Controller
     public function job_list()
     {
         $job_list = DB::table('job_post')->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->join('area', 'area.id', '=', 'job_post.area_id')
-            ->where('job_post.status',1)
+            ->where('job_post.status', 1)
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
-
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
-                // 'area.area',
+                'district.name as district',
+                'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
                 'companies.name as company_name',
                 'companies.logo',
             )->get();
-        if ($job_list) {
+        if ($job_list->count()>0) {
             return response()->json([
                 'status' => 200,
                 'job_list' => $job_list

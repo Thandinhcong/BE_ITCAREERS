@@ -31,6 +31,8 @@ class Candidate extends Authenticatable
         'coin',
         'password',
         'google_id',
+        'main_cv',
+        'find_job'
     ];
     /**
      * The attributes that should be hidden for serialization.

@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('profile', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable()->default('Untitled CV');
-            $table->string('name')->nullable();
+            $table->string('name');
             $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('address', 55)->nullable();
-            $table->string('image', 255)->nullable();
-            $table->string('path_cv', 255)->nullable();
-            $table->text('career_goal')->comment('Mục tiêu nghề nghiệp');
+            $table->string('phone');
+            $table->string('birth');
+            $table->string('exp_id');
+            $table->string('major_id');
+            $table->string('edu_profile_id');
+            $table->string('skill_profile');
+            $table->string('academic_level_id');
+            $table->string('district_id', 55)->nullable();
+           
             $table->bigInteger('candidate_id')->nullable();
           
             $table->timestamps();
