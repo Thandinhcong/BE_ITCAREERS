@@ -29,7 +29,8 @@ class JobPostController extends Controller
                 'job_post.max_salary',
                 'job_position.job_position',
                 'experiences.experience',
-                'companies.name as company_name',
+                'companies.company_name',
+                'companies.name',
                 'companies.description',
                 'companies.address',
                 'companies.logo',
@@ -44,6 +45,7 @@ class JobPostController extends Controller
                 'job_post.require',
                 'job_post.interest',
                 'job_post.status',
+                'job_post.gender',
             )->get();
 
         if ($jobPost->count() > 0) {

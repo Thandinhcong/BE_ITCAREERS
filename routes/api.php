@@ -42,6 +42,7 @@ Route::group([
     'prefix' => 'admin'
 ], function () {
     Route::post('login', [\App\Http\Controllers\Admin\LoginController::class, 'login']);
+    Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
     Route::group([
         'middleware' => 'auth:api'
     ], function () {
@@ -53,7 +54,7 @@ Route::group([
         Route::resource('salary_type', \App\Http\Controllers\Admin\SalaryTypeController::class);
         Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
-        Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
+        // Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
