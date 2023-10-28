@@ -97,7 +97,6 @@ Route::group([
         Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
-
     });
 });
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
@@ -111,9 +110,5 @@ Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostContr
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
 
 
-
-
-
-
-
-
+// create cv
+Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);

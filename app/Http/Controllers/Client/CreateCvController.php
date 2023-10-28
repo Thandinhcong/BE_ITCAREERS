@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Major;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,42 +21,26 @@ class CreateCvController extends Controller
     public function getData()
     {
         $this->data['major'] = Major::all();
-    }
-    public function index()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        if (Auth::guard('candidate')->check()) {
-            $id = Auth::guard('candidate')->user()->id;
+        if ($this->data['major']) {
+            return response()->json([
+                $this->data['major'],
+            ], 200);
+        } else {
+            return response()->json([
+                $this->data['major'],
+            ], 404);
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function createNewCV(Request $request)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if (Auth::guard('candidate')->check()) {
+            $candidate = Auth::guard('candidate')->user();
+            $candidate_id = $candidate->id;
+            $cv = new Profile();
+            $cv->candidate_id = $candidate_id;
+            $cv->name = $candidate->name;
+            $cv->email = $candidate->email;
+            $cv->phone = $candidate->phone;
+        }
     }
 }
