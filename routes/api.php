@@ -42,6 +42,7 @@ Route::group([
     'prefix' => 'admin'
 ], function () {
     Route::post('login', [\App\Http\Controllers\Admin\LoginController::class, 'login']);
+    Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
     Route::group([
         'middleware' => 'auth:api'
     ], function () {
@@ -53,7 +54,7 @@ Route::group([
         Route::resource('salary_type', \App\Http\Controllers\Admin\SalaryTypeController::class);
         Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
-        Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
+        // Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
@@ -63,7 +64,6 @@ Route::group([
         Route::resource('company', CompanyController::class);
     });
 });
-// Route::resource('company', CompanyController::class);
 //Candidates
 Route::group([
     'prefix' => 'candidate'
@@ -73,7 +73,7 @@ Route::group([
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
-        Route::resource('candidate_apply', CandidateApplyController::class);
+        Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
         Route::resource('candidate_information', CandidateInformationController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
@@ -82,7 +82,6 @@ Route::group([
 
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
-Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
 
 //Company
 Route::group([
@@ -108,7 +107,6 @@ Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostContr
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
-
 
 // create cv
 Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);

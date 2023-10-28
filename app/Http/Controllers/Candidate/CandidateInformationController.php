@@ -20,8 +20,8 @@ class CandidateInformationController extends Controller
 
     public function store(Request $request)
     {
-        $candidate = Auth::guard('candidate')->user();
-        $id = Auth::guard('candidate')->user()->id;
+        $candidate = Auth::user();
+        $id = Auth::user()->id;
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email',
