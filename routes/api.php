@@ -87,7 +87,8 @@ Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, '
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
 //ứng viên ứng tuyển
 // Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
-
+//client/company
+Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
 //Company
 Route::group([
     'prefix' => 'company'
@@ -101,7 +102,6 @@ Route::group([
         Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
-
     });
 });
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
@@ -112,7 +112,10 @@ Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostContro
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
 //hiển thị ứng viên mở tìm kiếm viwwcj
 Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+//Hiển thị bài đăng hết hạn
+Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
+//Đăng lại bài hết hạn
+Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
+//Dừng tuyển bài đăng
+Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
 
-
-//client/company
-Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
