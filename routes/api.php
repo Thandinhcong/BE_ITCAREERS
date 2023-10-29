@@ -77,7 +77,7 @@ Route::group([
         Route::resource('candidate_information', CandidateInformationController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
-Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
+        Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
 
     });
 });
@@ -118,4 +118,6 @@ Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController:
 Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
 //Dừng tuyển bài đăng
 Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
+//hiển thị ứng viên đã mở khóa
+Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'profile_open']);
 
