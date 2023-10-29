@@ -409,4 +409,20 @@ class JobPostController extends Controller
             ], 500);
         }
     }
+    function stop_job_post(string $id) {
+        $job_post_date = JobPost::find($id);
+        if ($job_post_date) {
+            $job_post_date->status=3;
+            $job_post_date->update();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Success',
+                'data' => $job_post_date
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+            ], 500);
+        }
+    }
 }

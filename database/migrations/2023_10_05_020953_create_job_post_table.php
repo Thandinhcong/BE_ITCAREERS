@@ -29,7 +29,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('company_id');
-            $table->integer('status')->default(0)->comment('0:pending, 1:active, 2:block');
+            $table->integer('status')->default(0)->comment('0:pending, 1:active, 2:block, 3:stop');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -85,7 +85,8 @@ Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, '
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
 //ứng viên ứng tuyển
 // Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
-
+//client/company
+Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
 //Company
 Route::group([
     'prefix' => 'company'
@@ -113,7 +114,6 @@ Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::cl
 Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
 //Đăng lại bài hết hạn
 Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
+//Dừng tuyển bài đăng
+Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
 
-
-//client/company
-Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
