@@ -16,7 +16,7 @@ class CandidateApplyController extends Controller
 {
     public function job_apply()
     {
-        $candidate_id = Auth::guard('candidate')->user()->id;
+        $candidate_id = Auth::user()->id;
         $job_apply = DB::table('job_post_apply')->where('job_post_apply.candidate_id', $candidate_id)
             ->join('job_post', 'job_post_apply.job_post_id', '=', 'job_post.id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
@@ -48,7 +48,7 @@ class CandidateApplyController extends Controller
     }
     public function candidate_apply(Request $request, string $id)
     {
-        $candidate_id = Auth::guard('candidate')->user()->id;
+        $candidate_id = Auth::user()->id;
         $request['job_post_id'] = $id;
         $request['candidate_id'] = $candidate_id;
         $data_check = DB::table('job_post_apply')
