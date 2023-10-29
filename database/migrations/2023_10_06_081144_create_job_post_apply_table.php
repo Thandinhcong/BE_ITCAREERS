@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('job_post_id');
             $table->bigInteger('curriculum_vitae_id');
             $table->string('evaluate')->nullable()->comment('đánh giá');
+            $table->string('introduce')->nullable()->comment('giới thiệu');
             $table->string('name');
             $table->string('phone');
             $table->string('email');
