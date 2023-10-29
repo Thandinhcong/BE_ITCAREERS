@@ -110,6 +110,8 @@ Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostContro
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
 //hiển thị ứng viên mở tìm kiếm viwwcj
 Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+//hiển thị ứng viên đã mở khóa
+Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'profile_open']);
 
 
 //client/company

@@ -25,8 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use App\Models\District;
-use App\Models\Province;
+
 class JobPostController extends Controller
 {
     public function index()
