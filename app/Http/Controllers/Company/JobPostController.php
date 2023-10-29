@@ -157,7 +157,7 @@ class JobPostController extends Controller
             'require' => 'required|',
             'interest' => 'required|',
             'gender' => 'required',
-            'area' => 'required',
+            // 'area_id' => 'required',
             'gender' => 'in:0,1,2',
             //Bắt buộc 1 trong 3 số trên 
             'area_id' => 'required|',
@@ -213,7 +213,7 @@ class JobPostController extends Controller
                 'academic_level.academic_level',
                 'major.major',
                 'province.province',
-                'district.name as district',
+                'district.name',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
@@ -225,6 +225,7 @@ class JobPostController extends Controller
                 'job_post.working_form_id',
                 'job_post.academic_level_id',
                 'job_post.major_id',
+                'job_post.gender',
                 'district.province_id',
                 'district.id as district_id',
             )->first();
