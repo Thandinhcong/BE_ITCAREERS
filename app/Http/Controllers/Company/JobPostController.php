@@ -387,8 +387,8 @@ class JobPostController extends Controller
     {
         $job_post_date = JobPost::find($id);
         $validator = Validator::make($request->all(), [
-            'start_date' => 'required|',
-            'start_date' => 'required|date',
+            // 'start_date' => 'required|',
+            'start_date' => 'date',
             'end_date' => 'required|date|after:start_date|after:now',
         ]);
         if ($validator->fails()) {

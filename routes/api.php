@@ -100,6 +100,12 @@ Route::group([
     ], function () {
         Route::resource('company_information', \App\Http\Controllers\Company\CompanyInformationController::class);
         Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
+        //Đăng lại bài hết hạn
+        Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
+        //Dừng tuyển bài đăng
+        Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
+        //Hiển thị bài đăng hết hạn
+        Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
