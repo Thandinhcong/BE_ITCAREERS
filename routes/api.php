@@ -77,12 +77,17 @@ Route::group([
         Route::resource('candidate_information', CandidateInformationController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
+        Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
     });
 });
-
+//Việc làm đã ứng tuyển
+Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
-
+//ứng viên ứng tuyển
+// Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
+//client/company
+Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
 //Company
 Route::group([
     'prefix' => 'company'
@@ -94,6 +99,12 @@ Route::group([
     ], function () {
         Route::resource('company_information', \App\Http\Controllers\Company\CompanyInformationController::class);
         Route::resource('job_post', \App\Http\Controllers\Company\JobPostController::class);
+        //Đăng lại bài hết hạn
+        Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
+        //Dừng tuyển bài đăng
+        Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
+        //Hiển thị bài đăng hết hạn
+        Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
@@ -104,6 +115,16 @@ Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPo
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //Đánh giá ứng viên gửi email
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
+//hiển thị ứng viên mở tìm kiếm viwwcj
+Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+//Hiển thị bài đăng hết hạn
+Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
+//Đăng lại bài hết hạn
+Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
+//Dừng tuyển bài đăng
+Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
+//hiển thị ứng viên đã mở khóa
+Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'profile_open']);
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);

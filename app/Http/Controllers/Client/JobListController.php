@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class JobListController extends Controller
@@ -41,8 +42,10 @@ class JobListController extends Controller
                 'job_post.quantity',
                 'job_post.require',
                 'job_post.interest',
+                'district.name as district',
+                'province.province',
             )->first();
-        if ($job_detail) {
+        if ($job_detail!=[]) {
             return response()->json([
                 'status' => 200,
                 'job_detail' => $job_detail
@@ -58,19 +61,21 @@ class JobListController extends Controller
     public function job_list()
     {
         $job_list = DB::table('job_post')->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->join('area', 'area.id', '=', 'job_post.area_id')
             ->where('job_post.status', 1)
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
-                // 'area.area',
+                'district.name as district',
+                'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
                 'companies.name as company_name',
                 'companies.logo',
             )->get();
-        if ($job_list) {
+        if ($job_list->count()>0) {
             return response()->json([
                 'status' => 200,
                 'job_list' => $job_list
@@ -83,4 +88,33 @@ class JobListController extends Controller
             ], 404);
         }
     }
+    public function job_apply() {
+        $candidate_id = Auth::guard('candidate')->user()->id;
+        $job_apply = DB::table('job_post_apply')
+        ->join('job_post', 'job_post_apply.job_post_id', '=', 'job_post.id')
+        ->join('profile', 'job_post_apply.profile_id', '=', 'profile.id')
+        ->join('companies', 'companies.id', '=', 'job_post.company_id')
+        ->where('profile.candidate_id',$candidate_id)
+        ->select(
+            'job_post.id',
+            'job_post.title',
+            // 'area.area',
+            'job_post.min_salary',
+            'job_post.max_salary',
+            'companies.name as company_name',
+            'companies.logo',
+            'job_post_apply.created_at as time_apply',
+        )->get(); 
+    if ($job_apply) {
+        return response()->json([
+            'status' => 200,
+            'job_list' => $job_apply
+        ], 200);
+    } else {
+        return response()->json([
+            'status' => 404,
+            'mesage' => 'không có bản ghi nào',
+            'job_list' => []
+        ], 404);
+    }    }
 }
