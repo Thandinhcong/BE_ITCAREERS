@@ -3,43 +3,53 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProfileOpen;
+use App\Models\SaveProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProfileCandidate extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $data = DB::table('profile')
-        ->select(
-            'candidates.main_cv',
-            'candidates.id',
-            'curriculum_vitae.path_cv'
-        )
-            ->where('candidates.find_job', 1)
-            ->where('candidates.main_profile', 1)
+        $company_id = Auth::guard('company')->user()->id;
+        $data['profile'] = DB::table('profile')
+            ->select(
+                'candidates.id as candidate_id',
+                'candidates.image',
+                'candidates.phone',
+                'curriculum_vitae.id as cv_id',
+                'curriculum_vitae.path_cv',
+                'profile.name',
+                'profile.email',
+                'profile.phone',
+                'profile.birth',
+            )
             ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
+            ->where('candidates.find_job', 1)
             ->get();
+        $data['profile_open'] = DB::table('profile_open')->where('company_id', $company_id)->get();
+        $data['save_profile'] = DB::table('save_profile')->where('company_id', $company_id)->get();
         return response()->json([
             "status" => 'success',
             "data" => $data,
-        ], 404);
+        ], 200);
     }
-
-    public function profile_open()
+    public function show_profile_open()
     {
-        $company_id = 1;
-        // Auth::user()->id;
-
+        $company_id = Auth::guard('company')->user()->id;
         $data = DB::table('profile_open')
             ->select(
-                'candidates.main_cv',
-                'candidates.id',
-                'curriculum_vitae.path_cv'
+                'candidates.id as candidate_id',
+                'curriculum_vitae.id as cv_id',
+                'curriculum_vitae.path_cv',
+                'profile.name',
+                'profile.email',
+                'profile.phone',
+                'profile.birth',
+                'profile_open.id as profile_open_id'
             )
             ->join('candidates', 'candidates.id', '=', 'profile_open.candidate_id')
             ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
@@ -49,53 +59,99 @@ class ProfileCandidate extends Controller
         return response()->json([
             "status" => 'success',
             "data" => $data,
-        ], 404);
+        ], 200);
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show_save_profile()
     {
-        //
+        $company_id = Auth::guard('company')->user()->id;
+        $data = DB::table('save_profile')
+            ->select(
+                'candidates.id as candidate_id',
+                'curriculum_vitae.id as cv_id',
+                'curriculum_vitae.path_cv',
+                'profile.name',
+                'profile.email',
+                'profile.phone',
+                'profile.birth',
+                'save_profile.id as save_profile_id'
+            )
+            ->join('candidates', 'candidates.id', '=', 'save_profile.candidate_id')
+            ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
+            ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
+            ->where('save_profile.company_id', $company_id)
+            ->get();
+        return response()->json([
+            "status" => 'success',
+            "data" => $data,
+        ], 200);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function save_profile($id)
     {
-        //
+        $company_id = Auth::guard('company')->user()->id;
+        $check = DB::table('save_profile')->where('company_id', $company_id)->where('candidate_id', $id)
+            ->first();
+        if ($check) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Đã lưu'
+            ], 400);
+        } else {
+            $saveProfile = SaveProfile::create(
+                [
+                    'company_id' => $company_id,
+                    'candidate_id' => $id
+                ]
+            );
+        }
+        if ($saveProfile) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thành công'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'error'
+            ], 500);
+        }
+    } public function open_profile($id)
+    {
+        $company_id = Auth::guard('company')->user()->id;
+        $check = DB::table('profile_open')->where('company_id', $company_id)->where('candidate_id', $id)
+            ->first();
+        if ($check) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Đã lưu'
+            ], 400);
+        }
+       else {
+            $saveProfile = ProfileOpen::create(
+                [
+                    'company_id' => $company_id,
+                    'candidate_id' => $id
+                ]
+            );
+        }
+        if ($saveProfile) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thành công'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'error'
+            ], 500);
+        }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function cancel_save_profile($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $saveProfile = SaveProfile::find($id);
+        if (!$saveProfile) {
+            return response()->json(['message' => 'save_profile not found'], 404);
+        }
+        $saveProfile->delete();
+        return response()->json(null, 204);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Resources\CandidateApplyResource;
 use App\Models\CandidateApply;
 use App\Models\CurriculumVitae;
 use App\Models\JobPostApply;
+use App\Models\SaveJobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,9 @@ class CandidateApplyController extends Controller
                 'companies.name as company_name',
                 'companies.logo',
                 'job_post_apply.created_at as time_apply',
+                'job_post_apply.updated_at ',
+                'job_post_apply.status ',
+                'job_post_apply.status ',
             )->get();
         if ($job_apply) {
             return response()->json([
@@ -103,5 +107,72 @@ class CandidateApplyController extends Controller
                 ], 500);
             }
         }
+    }
+    public function show_save_job_post()
+    {
+        $candidate_id = Auth::guard('company')->user()->id;
+        $data = DB::table('save_job_post')
+            ->select(
+                'job_post.id',
+                'job_post.title',
+                'district.name as district',
+                'province.province',
+                'job_post.min_salary',
+                'job_post.max_salary',
+                'companies.name as company_name',
+                'companies.logo'
+            )
+            ->join('job_post', 'save_job_post.job_post_id', '=', 'job_post.id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->where('save_job_post.candidate_id', $candidate_id)
+            ->whereNull('save_job_post.deleted_at')
+            ->get();
+        return response()->json([
+            "status" => 'success',
+            "data" => $data,
+        ], 404);
+    }
+    public function save_job_post($id)
+    {
+        $candidate_id = Auth::guard('company')->user()->id;
+        $check = DB::table('save_job_post')
+            ->where('job_post_id', $id)
+            ->where('candidate_id', $candidate_id)
+            ->first();
+        if ($check) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Đã lưu'
+            ], 400);
+        } else {
+            $saveJobPost = SaveJobPost::create(
+                [
+                    'candidate_id' => $candidate_id,
+                    'job_post_id' => $id
+                ]
+            );
+        }
+        if ($saveJobPost) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thành công'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'error'
+            ], 500);
+        }
+    }
+    public function cancel_save_job_post($id)
+    {
+        $cancel_save_profile = SaveJobPost::find($id);
+        if (!$cancel_save_profile) {
+            return response()->json(['message' => 'SaveJobPost not found'], 404);
+        }
+        $cancel_save_profile->delete();
+        return response()->json(null, 204);
     }
 }

@@ -247,7 +247,7 @@ class JobPostController extends Controller
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('candidates', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
+            ->join('curriculum_vitae', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post_apply.created_at as time_apply',
