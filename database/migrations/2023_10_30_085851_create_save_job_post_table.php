@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('save_profile', function (Blueprint $table) {
+        Schema::create('save_job_post', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
+            $table->integer('job_post_id');
             $table->integer('candidate_id');
             $table->timestamps();
             $table->softDeletes();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('save_profile');
+        Schema::dropIfExists('save_job_post');
     }
 };
