@@ -12,15 +12,11 @@ use Illuminate\Support\Facades\Validator;
 
 class RefreshPasswordCandidateController extends Controller
 {
-    public function index()
-    {
-        $major = Major::all();
-        $id = auth('candidate')->user()->id;
-        $detail = Candidate::where('id', $id)->first();
-        return view('change-pass', compact('major', 'detail'));
-    }
+
     public function store(Request $request)
     {
+        $candidate = Auth::guard('candidate')->user();
+        $id = Auth::guard('candidate')->user()->id;
         $validator = Validator::make(
             $request->all(),
             [
