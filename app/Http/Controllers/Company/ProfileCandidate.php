@@ -114,18 +114,43 @@ class ProfileCandidate extends Controller
                 'message' => 'error'
             ], 500);
         }
-    } public function open_profile($id)
+    }
+    public function open_profile($id)
     {
         $company_id = Auth::guard('company')->user()->id;
         $check = DB::table('profile_open')->where('company_id', $company_id)->where('candidate_id', $id)
             ->first();
+        $check_coin = DB::table('companies')
+            ->select('coin')
+            ->where('id', $company_id)->first();
+        if ($check_coin->coin == 0) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Bạn không đủ tiền'
+            ], 400);
+        }
+        $check_profile_apply = DB::table('job_post_apply')
+            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+            ->select(
+                'candidates.id',
+            )
+            ->where('companies.id', 1)->where('candidates.id', $id)->first();
+        if ($check_profile_apply) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'ứng viên này đã gửi thông tin của mình đến bạn',
+              
+            ], 400);
+        }
         if ($check) {
             return response()->json([
                 'status' => 'fail',
                 'error' => 'Đã lưu'
             ], 400);
         }
-       else {
+        else {
             $saveProfile = ProfileOpen::create(
                 [
                     'company_id' => $company_id,

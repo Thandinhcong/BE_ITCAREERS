@@ -33,9 +33,9 @@ class CandidateApplyController extends Controller
                 'companies.name as company_name',
                 'companies.logo',
                 'job_post_apply.created_at as time_apply',
-                'job_post_apply.updated_at ',
-                'job_post_apply.status ',
-                'job_post_apply.status ',
+                'job_post_apply.updated_at',
+                'job_post_apply.status',
+                'job_post_apply.status',
             )->get();
         if ($job_apply) {
             return response()->json([
