@@ -8,8 +8,13 @@ use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Candidate\Auth\RegisterCandidateController;
 use App\Http\Controllers\Candidate\CandidateInformationController;
 use App\Http\Controllers\Candidate\CandidateApplyController;
+use App\Http\Controllers\Candidate\RefreshPasswordCandidateController;
+use App\Http\Controllers\Candidate\RefreshPasswordController;
+use App\Http\Controllers\Company\RefreshPasswordCompanyController;
+use App\Models\Candidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -72,11 +77,13 @@ Route::group([
 ], function () {
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
+
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
         Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
         Route::resource('candidate_information', CandidateInformationController::class);
+        Route::resource('refreshPass', RefreshPasswordCandidateController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
         Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
@@ -115,6 +122,7 @@ Route::group([
         //Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
         Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
+        Route::resource('refreshPass', RefreshPasswordCompanyController::class);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
