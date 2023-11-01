@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-// Login google candidate 
+// Login google candidate
 Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
 
@@ -112,12 +112,14 @@ Route::group([
         //Hiển thị bài đăng hết hạn
         Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
         Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
+        //Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
+        Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
 Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
-//Xem hồ sơ ứng viên gửi email cho ứng viên biết
+//Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //Đánh giá ứng viên gửi email
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
