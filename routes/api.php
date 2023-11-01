@@ -87,6 +87,7 @@ Route::group([
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
         Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
+        Route::post('find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'findJob']);
     });
 });
 //Việc làm đã ứng tuyển
@@ -154,3 +155,12 @@ Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate
 //Hủy lưu ứng viên
 Route::post('cancel_save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'cancel_save_profile']);
 Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
+Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
+//hiển thị ứng viên đã mở khóa
+Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'profile_open']);
+
+//client/company
+Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
+
+// create cv
+Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);

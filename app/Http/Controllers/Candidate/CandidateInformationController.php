@@ -51,4 +51,21 @@ class CandidateInformationController extends Controller
             ], 500);
         }
     }
+    public function findJob(Request $request)
+    {
+        $candidate = Auth::user();
+        if ($candidate->find_job === 1 || $candidate->find_job === 0) {
+            $newStatus = $candidate->find_job === 1 ? 0 : 1;
+            $candidate->update(['find_job' => $newStatus]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Chuyển trạng thái thành công',
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Chuyển trạng thái thất bại',
+            ], 400);
+        }
+    }
 }
