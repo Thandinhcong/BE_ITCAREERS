@@ -31,9 +31,6 @@ class JobPostController extends Controller
     public function index()
     {
         $company_id = Auth::user()->id;
-        // $job_post = DB::table('job_post')->where('company_id', $company_id)
-        // $company_id = Auth::guard('company')->user()->id;
-        // $company_id = Auth::guard('company')->user()->id;
         $job_post = DB::table('job_post')->where('company_id',  $company_id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
@@ -241,9 +238,8 @@ class JobPostController extends Controller
             ], 404);
         }
     }
-    function list_candidate_apply_job(string $id)
+    public function list_candidate_apply_job(string $id)
     {
-        // Auth::guard('company')->user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
@@ -277,7 +273,7 @@ class JobPostController extends Controller
     {
         $valdator = Validator::make($request->all(), [
             'evaluate' => 'required|string',
-            'status' => 'required|in:1,2',
+            'qualifying_round_id' => 'required|in:1,0',
         ]);
         if ($valdator->fails()) {
             return response()->json([
@@ -425,6 +421,38 @@ class JobPostController extends Controller
             return response()->json([
                 'status' => 'fail',
             ], 500);
+        }
+    }
+    public function list_candidate_applied() {
+        // $company_id=Auth::guard('company')->user()->id;
+        $list_candidate_apply_job = DB::table('job_post_apply')
+        ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+        ->join('companies', 'companies.id', '=', 'job_post.company_id')
+        ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+            ->join('curriculum_vitae', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
+            ->select(
+                'job_post.title as job_post_name',
+                'job_post_apply.created_at as time_apply',
+                'job_post_apply.qualifying_round_id',
+                'job_post_apply.id as candidate_code',
+                'job_post_apply.status',
+                'job_post_apply.email',
+                'job_post_apply.phone',
+                'job_post_apply.name',
+                'curriculum_vitae.path_cv'
+            )
+            ->where('companies.id',1)->get();
+        if ($list_candidate_apply_job) {
+            return response()->json([
+                'status' => 200,
+                'list_candidate_apply_job' => $list_candidate_apply_job
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'level' => 'job post Not Found',
+                'list_candidate_apply_job' => $list_candidate_apply_job
+            ], 404);
         }
     }
 }

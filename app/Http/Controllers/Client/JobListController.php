@@ -46,6 +46,7 @@ class JobListController extends Controller
                 'province.province',
             )->first();
         if ($job_detail != []) {
+            DB::table('job_post')->where('job_post.id', $id)->increment('view');
             return response()->json([
                 'status' => 200,
                 'job_detail' => $job_detail

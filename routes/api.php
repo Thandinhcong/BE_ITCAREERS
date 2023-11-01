@@ -64,6 +64,8 @@ Route::group([
         Route::resource('company', CompanyController::class);
     });
 });
+Route::resource('experience', ExperienceController::class);
+
 //Candidates
 Route::group([
     'prefix' => 'candidate'
@@ -90,8 +92,6 @@ Route::post('save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateAppl
 Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
-//ứng viên ứng tuyển
-// Route::post('candidate_apply/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'candidate_apply']);
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
 //Company
@@ -119,8 +119,12 @@ Route::group([
     });
 });
 Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
+
 //Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
+//Xem hồ sơ ứng viên
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
+//List ứng viên gửi ứng tuyển vào công ty
+Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
 //Đánh giá ứng viên gửi email
 Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
 //Hiển thị bài đăng hết hạn
@@ -132,12 +136,13 @@ Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController:
 //hiển thị ứng viên mở tìm kiếm việc
 Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
 // hiển thị ứng viên đã mở khóa
-Route::get('show_profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_profile_open']);
+// Route::get('show_profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_profile_open']);
 // Mở khóa ứng viên
-Route::post('open_profile', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
+Route::post('open_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
 // hiển thị ứng viên đã lưu
-Route::get('show_save_profile', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_save_profile']);
+// Route::get('show_save_profile', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_save_profile']);
 //Lưu ứng viên
 Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'save_profile']);
 //Hủy lưu ứng viên
 Route::post('cancel_save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'cancel_save_profile']);
+Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);

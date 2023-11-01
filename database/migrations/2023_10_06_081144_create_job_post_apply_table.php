@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('email');
             $table->bigInteger('candidate_id');
             $table->integer('status')->default(0)->comment('1: đã xem, 0: chưa xem');
-            $table->integer('qualifying_round_id')->default('0')->comment('vòng hồ sơ');
+            $table->integer('qualifying_round_id')->nullable()->comment('1:phù hợp, 0:không phù hợp');
             $table->timestamps();
         });
     }
