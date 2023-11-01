@@ -6,42 +6,44 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ListCompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list_company = Company::all();
-        if ($list_company->count() === 0) {
-            return response()->json([
-                'status' => 'fail',
-                'list_company' => CompanyResource::collection($list_company),
-            ], 404);
+        $list_company = null;
+        $count_company = 0;
+
+        if ($request->company_name) {
+            $list_company = DB::table('companies')
+                ->where('company_name', 'LIKE', '%' . $request->company_name . '%')
+                ->whereNull('deleted_at')
+                ->get();
+            $count_company = $list_company->count();
+        } else {
+            $list_company = Company::all();
+            $count_company = $list_company->count();
         }
-        // return response()->json([
-        //     'status' => 'success',
-        //     'list_company' => CompanyResource::collection($list_company),
-        // ], 200);
-        return response()->json([
-            'status' => 'success',
+
+        $response = [
+            'status' => true,
             'list_company' => $list_company,
-        ], 200);
+        ];
+
+        if ($count_company === 0) {
+            $response['status'] = false;
+            $response['message'] = 'Không tìm thấy công ty';
+            return response()->json($response, 404);
+        } else {
+            $response['count_company'] =  $count_company;
+            return response()->json($response, 200);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $company = Company::find($id);
@@ -56,21 +58,5 @@ class ListCompanyController extends Controller
                 'company' =>  $company
             ], 404);
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
