@@ -126,11 +126,11 @@ Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController:
 //hiển thị ứng viên mở tìm kiếm việc
 Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
 // hiển thị ứng viên đã mở khóa
-Route::get('show_profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_profile_open']);
+// Route::get('show_profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_profile_open']);
 // Mở khóa ứng viên
 Route::post('open_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
 // hiển thị ứng viên đã lưu
-Route::get('show_save_profile', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_save_profile']);
+// Route::get('show_save_profile', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_save_profile']);
 //Lưu ứng viên
 Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'save_profile']);
 //Hủy lưu ứng viên
