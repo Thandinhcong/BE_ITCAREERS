@@ -15,8 +15,8 @@ class RefreshPasswordCandidateController extends Controller
 
     public function store(Request $request)
     {
-        $candidate = Auth::guard('candidate')->user();
-        $id = Auth::guard('candidate')->user()->id;
+        // $candidate = Auth::guard('candidate')->user();
+        // $id = Auth::guard('candidate')->user()->id;
         $validator = Validator::make(
             $request->all(),
             [
@@ -42,9 +42,10 @@ class RefreshPasswordCandidateController extends Controller
         $param['cols'] = $request->post();
         unset($param['cols']['_token']);
         if (Hash::check($param['cols']['password_old'], auth('candidate')->user()->password)) {
-            $model = new Candidate();
+            $model =  Candidate::find($id);
             unset($param['cols']['password_old']);
             unset($param['cols']['re_password']);
+            dd($param);
             $param['cols']['id'] = $id;
             $candidate = $model->update($param);
             if ($candidate == null) {
