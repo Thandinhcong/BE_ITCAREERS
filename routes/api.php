@@ -127,6 +127,8 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
+Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);
+
 Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
 
 //Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết

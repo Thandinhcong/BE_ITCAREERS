@@ -108,36 +108,36 @@ class ProfileCandidate extends Controller
     //         "data" => $data,
     //     ], 200);
     // }
-    // public function save_profile($id)
-    // {
-    //     $company_id = Auth::guard('company')->user()->id;
-    //     $check = DB::table('save_profile')->where('company_id', $company_id)->where('candidate_id', $id)
-    //         ->first();
-    //     if ($check) {
-    //         return response()->json([
-    //             'status' => 'fail',
-    //             'error' => 'Đã lưu'
-    //         ], 400);
-    //     } else {
-    //         $saveProfile = SaveProfile::create(
-    //             [
-    //                 'company_id' => $company_id,
-    //                 'candidate_id' => $id
-    //             ]
-    //         );
-    //     }
-    //     if ($saveProfile) {
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => 'Thêm thành công'
-    //         ], 200);
-    //     } else {
-    //         return response()->json([
-    //             'status' => 'fail',
-    //             'message' => 'error'
-    //         ], 500);
-    //     }
-    // }
+    public function save_profile($id)
+    {
+        $company_id = Auth::guard('company')->user()->id;
+        $check = DB::table('save_profile')->where('company_id', $company_id)->where('candidate_id', $id)
+            ->first();
+        if ($check) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Đã lưu'
+            ], 400);
+        } else {
+            $saveProfile = SaveProfile::create(
+                [
+                    'company_id' => $company_id,
+                    'candidate_id' => $id
+                ]
+            );
+        }
+        if ($saveProfile) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Thêm thành công'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'error'
+            ], 500);
+        }
+    }
     public function open_profile($id)
     {
         $company_id = Auth::guard('company')->user()->id;

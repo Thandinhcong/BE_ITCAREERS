@@ -15,7 +15,9 @@ use App\Models\Level;
 use App\Models\Major;
 use App\Models\Project;
 use App\Models\Area;
+use App\Models\Company;
 use App\Models\District;
+use App\Models\JobPostType;
 use App\Models\Province;
 use App\Models\SkillPost;
 use App\Models\SkillProfile;
@@ -115,27 +117,66 @@ class JobPostController extends Controller
             'start_date' => 'required|date|after:yesterday',
             'end_date' => 'required|date|after:start_date',
         ]);
-        $d = $request->all();
         if ($valdator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $valdator->messages(),
-                'data' => $d
             ], 422);
         } else {
-            $job_post = new JobPost($d);
-            $job_post->save();
+            $job_post = DB::table('job_post')->insertGetId($request->all());
         }
-        if ($d) {
+        if ($job_post) {
             return response()->json([
                 'status' => 201,
-                'message' => 'Tạo thành công'
+                'message' => 'Tạo thành công',
+                'job_post_id' => $job_post
             ], 200);
         } else {
             return response()->json([
                 'status' => 500,
                 'message' => 'Lỗi'
             ], 500);
+        }
+    }
+    public function job_post_type(Request $request, string $id)
+    {
+        $coin_company = Auth::guard('company')->user();
+        $job_post = JobPost::find($id);
+        $salary_job_post_type = JobPostType::all();
+        $valdator = Validator::make($request->all(), [
+            'type_job_post_id' => 'required|int',
+        ]);
+        if ($valdator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $valdator->messages(),
+            ], 422);
+        }
+        if ($coin_company->coin < $salary_job_post_type[$request['type_job_post_id']]->salary) {
+            return response()->json([
+                'status' => 422,
+                'errors' => "không đủ tiền",
+            ], 422);
+        }
+        if ($job_post) {
+            $job_post->update($request->all());
+            $affected = DB::table('companies')
+              ->where('id', 1)
+              ->update(['coin' => $coin_company->coin-$salary_job_post_type[$request['type_job_post_id']]->salary]);
+            return response()->json([
+                'status' => 201,
+                'message' => 'Tạo thành công',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi'
+            ], 500);
+        }
+        if ($coin_company->coin > $salary_job_post_type["1"]->salary) {
+            dd('đéo đủ tiền', $coin_company->coin, $salary_job_post_type["1"]->salary);
+        } else {
+            dd('đủ tiền');
         }
     }
     public function update(Request $request, string $id)
@@ -379,7 +420,7 @@ class JobPostController extends Controller
             'data' => $job_post,
         ]);
     }
-    function extend_job_post(Request $request, string $id)
+    public function extend_job_post(Request $request, string $id)
     {
         $job_post_date = JobPost::find($id);
         $validator = Validator::make($request->all(), [
@@ -407,10 +448,11 @@ class JobPostController extends Controller
             ], 500);
         }
     }
-    function stop_job_post(string $id) {
+    function stop_job_post(string $id)
+    {
         $job_post_date = JobPost::find($id);
         if ($job_post_date) {
-            $job_post_date->status=3;
+            $job_post_date->status = 3;
             $job_post_date->update();
             return response()->json([
                 'status' => 'success',
@@ -423,12 +465,13 @@ class JobPostController extends Controller
             ], 500);
         }
     }
-    public function list_candidate_applied() {
+    public function list_candidate_applied()
+    {
         // $company_id=Auth::guard('company')->user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
-        ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-        ->join('companies', 'companies.id', '=', 'job_post.company_id')
-        ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
             ->join('curriculum_vitae', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
             ->select(
                 'job_post.title as job_post_name',
@@ -441,7 +484,7 @@ class JobPostController extends Controller
                 'job_post_apply.name',
                 'curriculum_vitae.path_cv'
             )
-            ->where('companies.id',1)->get();
+            ->where('companies.id', 1)->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,

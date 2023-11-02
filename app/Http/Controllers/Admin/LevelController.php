@@ -33,7 +33,14 @@ class LevelController extends Controller
             $level = Level::create($request->all());
         }
         if ($level) {
-            return response()->json(['status' => 'success', 'message' => 'Thêm thành công'], 200);
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Thêm thành công', 
+                    'data' => $request->all()
+                ],
+                200
+            );
         } else {
             return response()->json(['status' => 'fail', 'message' => 'error'], 500);
         }
