@@ -13,8 +13,6 @@ class RefreshPasswordCompanyController extends Controller
 {
     public function store(Request $request)
     {
-        $company = Auth::guard('company')->user();
-        $id = Auth::guard('company')->user()->id;
         $validator = Validator::make(
             $request->all(),
             [
@@ -37,31 +35,24 @@ class RefreshPasswordCompanyController extends Controller
         }
         $id = Auth::guard('company')->user()->id;
         $param = [];
-        $param['cols'] = $request->post();
-        unset($param['cols']['_token']);
-        if (Hash::check($param['cols']['password_old'], auth('candidate')->user()->password)) {
-            $model = new Candidate();
-            unset($param['cols']['password_old']);
-            unset($param['cols']['re_password']);
-            $param['cols']['id'] = $id;
+        $param = $request->post();
+        unset($param['_token']);
+        $model = Candidate::find($id);
+        if (Hash::check($param['password_old'], auth('candidate')->user()->password)) {
+            unset($param['password_old']);
+            unset($param['re_password']);
             $company = $model->update($param);
-            if ($company == null) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Đổi mật khẩu thành công'
-                ], 200);
-            }
             if ($company == 1) {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Đổi mật khẩu thành công'
                 ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'fail',
-                    'message' => 'Mật khẩu cũ không đúng'
-                ], 500);
             }
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Mật khẩu cũ không đúng'
+            ], 500);
         }
     }
 }
