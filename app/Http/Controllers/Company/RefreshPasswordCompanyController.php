@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -37,8 +38,8 @@ class RefreshPasswordCompanyController extends Controller
         $param = [];
         $param = $request->post();
         unset($param['_token']);
-        $model = Candidate::find($id);
-        if (Hash::check($param['password_old'], auth('candidate')->user()->password)) {
+        $model = Company::find($id);
+        if (Hash::check($param['password_old'], auth('company')->user()->password)) {
             unset($param['password_old']);
             unset($param['re_password']);
             $company = $model->update($param);
