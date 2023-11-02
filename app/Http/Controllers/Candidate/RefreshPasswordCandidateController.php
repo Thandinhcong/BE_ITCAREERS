@@ -20,7 +20,7 @@ class RefreshPasswordCandidateController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'password' => 'required',
+                'password' => 'required',   
                 'password_old' => 'required',
                 're_password' => 'required|same:password',
             ],

@@ -29,7 +29,7 @@ class JobListController extends Controller
                 'job_post.max_salary',
                 'job_position.job_position',
                 'experiences.experience',
-                'companies.name as company_name',
+                'companies.company_name as company_name',
                 'companies.description',
                 'companies.address',
                 'working_form.working_form',
@@ -73,7 +73,7 @@ class JobListController extends Controller
                 'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
-                'companies.name as company_name',
+                'companies.company_name as company_name',
                 'companies.logo',
             )->get();
         if ($job_list->count() > 0) {

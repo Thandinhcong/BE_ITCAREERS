@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Validator;
 class CandidateInformationController extends Controller
 {
 
-    // public function index()
-    // {
-    //     $candidate = Auth::user();
-    //     return response()->json(['candidate' => CandidatesResource::make($candidate)]);
-    // }
+    public function index()
+    {
+        $candidate = Auth::user();
+        return response()->json(['candidate' => CandidatesResource::make($candidate)]);
+    }
 
     public function store(Request $request)
     {
