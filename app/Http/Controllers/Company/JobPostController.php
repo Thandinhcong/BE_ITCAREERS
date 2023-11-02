@@ -111,7 +111,7 @@ class JobPostController extends Controller
             'interest' => 'required|',
             'gender' => 'required',
             'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên 
+            //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|date|after:yesterday',
@@ -197,7 +197,7 @@ class JobPostController extends Controller
             'gender' => 'required',
             // 'area_id' => 'required',
             'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên 
+            //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',
@@ -340,10 +340,10 @@ class JobPostController extends Controller
                     'job_post_apply.email',
                 )
                 ->first();
-            Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
-                $email->subject('UbWork - Lấy Lại Mật Khẩu');
-                $email->to('huyetcongtu4869@gmail.com');
-            });
+            // Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
+            //     $email->subject('UbWork - Lấy Lại Mật Khẩu');
+            //     $email->to('huyetcongtu4869@gmail.com');
+            // });
         } else {
             return response()->json([
                 'status' => 404,

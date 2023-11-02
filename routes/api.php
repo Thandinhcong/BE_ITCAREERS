@@ -120,8 +120,12 @@ Route::group([
         //Hiển thị bài đăng hết hạn
         Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
         Route::get('job_post_select', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_select']);
-        //Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
+        //Hiển thị tất cả hồ sơ ứng viên theo id bài đăng
+        Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
+        //Xem hồ sơ của 1 ứng viên theo id bài đăng, gửi email cho ứng viên biết
         Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
+        //Đánh giá ứng viên gửi email
+        Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::resource('refreshPass', RefreshPasswordCompanyController::class);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
@@ -129,15 +133,14 @@ Route::group([
 });
 Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);
 
-Route::get('list_candidate_apply_job/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_apply_job']);
+
 
 //Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
 //Xem hồ sơ ứng viên
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //List ứng viên gửi ứng tuyển vào công ty
 Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
-//Đánh giá ứng viên gửi email
-Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
+
 //Hiển thị bài đăng hết hạn
 Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
 //Đăng lại bài hết hạn
