@@ -27,6 +27,7 @@ class CandidateInformationController extends Controller
             'email' => 'required|email',
             'phone' => 'required|unique:candidates,phone,' . $id,
             'address' => 'required|string',
+            'image' => '',
             'gender' => '',
             'type' => '',
             'status' => '',
