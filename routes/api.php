@@ -139,7 +139,7 @@ Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostControll
 //Xem hồ sơ ứng viên
 Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //List ứng viên gửi ứng tuyển vào công ty
-Route::get('list_candidate_applied/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
+Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
 
 //Hiển thị bài đăng hết hạn
 Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
