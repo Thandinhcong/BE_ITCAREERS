@@ -87,9 +87,6 @@ class JobPostController extends Controller
         $d['major_id'] = Major::all();
         $d['district_id'] = District::all();
         $d['province_id'] = Province::all();
-
-        // $d['area_id'] = Area::all();
-        // $d['major_id'] = Major::all();
         return response()->json([
             'status' => 'success',
             'data' => $d,
@@ -161,8 +158,8 @@ class JobPostController extends Controller
         if ($job_post) {
             $job_post->update($request->all());
             $affected = DB::table('companies')
-              ->where('id', 1)
-              ->update(['coin' => $coin_company->coin-$salary_job_post_type[$request['type_job_post_id']]->salary]);
+                ->where('id', 1)
+                ->update(['coin' => $coin_company->coin - $salary_job_post_type[$request['type_job_post_id']]->salary]);
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
@@ -287,6 +284,7 @@ class JobPostController extends Controller
             ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
+                'job_post.id as job_post_id',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
@@ -294,10 +292,9 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
-                'job_post_apply.id',
                 'curriculum_vitae.path_cv'
             )
-            ->where('job_post_id', $id)->get();
+            ->where('job_post.id', $id)->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,
@@ -376,7 +373,7 @@ class JobPostController extends Controller
             // });
             return response()->json([
                 'status' => 200,
-                'data' =>$profile
+                'data' => $profile
             ], 200);
         } else {
             return response()->json([
@@ -475,11 +472,11 @@ class JobPostController extends Controller
         // $company_id=Auth::guard('company')->user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
+            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
+                'job_post.id as job_post_id',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
@@ -489,7 +486,8 @@ class JobPostController extends Controller
                 'job_post_apply.name',
                 'curriculum_vitae.path_cv'
             )
-            ->where('companies.id', 1)->get();
+            ->where('job_post.company_id', 1)
+            ->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,
