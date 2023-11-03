@@ -13,21 +13,27 @@ class LoginGoogleController extends Controller
     {
         return Socialite::driver('google')->redirect();
     }
+  
     public function handleGoogleCallback()
     {
 
         $google_user = Socialite::driver('google')->user();
         $user = Candidate::where('google_id', $google_user->getId())->first();
         if ($user) {
-            auth()->login($user);
+            return response()->json([
+                'message' => 'Tài khoản đã tồn tại',
+            ], 200);
+            // auth()->login($user);
         } else {
             $new_user = Candidate::create([
                 'name' => $google_user->getName(),
                 'email' => $google_user->getEmail(),
                 'google_id' => $google_user->getId()
             ]);
-
             // auth()->login($new_user);
+            return response()->json([
+                'message' => 'Tạo tài khoản thành công',
+            ], 200);
         }
     }
 }

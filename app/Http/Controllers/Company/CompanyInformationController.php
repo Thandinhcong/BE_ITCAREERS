@@ -27,8 +27,8 @@ class CompanyInformationController extends Controller
      */
     public function store(Request $request)
     {
-        $data = Auth::guard('company')->user();
-        $id = Auth::guard('company')->user()->id;
+        $data = Auth::user();
+        $id = Auth::user()->id;
         $validator = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'tax_code' => 'required|string|unique:companies,tax_code,' . $id,
