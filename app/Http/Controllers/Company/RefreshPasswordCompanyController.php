@@ -46,13 +46,13 @@ class RefreshPasswordCompanyController extends Controller
             if ($company == 1) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Đổi mật khẩu thành công'
+                    'message' => 'Đổi mật khẩu thành công!'
                 ], 200);
             }
         } else {
             return response()->json([
                 'status' => 'fail',
-                'message' => 'Mật khẩu cũ không đúng'
+                'message' => 'Mật khẩu cũ không đúng!'
             ], 500);
         }
     }
