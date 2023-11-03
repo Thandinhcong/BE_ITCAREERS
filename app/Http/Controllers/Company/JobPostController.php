@@ -354,8 +354,7 @@ class JobPostController extends Controller
     }
     public function candidate_detail(string $id)
     {
-        $data = [];
-        $data['profile'] = Db::table('curriculum_vitae')->where('curriculum_vitae.id', $id)
+        $profile = Db::table('curriculum_vitae')
             ->join('job_post_apply', 'curriculum_vitae.id', '=', 'curriculum_vitae.id')
             ->select(
                 'job_post_apply.name',
@@ -363,12 +362,13 @@ class JobPostController extends Controller
                 'job_post_apply.phone',
                 'job_post_apply.introduce',
                 'job_post_apply.qualifying_round_id',
-                'job_post_apply.id',
-                'job_post_apply.created_at',
+                'job_post_apply.id as candidate_code',
                 'curriculum_vitae.path_cv',
+                'job_post_apply.created_at',
             )
+            ->where('job_post_apply.curriculum_vitae_id', $id)
             ->first();
-        if ($data) {
+        if ($profile) {
             JobPostApply::where('id', $id)->update(['status' => 1]);
             // Mail::send('emails.demo', compact('candidate'), function ($email) use ($data) {
             //     $email->subject('Nhà tuyển dụng đã xem hồ sơ của bạn');
@@ -376,13 +376,13 @@ class JobPostController extends Controller
             // });
             return response()->json([
                 'status' => 200,
-                'data' => $data
+                'data' =>$profile
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
                 'data' => 'job post Not Found',
-                'data' => $data
+                'data' => $profile
             ], 404);
         }
     }
