@@ -111,7 +111,7 @@ class JobPostController extends Controller
             'interest' => 'required|',
             'gender' => 'required',
             'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên 
+            //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|date|after:yesterday',
@@ -197,7 +197,7 @@ class JobPostController extends Controller
             'gender' => 'required',
             // 'area_id' => 'required',
             'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên 
+            //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',
@@ -282,21 +282,21 @@ class JobPostController extends Controller
     public function list_candidate_apply_job(string $id)
     {
         $list_candidate_apply_job = DB::table('job_post_apply')
-        ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-        ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-        ->join('curriculum_vitae', 'job_post_apply.curriculum_vitae_id', '=', 'curriculum_vitae.id')
-        ->select(
-            'job_post.title as job_post_name',
-            'job_post_apply.created_at as time_apply',
-            'job_post_apply.qualifying_round_id',
-            'job_post_apply.id as candidate_code',
-            'job_post_apply.status',
-            'job_post_apply.email',
-            'job_post_apply.phone',
-            'job_post_apply.name',
-            'curriculum_vitae.path_cv'
-        )
-        ->where('job_post_id', $id)->get();
+            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
+            ->select(
+                'job_post.title as job_post_name',
+                'job_post_apply.created_at as time_apply',
+                'job_post_apply.qualifying_round_id',
+                'job_post_apply.id as candidate_code',
+                'job_post_apply.status',
+                'job_post_apply.email',
+                'job_post_apply.phone',
+                'job_post_apply.name',
+                'curriculum_vitae.path_cv'
+            )
+            ->where('job_post_id', $id)->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,
@@ -340,10 +340,10 @@ class JobPostController extends Controller
                     'job_post_apply.email',
                 )
                 ->first();
-            Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
-                $email->subject('UbWork - Lấy Lại Mật Khẩu');
-                $email->to('huyetcongtu4869@gmail.com');
-            });
+            // Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
+            //     $email->subject('UbWork - Lấy Lại Mật Khẩu');
+            //     $email->to('huyetcongtu4869@gmail.com');
+            // });
         } else {
             return response()->json([
                 'status' => 404,
