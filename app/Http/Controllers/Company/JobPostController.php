@@ -292,7 +292,8 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
-                'curriculum_vitae.path_cv'
+                'curriculum_vitae.path_cv',
+                'candidates.image'
             )
             ->where('job_post.id', $id)->get();
         if ($list_candidate_apply_job) {
@@ -353,10 +354,13 @@ class JobPostController extends Controller
     {
         $profile = Db::table('curriculum_vitae')
             ->join('job_post_apply', 'curriculum_vitae.id', '=', 'curriculum_vitae.id')
+            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+
             ->select(
                 'job_post_apply.name',
                 'job_post_apply.email',
                 'job_post_apply.phone',
+                'candidates.image',
                 'job_post_apply.introduce',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
@@ -484,6 +488,7 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
+                'candidates.image',
                 'curriculum_vitae.path_cv'
             )
             ->where('job_post.company_id', 1)
