@@ -34,12 +34,12 @@ class RefreshPasswordCompanyController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $id = Auth::guard('company')->user()->id;
+        $id = Auth::user()->id;
         $param = [];
         $param = $request->post();
         unset($param['_token']);
         $model = Company::find($id);
-        if (Hash::check($param['password_old'], auth('company')->user()->password)) {
+        if (Hash::check($param['password_old'], Auth::user()->password)) {
             unset($param['password_old']);
             unset($param['re_password']);
             $company = $model->update($param);
