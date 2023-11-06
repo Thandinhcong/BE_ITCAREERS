@@ -47,6 +47,7 @@ class JobPostController extends Controller
                 'job_post.title',
                 'job_post.min_salary',
                 'job_post.max_salary',
+                'job_post.view',
                 'job_position.job_position',
                 'experiences.experience',
                 'companies.name as company_name',
@@ -120,7 +121,7 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         } else {
-            $job_post = DB::table('job_post')->insertGetId($request->all());
+            $job_post = JobPost::create($request->all());
         }
         if ($job_post) {
             return response()->json([
