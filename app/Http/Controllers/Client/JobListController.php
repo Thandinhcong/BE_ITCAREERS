@@ -73,6 +73,7 @@ class JobListController extends Controller
                 'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
+                'job_post.created_at',
                 'companies.company_name as company_name',
                 'companies.logo',
             )->get();
