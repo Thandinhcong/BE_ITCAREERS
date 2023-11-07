@@ -126,6 +126,18 @@ Route::group([
         Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
         //Đánh giá ứng viên gửi email
         Route::post('assses_candidate/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'assses_candidate']);
+        //List ứng viên gửi ứng tuyển vào công ty
+        Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
+        //hiển thị ứng viên mở tìm kiếm việc
+        Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+        // Mở khóa ứng viên
+        Route::post('open_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
+        //hiển thị ứng viên đã mở khóa
+        Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'profile_open']);
+        //Lưu ứng viên
+        Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'save_profile']);
+        //Hủy lưu ứng viên
+        Route::post('cancel_save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'cancel_save_profile']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::resource('refreshPass', RefreshPasswordCompanyController::class);
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
