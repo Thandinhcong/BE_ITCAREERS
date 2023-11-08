@@ -112,8 +112,8 @@ class JobPostController extends Controller
             //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
-            'start_date' => 'required|date|after:yesterday',
-            'end_date' => 'required|date|after:start_date',
+            'start_date' => 'required|after:yesterday',
+            'end_date' => 'required|after:start_date',
         ]);
         if ($valdator->fails()) {
             return response()->json([
