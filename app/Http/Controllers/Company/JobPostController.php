@@ -474,7 +474,7 @@ class JobPostController extends Controller
     }
     public function list_candidate_applied()
     {
-        // $company_id=Auth::guard('company')->user()->id;
+        $company_id=Auth::user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
@@ -492,7 +492,7 @@ class JobPostController extends Controller
                 'candidates.image',
                 'curriculum_vitae.path_cv'
             )
-            ->where('job_post.company_id', 1)
+            ->where('job_post.company_id', $company_id)
             ->get();
         if ($list_candidate_apply_job) {
             return response()->json([
