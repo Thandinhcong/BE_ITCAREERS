@@ -30,7 +30,7 @@ class CandidateApplyController extends Controller
                 'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
-                'companies.name as company_name',
+                'companies.company_name as company_name',
                 'companies.logo',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.updated_at',
