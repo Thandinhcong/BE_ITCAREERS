@@ -47,6 +47,7 @@ class JobPostController extends Controller
                 'job_post.title',
                 'job_post.min_salary',
                 'job_post.max_salary',
+                'job_post.view',
                 'job_position.job_position',
                 'experiences.experience',
                 'companies.name as company_name',
@@ -87,9 +88,6 @@ class JobPostController extends Controller
         $d['major_id'] = Major::all();
         $d['district_id'] = District::all();
         $d['province_id'] = Province::all();
-
-        // $d['area_id'] = Area::all();
-        // $d['major_id'] = Major::all();
         return response()->json([
             'status' => 'success',
             'data' => $d,
@@ -111,11 +109,11 @@ class JobPostController extends Controller
             'interest' => 'required|',
             'gender' => 'required',
             'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên 
+            //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
-            'start_date' => 'required|date|after:yesterday',
-            'end_date' => 'required|date|after:start_date',
+            'start_date' => 'required|after:yesterday',
+            'end_date' => 'required|after:start_date',
         ]);
         if ($valdator->fails()) {
             return response()->json([
@@ -123,7 +121,7 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         } else {
-            $job_post = DB::table('job_post')->insertGetId($request->all());
+            $job_post = JobPost::create($request->all());
         }
         if ($job_post) {
             return response()->json([
@@ -161,8 +159,8 @@ class JobPostController extends Controller
         if ($job_post) {
             $job_post->update($request->all());
             $affected = DB::table('companies')
-              ->where('id', 1)
-              ->update(['coin' => $coin_company->coin-$salary_job_post_type[$request['type_job_post_id']]->salary]);
+                ->where('id', 1)
+                ->update(['coin' => $coin_company->coin - $salary_job_post_type[$request['type_job_post_id']]->salary]);
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
@@ -197,7 +195,7 @@ class JobPostController extends Controller
             'gender' => 'required',
             // 'area_id' => 'required',
             'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên 
+            //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',
@@ -284,9 +282,10 @@ class JobPostController extends Controller
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
+            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
+                'job_post.id as job_post_id',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
@@ -294,9 +293,10 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
-                'curriculum_vitae.path_cv'
+                'curriculum_vitae.path_cv',
+                'candidates.image'
             )
-            ->where('job_post_id', $id)->get();
+            ->where('job_post.id', $id)->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,
@@ -340,10 +340,10 @@ class JobPostController extends Controller
                     'job_post_apply.email',
                 )
                 ->first();
-            Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
-                $email->subject('UbWork - Lấy Lại Mật Khẩu');
-                $email->to('huyetcongtu4869@gmail.com');
-            });
+            // Mail::send('emails.demo', compact('candidate'), function ($email) use ($candidate) {
+            //     $email->subject('UbWork - Lấy Lại Mật Khẩu');
+            //     $email->to('huyetcongtu4869@gmail.com');
+            // });
         } else {
             return response()->json([
                 'status' => 404,
@@ -353,31 +353,38 @@ class JobPostController extends Controller
     }
     public function candidate_detail(string $id)
     {
-        $data = [];
-        $data['profile'] = Db::table('curriculum_vitae')->where('curriculum_vitae.id', $id)
+        $profile = Db::table('curriculum_vitae')
             ->join('job_post_apply', 'curriculum_vitae.id', '=', 'curriculum_vitae.id')
+            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+
             ->select(
                 'job_post_apply.name',
                 'job_post_apply.email',
                 'job_post_apply.phone',
+                'candidates.image',
+                'job_post_apply.introduce',
+                'job_post_apply.qualifying_round_id',
+                'job_post_apply.id as candidate_code',
                 'curriculum_vitae.path_cv',
+                'job_post_apply.created_at',
             )
+            ->where('job_post_apply.curriculum_vitae_id', $id)
             ->first();
-        if ($data) {
+        if ($profile) {
             JobPostApply::where('id', $id)->update(['status' => 1]);
-            Mail::send('emails.demo', compact('candidate'), function ($email) use ($data) {
-                $email->subject('Nhà tuyển dụng đã xem hồ sơ của bạn');
-                $email->to('huyetcongtu4869@gmail.com');
-            });
+            // Mail::send('emails.demo', compact('candidate'), function ($email) use ($data) {
+            //     $email->subject('Nhà tuyển dụng đã xem hồ sơ của bạn');
+            //     $email->to('huyetcongtu4869@gmail.com');
+            // });
             return response()->json([
                 'status' => 200,
-                'data' => $data
+                'data' => $profile
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
                 'data' => 'job post Not Found',
-                'data' => $data
+                'data' => $profile
             ], 404);
         }
     }
@@ -467,14 +474,14 @@ class JobPostController extends Controller
     }
     public function list_candidate_applied()
     {
-        // $company_id=Auth::guard('company')->user()->id;
+        $company_id=Auth::user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'candidates.id', '=', 'curriculum_vitae.candidate_id')
+            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
+                'job_post.id as job_post_id',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
@@ -482,9 +489,11 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
+                'candidates.image',
                 'curriculum_vitae.path_cv'
             )
-            ->where('companies.id', 1)->get();
+            ->where('job_post.company_id', $company_id)
+            ->get();
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,

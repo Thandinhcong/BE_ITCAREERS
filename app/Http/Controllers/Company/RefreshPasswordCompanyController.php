@@ -34,25 +34,25 @@ class RefreshPasswordCompanyController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $id = Auth::guard('company')->user()->id;
+        $id = Auth::user()->id;
         $param = [];
         $param = $request->post();
         unset($param['_token']);
         $model = Company::find($id);
-        if (Hash::check($param['password_old'], auth('company')->user()->password)) {
+        if (Hash::check($param['password_old'], Auth::user()->password)) {
             unset($param['password_old']);
             unset($param['re_password']);
             $company = $model->update($param);
             if ($company == 1) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Đổi mật khẩu thành công'
+                    'message' => 'Đổi mật khẩu thành công!'
                 ], 200);
             }
         } else {
             return response()->json([
                 'status' => 'fail',
-                'message' => 'Mật khẩu cũ không đúng'
+                'message' => 'Mật khẩu cũ không đúng!'
             ], 500);
         }
     }

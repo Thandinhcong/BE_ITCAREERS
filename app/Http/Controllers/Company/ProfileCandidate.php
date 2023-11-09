@@ -21,7 +21,7 @@ class ProfileCandidate extends Controller
         // $company_id =Auth::guard('company')->user()->id;
         // $data['profile_open'] = DB::table('profile_open')->where('company_id', $company_id)->count->get();
         // $data['save_profile'] = DB::table('save_profile')->select('id')->where('company_id', $company_id)->get();
-        $data['profile'] = DB::table('profile')
+        $data['candidates'] = DB::table('candidates')
             ->select(
                 'candidates.id as candidate_id',
                 'candidates.image',
@@ -35,7 +35,7 @@ class ProfileCandidate extends Controller
             )
             ->addSelect(DB::raw("(SELECT COUNT(*) FROM profile_open WHERE candidates.id = profile_open.candidate_id) AS have_profile_open"))
             ->addSelect(DB::raw("(SELECT COUNT(*) FROM save_profile WHERE candidates.id = save_profile.candidate_id) AS have_save_profile"))
-            ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
             ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
             ->where('candidates.find_job', 1)
             ->get();
