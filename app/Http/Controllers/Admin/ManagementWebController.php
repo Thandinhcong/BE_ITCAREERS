@@ -19,10 +19,8 @@ class ManagementWebController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function update(Request $request, string $id)
     {
-        $man_web = Auth::user();
-        $id = Auth::user()->id;
         $validator = Validator::make($request->all(), [
             'logo' => 'required|string',
             'banner' => 'required|string',
@@ -39,6 +37,7 @@ class ManagementWebController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
+        $man_web = ManagementWeb::find($id);
         if ($man_web) {
             $man_web->update($request->all());
             return response()->json([
@@ -48,6 +47,7 @@ class ManagementWebController extends Controller
         } else {
             return response()->json([
                 'status' => 'fail',
+                'message' => 'error'
             ], 500);
         }
     }
