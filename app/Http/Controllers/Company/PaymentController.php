@@ -229,7 +229,7 @@ class PaymentController extends Controller
                             } else {
                                 $Status = 2; // Trạng thái thanh toán thất bại / lỗi
                             }
-                            $invoice->update(['status', $Status]);
+                            $invoice->update(['status' => $Status]);
                             $company = Company::where('id', auth('company')->user()->id)->first();
                             $company->coin = $company->coin + $invoice->package->coin;
                             $company->save();
