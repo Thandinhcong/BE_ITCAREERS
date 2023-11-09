@@ -20,9 +20,9 @@ class PackageResource extends JsonResource
             'title' => $this->title,
             'coin' => $this->coin,
             'price' => $this->price,
-            'reduced_price' => $this->reduced_price,
+            // 'reduced_price' => $this->reduced_price,
             'status' => $this->status,
-            'type_account' => $this->type_account
+            // 'type_account' => $this->type_account
         ];
     }
 }
