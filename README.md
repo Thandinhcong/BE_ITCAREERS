@@ -24,7 +24,7 @@ http code
     php artisan migrate:fresh
     php artisan passport:install
     php artisan db:seed
-
+    composer dump-autoload
 
     Nếu lỗi chạy:
     php artisan config:cache

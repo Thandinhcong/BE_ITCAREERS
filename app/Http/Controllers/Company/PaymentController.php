@@ -24,7 +24,8 @@ class PaymentController extends Controller
     }
     public function getListPackage()
     {
-        $this->data['package'] = Packages::where('status', '=', 1)->get()->toArray();
+        $this->data['package'] = Packages::where([['status', '=', 1], ['type_account', '=', 0]])
+            ->get()->toArray();
         // status 0 là ứng viên 1 là công ty
         if (!$this->data['package']) {
             return response()->json([
@@ -277,14 +278,14 @@ class PaymentController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Bạn chưa thực hiện giao dịch nào',
-            ]);
+            ], 400);
         }
         return response()->json([
-            'status' => false,
+            'status' => true,
             'message' => 'Giao dịch đã thực hiện: ',
             'History Payment' => $this->data['history'],
             'History Payment All' => $this->data['history_all']
-        ]);
+        ], 200);
     }
     public function refund()
     {
