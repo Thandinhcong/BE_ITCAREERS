@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('price');
             $table->string('reduced_price');
             $table->string('status')->default(0);
-            $table->string('type_account');
+            $table->string('type_account')->comment('0: company, 1: candidate');
             $table->timestamps();
             $table->softDeletes();
         });

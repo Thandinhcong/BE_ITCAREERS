@@ -124,6 +124,13 @@ Route::group([
         Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::resource('refreshPass', RefreshPasswordCompanyController::class);
+        // Payment
+        Route::get('get_list_package', [\App\Http\Controllers\Company\PaymentController::class, 'getListPackage']);
+        Route::post('insert_invoice', [App\Http\Controllers\Company\PaymentController::class, 'insertInvoice']);
+        Route::post('payment', [App\Http\Controllers\Company\PaymentController::class, 'payment'])->name('payment');
+        Route::get('vnpay_return', [App\Http\Controllers\Company\PaymentController::class, 'vnpay_return'])->name('vnpay_return');
+        Route::get('vnpay_ipn', [App\Http\Controllers\Company\PaymentController::class, 'vnpay_ipn'])->name('vnpay_ipn');
+        Route::get('history_payment', [App\Http\Controllers\Company\PaymentController::class, 'historyPayment'])->name('historyPayment');
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
