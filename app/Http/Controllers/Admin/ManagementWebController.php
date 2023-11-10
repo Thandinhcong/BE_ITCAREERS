@@ -43,7 +43,7 @@ class ManagementWebController extends Controller
             $man_web->update($request->all());
             return response()->json([
                 'status' => 'success',
-                'message' => 'update success'
+                'message' => 'Cập nhật thành công!'
             ], 200);
         } else {
             return response()->json([
