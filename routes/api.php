@@ -7,7 +7,9 @@ use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\LevelController;
+use App\Http\Controllers\Admin\ManagementWebController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\WebsiteManagementController;
 use App\Http\Controllers\Candidate\Auth\RegisterCandidateController;
 use App\Http\Controllers\Candidate\CandidateInformationController;
 use App\Http\Controllers\Candidate\CandidateApplyController;
@@ -67,6 +69,7 @@ Route::group([
         Route::resource('company-management', CompanyManagementController::class);
         Route::resource('candidate', CandidatesController::class);
         Route::resource('company', CompanyController::class);
+        Route::resource('man-web', ManagementWebController::class);
     });
 });
 Route::resource('experience', ExperienceController::class);
