@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PackageResource extends JsonResource
+class ManagementWebResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +17,14 @@ class PackageResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'coin' => $this->coin,
-            'price' => $this->price,
-            // 'reduced_price' => $this->reduced_price,
-            'status' => $this->status,
-            // 'type_account' => $this->type_account
+            'logo' => $this->logo,
+            'banner' => $this->banner,
+            'name_web' => $this->name_web,
+            'company_name' => $this->company_name,
+            'address' => $this->address,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'sdt_lienhe' => $this->sdt_lienhe,
         ];
     }
 }

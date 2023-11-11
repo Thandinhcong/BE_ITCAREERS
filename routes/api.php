@@ -7,7 +7,9 @@ use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ExpController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\LevelController;
+use App\Http\Controllers\Admin\ManagementWebController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\WebsiteManagementController;
 use App\Http\Controllers\Candidate\Auth\RegisterCandidateController;
 use App\Http\Controllers\Candidate\CandidateInformationController;
 use App\Http\Controllers\Candidate\CandidateApplyController;
@@ -67,6 +69,7 @@ Route::group([
         Route::resource('company-management', CompanyManagementController::class);
         Route::resource('candidate', CandidatesController::class);
         Route::resource('company', CompanyController::class);
+        Route::resource('man-web', ManagementWebController::class);
     });
 });
 Route::resource('experience', ExperienceController::class);
@@ -102,6 +105,9 @@ Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, '
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
+Route::get('search', [\App\Http\Controllers\Client\SearchController::class, 'search']);
+Route::get('select_salary_result', [\App\Http\Controllers\Client\SearchController::class, 'select_salary_result']);
+
 //Company
 Route::group([
     'prefix' => 'company'
@@ -140,16 +146,17 @@ Route::group([
         Route::post('cancel_save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'cancel_save_profile']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::resource('refreshPass', RefreshPasswordCompanyController::class);
+        // Payment
+        Route::get('get_list_package', [\App\Http\Controllers\Company\PaymentController::class, 'getListPackage']);
+        Route::post('insert_invoice', [App\Http\Controllers\Company\PaymentController::class, 'insertInvoice']);
+        Route::post('payment', [App\Http\Controllers\Company\PaymentController::class, 'payment'])->name('payment');
+        Route::get('vnpay_return', [App\Http\Controllers\Company\PaymentController::class, 'vnpay_return'])->name('vnpay_return');
+        Route::get('vnpay_ipn', [App\Http\Controllers\Company\PaymentController::class, 'vnpay_ipn'])->name('vnpay_ipn');
+        Route::get('history_payment', [App\Http\Controllers\Company\PaymentController::class, 'historyPayment'])->name('historyPayment');
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
 });
 Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);
-
-
-
-//Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
-//Xem hồ sơ ứng viên
-Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //List ứng viên gửi ứng tuyển vào công ty
 Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
 

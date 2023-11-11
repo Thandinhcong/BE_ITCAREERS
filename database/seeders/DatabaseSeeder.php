@@ -12,6 +12,8 @@ use App\Models\JobPost;
 use App\Models\Level;
 use App\Models\Major;
 use App\Models\Province;
+use App\Models\SelectSalaryResault;
+use App\Models\SelectSalaryResult;
 use App\Models\WorkingForm;
 use Illuminate\Database\Seeder;
 
@@ -3033,99 +3035,120 @@ class DatabaseSeeder extends Seeder
             "name" => "Huyện Ngọc Hiển"
         ]
     ];
+    protected $select_salary_result = [
+        [
+            'result_salary' => 'Dưới 10 triệu',
+            'min_salary' => 0,
+            'max_salary' => 10000000
+        ], [
+            'result_salary' => '15 - 20 triệu',
+            'min_salary' => 15000000,
+            'max_salary' => 20000000
+        ], [
+            'result_salary' => '20 - 25 triệu',
+            'min_salary' => 20000000,
+            'max_salary' => 25000000
+        ], [
+            'result_salary' => '25 - 30 triệu',
+            'min_salary' => 25000000,
+            'max_salary' => 30000000
+        ], [
+            'result_salary' => 'Trên 30 triệu',
+            'min_salary' => 30000000,
+            'max_salary' => 0
+        ]
+    ];
+    protected $academic_level = [
+        [
+            'academic_level' => 'Đại học',
+        ], [
+            'academic_level' => 'Cao đẳng',
+        ], [
+            'academic_level' => 'Trên đại học',
+        ], [
+            'academic_level' => 'Khác',
+        ]
+    ];
+    protected $job_position = [
+        [
+            'job_position' => 'Trưởng phòng',
+            'description' => 'test',
+        ], [
+            'job_position' => 'Phó phòng',
+            'description' => 'test',
+        ], [
+            'job_position' => 'Nhân viên',
+            'description' => 'test',
+        ], [
+            'job_position' => 'Thực tập sinh',
+            'description' => 'test',
+        ]
+    ];
+    protected $experience = [
+        [
+            'experience' => '1 năm',
+            'description' => 'test',
+        ], [
+            'experience' => '2 năm',
+            'description' => 'test',
+        ], [
+            'experience' => '3 năm',
+            'description' => 'test',
+        ], [
+            'experience' => '5 năm',
+            'description' => 'test',
+        ]
+    ];
+    protected $level = [
+        [
+            'level' => 'Fresher',
+            'description' => 'test',
+        ], [
+            'level' => 'Senior',
+            'description' => 'test',
+        ],
+        [
+            'level' => 'Junior',
+            'description' => 'test',
+        ]
+    ];
+    protected $major = [
+        [
+            'major' => 'Thiết kế web',
+            'description' => 'test',
+        ], [
+            'major' => 'Thiết kế game 3d',
+            'description' => 'test',
+        ], [
+            'major' => 'Thiết game 2d',
+            'description' => 'test',
+        ]
+    ];
+    protected $working_form = [
+        [
+            'working_form' => 'OnLine',
+            'description' => 'test',
+        ], [
+            'working_form' => 'Ofline',
+            'description' => 'test',
+        ], [
+            'working_form' => 'Bán thời gian',
+            'description' => 'test',
+        ]
+    ];
     public function run(): void
     {
         \App\Models\User::factory(1)->create();
         \App\Models\Candidate::factory(1)->create();
         \App\Models\Company::factory(1)->create();
-
-        AcademicLevel::create(
-            [
-                'academic_level' => 'Đại học',
-            ],
-        );
-        AcademicLevel::create(
-            [
-                'academic_level' => 'Cao đẳng',
-            ],
-        );
-        AcademicLevel::create(
-            [
-                'academic_level' => 'Trên đại học',
-                'description' => 'test',
-            ]
-        );
-        JobPosition::create([
-            'job_position' => 'trưởng phòng',
-            'description' => 'test',
-        ]);
-        JobPosition::create([
-            'job_position' => 'Phó phòng',
-            'description' => 'test',
-        ]);
-        JobPosition::create([
-            'job_position' => 'Thực tập sinh',
-            'description' => 'test',
-        ]);
-        Experience::create([
-            'experience' => '1 năm',
-            'description' => 'test',
-        ]);
-        Experience::create([
-            'experience' => '2 năm',
-            'description' => 'test',
-        ]);
-        Experience::create([
-            'experience' => '3 năm',
-            'description' => 'test',
-        ]);
-        Experience::create([
-            'experience' => '5 năm',
-            'description' => 'test',
-        ]);
-        Level::create([
-            'level' => 'Fresher',
-            'description' => 'test',
-        ]);
-        Level::create([
-            'level' => 'Senior',
-            'description' => 'test',
-        ]);
-        Level::create([
-            'level' => 'Junior',
-            'description' => 'test',
-        ]);
-        Major::create([
-            'major' => 'Thiết kế web',
-            'description' => 'test',
-        ]);
-        Major::create([
-            'major' => 'Thiết kế game 3d',
-            'description' => 'test',
-        ]);
-        Major::create([
-            'major' => 'Thiết game 2d',
-            'description' => 'test',
-        ]);
-        WorkingForm::create([
-            'working_form' => 'OnLine',
-            'description' => 'test',
-        ]);
-        WorkingForm::create([
-            'working_form' => 'Ofline',
-            'description' => 'test',
-        ]);
-        WorkingForm::create([
-            'working_form' => 'Bán thời gian',
-            'description' => 'test',
-        ]);
         JobPost::create([
             'title' => 'Bài đăng 1',
             'job_position_id' => 1,
             'exp_id' => 2,
             'quantity' => 4,
-            'require' => 'Yêu cầu 1',
+            'requirement' => 'Yêu cầu 1',
             'interest' => 'Đãi ngộ1',
+            'desc' => 'Mô tả công việc',
             'min_salary' => '20000',
             'max_salary' => '30000',
             'gender' => 0,
@@ -3142,6 +3165,27 @@ class DatabaseSeeder extends Seeder
         };
         foreach ($this->district as $value) {
             District::create($value);
+        };
+        foreach ($this->select_salary_result as $value) {
+            SelectSalaryResult::create($value);
+        };
+        foreach ($this->academic_level as $value) {
+            AcademicLevel::create($value);
+        };
+        foreach ($this->job_position as $value) {
+            JobPosition::create($value);
+        };
+        foreach ($this->experience as $value) {
+            Experience::create($value);
+        };
+        foreach ($this->level as $value) {
+            Level::create($value);
+        };
+        foreach ($this->major as $value) {
+            Major::create($value);
+        };
+        foreach ($this->working_form as $value) {
+            WorkingForm::create($value);
         }
     }
 }

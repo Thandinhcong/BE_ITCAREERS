@@ -35,12 +35,12 @@ class PackageController extends Controller
         if ($package) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Add new success',
+                'message' => 'Thêm thành công',
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
-                'message' => 'error'
+                'message' => 'Thêm thất bại'
             ], 500);
         }
     }
@@ -57,7 +57,7 @@ class PackageController extends Controller
         } else {
             return response()->json([
                 'status' => 'fail',
-                'major' => 'Job Position Not Found'
+                'major' => 'Không tìm thấy gói nạp'
             ], 404);
         }
     }
@@ -80,7 +80,7 @@ class PackageController extends Controller
             $package->update($request->all());
             return response()->json([
                 'status' => 'success',
-                'message' => 'Update Success'
+                'message' => 'Cập nhật thành công gói nạp'
             ], 200);
         } else {
             return response()->json([

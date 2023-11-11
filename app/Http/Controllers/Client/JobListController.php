@@ -40,8 +40,9 @@ class JobListController extends Controller
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
-                'job_post.require',
+                'job_post.requirement as require',
                 'job_post.interest',
+                'job_post.desc',
                 'district.name as district',
                 'province.province',
             )->first();
@@ -121,4 +122,5 @@ class JobListController extends Controller
     //         ], 404);
     //     }
     // }
+  
 }
