@@ -3,24 +3,16 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
-use App\Mail\MailNotify;
 use App\Models\AcademicLevel;
-use App\Models\Edu;
-use App\Models\Exp;
 use App\Models\Experience;
 use App\Models\JobPosition;
 use App\Models\JobPost;
 use App\Models\JobPostApply;
 use App\Models\Level;
 use App\Models\Major;
-use App\Models\Project;
-use App\Models\Area;
-use App\Models\Company;
 use App\Models\District;
 use App\Models\JobPostType;
 use App\Models\Province;
-use App\Models\SkillPost;
-use App\Models\SkillProfile;
 use App\Models\WorkingForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,8 +54,9 @@ class JobPostController extends Controller
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
-                'job_post.require',
+                'job_post.requirement as require',
                 'job_post.interest',
+                'job_post.desc',
                 'job_post.status',
             )->get();
         if ($job_post->count() == 0) {
@@ -111,6 +104,7 @@ class JobPostController extends Controller
             'gender' => 'in:0,1,2',
             //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
+            'desc' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|after:yesterday',
             'end_date' => 'required|after:start_date',
@@ -121,6 +115,7 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         } else {
+            $request['requirement']=$request['require'];
             $job_post = JobPost::create($request->all());
         }
         if ($job_post) {
@@ -197,6 +192,7 @@ class JobPostController extends Controller
             'gender' => 'in:0,1,2',
             //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
+            'desc' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|',
             'start_date' => 'required|date|',
@@ -210,6 +206,8 @@ class JobPostController extends Controller
             ], 400);
         }
         if ($job_post) {
+            $request['requirement']=$request['require'];
+            $job_post = JobPost::create($request->all());
             $job_post->update($request->all());
             return response()->json([
                 'status' => 'success',
@@ -252,8 +250,9 @@ class JobPostController extends Controller
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
-                'job_post.require',
+                'job_post.requirement as require',
                 'job_post.interest',
+                'job_post.desv',
                 'job_post.status',
                 'job_post.job_position_id',
                 'job_post.exp_id',
@@ -419,8 +418,9 @@ class JobPostController extends Controller
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
-                'job_post.require',
+                'job_post.requirement as require',
                 'job_post.interest',
+                'job_post.desc',
                 'job_post.status',
             )->get();
         return response()->json([

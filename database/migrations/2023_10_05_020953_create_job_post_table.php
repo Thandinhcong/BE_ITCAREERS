@@ -21,7 +21,8 @@ return new class extends Migration
             $table->integer('working_form_id');
             $table->double('min_salary');
             $table->double('max_salary');
-            $table->string('require');
+            $table->string('requirement');
+            $table->string('desc');
             $table->string('interest');
             $table->integer('gender');
             $table->integer('area_id');
@@ -33,6 +34,7 @@ return new class extends Migration
             $table->integer('type_job_post_id')->default(0);
             $table->integer('status')->default(0)->comment('0:pending, 1:active, 2:block, 3:stop');
             $table->timestamps();
+            $table->fullText(['title', 'requirement']);
             $table->softDeletes();
         });
     }

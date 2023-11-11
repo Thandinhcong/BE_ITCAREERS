@@ -32,11 +32,15 @@ class ProfileCandidate extends Controller
                 'profile.email',
                 'profile.phone',
                 'profile.birth',
+                'save_profile.id as have_save_profile',
+                'profile_open.id as have_open_profile'
             )
-            ->addSelect(DB::raw("(SELECT COUNT(*) FROM profile_open WHERE candidates.id = profile_open.candidate_id) AS have_profile_open"))
-            ->addSelect(DB::raw("(SELECT COUNT(*) FROM save_profile WHERE candidates.id = save_profile.candidate_id) AS have_save_profile"))
+            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM profile_open WHERE candidates.id = profile_open.candidate_id) AS have_profile_open"))
+            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM save_profile WHERE candidates.id = save_profile.candidate_id) AS have_save_profile"))
             ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
             ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
+            ->leftJoin('save_profile','candidates.id','=','save_profile.candidate_id')
+            ->leftJoin('profile_open','candidates.id','=','profile_open.candidate_id')
             ->where('candidates.find_job', 1)
             ->get();
 
