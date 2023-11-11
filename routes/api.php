@@ -105,6 +105,9 @@ Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, '
 Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::class, 'job_detail']);
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
+Route::get('search', [\App\Http\Controllers\Client\SearchController::class, 'search']);
+Route::get('select_salary_result', [\App\Http\Controllers\Client\SearchController::class, 'select_salary_result']);
+
 //Company
 Route::group([
     'prefix' => 'company'
@@ -154,12 +157,6 @@ Route::group([
     });
 });
 Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);
-
-
-
-//Xem hồ sơ ứng viên theo id bài đăng, gửi email cho ứng viên biết
-//Xem hồ sơ ứng viên
-Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'candidate_detail']);
 //List ứng viên gửi ứng tuyển vào công ty
 Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostController::class, 'list_candidate_applied']);
 
