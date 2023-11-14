@@ -219,7 +219,6 @@ class PaymentController extends Controller
             //Check Orderid    
             //Kiểm tra checksum của dữ liệu
             if ($secureHash == $vnp_SecureHash) {
-
                 $invoice = Invoice::with('package')->find($orderId);
                 if ($invoice != NULL) {
                     if ($invoice["amount"] == $vnp_Amount) //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng. //$order["Amount"] == $vnp_Amount

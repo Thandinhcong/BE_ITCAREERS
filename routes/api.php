@@ -91,6 +91,30 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
         Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
         Route::post('find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'findJob']);
+        // create cv
+        Route::get('cv', [App\Http\Controllers\Client\CVController::class, 'index']);
+        Route::post('active_cv', [\App\Http\Controllers\Client\CVController::class, 'activeCV']);
+        Route::get('delete_cv/{id}', [\App\Http\Controllers\Client\CVController::class, 'destroyCv']);
+        Route::post('create_cv', [\App\Http\Controllers\Client\CreateCvController::class, 'createCV']);
+        Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);
+        Route::get('update_cv/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'index']);
+        Route::post('update_cv/update_info/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateInfo']);
+        // exp
+        Route::post('update_cv/save_exp', [\App\Http\Controllers\Client\CreateCvController::class, 'saveExp']);
+        Route::post('update_cv/update_exp/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateExp']);
+        Route::get('update_cv/delete_exp/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteExp']);
+        // edu
+        Route::post('update_cv/save_edu', [\App\Http\Controllers\Client\CreateCvController::class, 'saveEdu']);
+        Route::post('update_cv/update_edu/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateEdu']);
+        Route::get('update_cv/delete_edu/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteEdu']);
+        //project
+        Route::post('update_cv/save_project', [\App\Http\Controllers\Client\CreateCvController::class, 'saveProject']);
+        Route::post('update_cv/update_project/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateProject']);
+        Route::get('update_cv/delete_project/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteProject']);
+        //skill
+        Route::post('update_cv/save_skill', [\App\Http\Controllers\Client\CreateCvController::class, 'saveSkill']);
+        Route::post('update_cv/update_skill/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateSkill']);
+        Route::get('update_cv/delete_skill/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteSkill']);
     });
 });
 //Việc làm đã ứng tuyển
@@ -188,6 +212,3 @@ Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::clas
 
 //client/company
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
-
-// create cv
-Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);

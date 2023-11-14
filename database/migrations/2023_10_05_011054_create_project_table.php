@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('email_instructor', 55);
             $table->bigInteger('profile_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
