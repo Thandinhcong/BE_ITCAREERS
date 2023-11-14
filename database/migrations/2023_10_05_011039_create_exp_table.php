@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('exp', function (Blueprint $table) {
             $table->id();
             $table->string('company_name', 55);
-            $table->string('postion', 55);
+            $table->string('position', 55)->comment('vị trí');
             $table->date('start_date');
             $table->date('end_date');
             $table->bigInteger('profile_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

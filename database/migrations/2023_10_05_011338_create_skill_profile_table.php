@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigInteger('profile_id');
             $table->bigInteger('skill_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

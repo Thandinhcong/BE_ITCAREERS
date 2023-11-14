@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('edu', function (Blueprint $table) {
             $table->id();
-            $table->string('name',50);
+            $table->string('name', 50);
             $table->double('gpa');
-            $table->string('type_degree',55);
+            $table->string('type_degree', 55);
             $table->date('start_date');
             $table->date('end_date');
             $table->bigInteger('major_id');
             $table->bigInteger('profile_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
