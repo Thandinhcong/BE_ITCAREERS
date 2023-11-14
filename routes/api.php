@@ -188,3 +188,7 @@ Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyControll
 
 // create cv
 Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);
+
+
+// Hiển thị thông tin website bên phía người dùng
+Route::get('web_tt', [\App\Http\Controllers\Client\WebsiteManagement::class, 'index']);
