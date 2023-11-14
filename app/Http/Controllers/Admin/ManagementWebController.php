@@ -39,8 +39,8 @@ class ManagementWebController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'logo' => 'required|string',
-            'banner' => 'required|string',
+            'logo' => '',
+            'banner' => '',
             'name_web' => 'required|string',
             'company_name' => 'required|string',
             'address' => 'required|string',
