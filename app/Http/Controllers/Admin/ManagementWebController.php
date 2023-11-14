@@ -19,6 +19,23 @@ class ManagementWebController extends Controller
     }
 
 
+    public function show(string $id)
+    {
+        $man_web = ManagementWeb::find($id);
+        if ($man_web) {
+            return response()->json([
+                'status' => 200,
+                'man_web' => $man_web
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'man_web' => 'Không có bản ghi nào'
+            ], 404);
+        }
+    }
+
+
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
