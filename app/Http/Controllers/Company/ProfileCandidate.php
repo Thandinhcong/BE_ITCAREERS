@@ -21,29 +21,31 @@ class ProfileCandidate extends Controller
         // $company_id =Auth::guard('company')->user()->id;
         // $data['profile_open'] = DB::table('profile_open')->where('company_id', $company_id)->count->get();
         // $data['save_profile'] = DB::table('save_profile')->select('id')->where('company_id', $company_id)->get();
-        $data['candidates'] = DB::table('candidates')
+        $data = DB::table('candidates')
+            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM profile_open WHERE candidates.id = profile_open.candidate_id) AS have_profile_open"))
+            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM save_profile WHERE candidates.id = save_profile.candidate_id) AS have_save_profile"))
+            ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
+            ->leftJoin('save_profile', 'candidates.id', '=', 'save_profile.candidate_id')
+            ->leftJoin('profile_open', 'candidates.id', '=', 'profile_open.candidate_id')
+            ->where('candidates.find_job', 1)
             ->select(
                 'candidates.id as candidate_id',
                 'candidates.image',
                 'candidates.phone',
-                'curriculum_vitae.id as cv_id',
-                'curriculum_vitae.path_cv',
+                // 'profile.path_cv',
                 'profile.name',
                 'profile.email',
                 'profile.phone',
-                'profile.birth',
+                'profile.district_id',
+                'profile.phone',
                 'save_profile.id as have_save_profile',
                 'profile_open.id as have_open_profile'
             )
-            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM profile_open WHERE candidates.id = profile_open.candidate_id) AS have_profile_open"))
-            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM save_profile WHERE candidates.id = save_profile.candidate_id) AS have_save_profile"))
-            ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
-            ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
-            ->leftJoin('save_profile','candidates.id','=','save_profile.candidate_id')
-            ->leftJoin('profile_open','candidates.id','=','profile_open.candidate_id')
-            ->where('candidates.find_job', 1)
             ->get();
-
+            foreach ($data as $customer) {
+                $extractedPhoneNumber = substr($customer->phone, 0, 6);
+                $customer->phone = str_pad($extractedPhoneNumber, 10, '*****', STR_PAD_RIGHT);
+              }
         return response()->json([
             "status" => 'success',
             "data" => $data,
