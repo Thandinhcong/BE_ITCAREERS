@@ -45,7 +45,7 @@ class CreateCvController extends Controller
     {
         // if (Auth::guard('candidate')->check()) {
         if (Auth::check()) {
-            $candidate = Auth::guard('candidate')->user();
+            $candidate = Auth::user();
             $candidate_id = $candidate->id;
             $path_cv = $request->path_cv;
             $cv = new Profile();
@@ -73,7 +73,7 @@ class CreateCvController extends Controller
     }
     public function index(Request $request)
     {
-        $candidate = Auth::guard('candidate')->user();
+        $candidate = Auth::user();
         $candidate_id = $candidate->id;
         $profile_id = $request->profile_id;
         $major = DB::table('profile')
@@ -109,10 +109,8 @@ class CreateCvController extends Controller
                 'path_cv',
             )
             ->first();
-        if ($cv) {
-            $cv->major = $major->major;
-            $cv->district = [$district->province, $district->district];
-        }
+            $cv->major = $major ? $major->major : null;
+            $cv->district = $district ? [$district->province, $district->district] : null;
 
         $this->data['cv'] = $cv;
         if (!empty($cv)) {
@@ -157,8 +155,8 @@ class CreateCvController extends Controller
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            'major_id' => 'required',
-            'profile_id' => 'required'
+            'major_id' => '',
+            'profile_id' => ''
         ]);
         if ($validator_info->fails()) {
             return response()->json([
