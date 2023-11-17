@@ -27,7 +27,7 @@ class CVController extends Controller
     }
     public function store(Request $request)
     {
-        $candidate = Auth::guard('candidate')->user();
+        $candidate = Auth::user();
         $candidate_id = $candidate->id;
         $cv = new Profile();
         $path_cv = $request->path_cv;

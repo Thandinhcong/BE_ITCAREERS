@@ -73,6 +73,7 @@ Route::group([
     });
 });
 Route::resource('experience', ExperienceController::class);
+Route::resource('major  ', \App\Http\Controllers\Admin\MajorController::class);
 
 //Candidates
 Route::group([
@@ -99,7 +100,7 @@ Route::group([
         Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);
         Route::get('update_cv/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'index']);
         Route::post('update_cv/update_info/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateInfo']);
-        // exp
+        // exp ,n n
         Route::post('update_cv/save_exp', [\App\Http\Controllers\Client\CreateCvController::class, 'saveExp']);
         Route::post('update_cv/update_exp/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateExp']);
         Route::get('update_cv/delete_exp/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteExp']);

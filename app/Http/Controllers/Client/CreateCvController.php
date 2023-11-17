@@ -133,7 +133,7 @@ class CreateCvController extends Controller
                 ->whereNull('edu.deleted_at')
                 ->select(
                     'edu.id',
-                    'edu.name AS school_name',
+                    'edu.name',
                     'gpa',
                     'academic_level.academic_level as type_degree',
                     'start_date',
@@ -142,6 +142,8 @@ class CreateCvController extends Controller
                     'profile_id',
                 )
                 ->get();
+               
+                //  dd($this->data['exps']);
         }
         return response()->json([
             'status' => true,
@@ -152,9 +154,9 @@ class CreateCvController extends Controller
     public function updateInfo(Request $request)
     {
         $validator_info = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
+            'name' => '',
+            'email' => '',
+            'phone' => '',
             'major_id' => '',
             'profile_id' => ''
         ]);
@@ -463,7 +465,7 @@ class CreateCvController extends Controller
             'gpa' => 'required',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'major_id' => 'required',
+            'major_id' => '',
             'profile_id' => 'required',
         ]);
 
