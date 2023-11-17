@@ -71,6 +71,7 @@ return [
     */
 
     'timezone' => env('APP_TIMEZONE'),
+    'date_format' => env('DATE_FORMAT'),
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

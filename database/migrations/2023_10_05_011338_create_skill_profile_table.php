@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('skill_profile', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('profile_id');
-            $table->bigInteger('skill_id');
+            $table->string('name_skill');
             $table->timestamps();
             $table->softDeletes();
         });

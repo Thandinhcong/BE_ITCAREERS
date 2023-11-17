@@ -61,6 +61,8 @@ class CreateCvController extends Controller
                 $cv->email = $candidate->email;
                 $cv->phone = $candidate->phone;
                 $cv->image = $candidate->image;
+                $cv->address = $candidate->address;
+                $cv->birth = $candidate->birth;
                 $cv->path_cv = $path_cv;
                 $cv->save();
                 $profile_id = $cv->id;
@@ -83,14 +85,6 @@ class CreateCvController extends Controller
             ->select('major.major')
             ->first();
         $cv_get = Profile::where('id', $profile_id)->first();
-        $district = DB::table('district')
-            ->where('district.id', '=', $cv_get->district_id)
-            ->join('province', 'province.id', '=', 'district.province_id')
-            ->select(
-                'province.province as province',
-                'district.name as district'
-            )
-            ->first();
         $cv = Profile::where('id', $profile_id)
             ->select(
                 'id',
@@ -100,7 +94,7 @@ class CreateCvController extends Controller
                 'phone',
                 'birth',
                 'major_id as major',
-                'district_id as district',
+                'address',
                 'candidate_id',
                 'total_exp',
                 'is_active',
@@ -109,18 +103,16 @@ class CreateCvController extends Controller
                 'path_cv',
             )
             ->first();
-            $cv->major = $major ? $major->major : null;
-            $cv->district = $district ? [$district->province, $district->district] : null;
+        $cv->major = $major ? $major->major : null;
 
         $this->data['cv'] = $cv;
         if (!empty($cv)) {
             $this->data['skill_cv'] = DB::table('skill_profile')
                 ->where('profile_id', '=', $profile_id)
                 ->whereNull('skill_profile.deleted_at')
-                ->join('skill', 'skill.id', '=', 'skill_profile.skill_id')
                 ->select(
-                    'skill_profile.id',
-                    'skill.skill',
+                    'id',
+                    'name_skill',
                     'profile_id'
                 )
                 ->get();
@@ -142,8 +134,8 @@ class CreateCvController extends Controller
                     'profile_id',
                 )
                 ->get();
-               
-                //  dd($this->data['exps']);
+
+            //  dd($this->data['exps']);
         }
         return response()->json([
             'status' => true,
@@ -173,6 +165,8 @@ class CreateCvController extends Controller
         $cv->phone = $request->phone;
         $cv->major_id = $request->major_id;
         $cv->birth = $request->birth;
+        $cv->address = $request->address;
+        $cv->image = $request->image;
 
         $res = $cv->update();
         if ($res == null) {
@@ -507,7 +501,6 @@ class CreateCvController extends Controller
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
             'major_id' => 'required',
-            'profile_id' => 'required',
         ]);
 
         if ($validator_edu->fails()) {
@@ -524,7 +517,6 @@ class CreateCvController extends Controller
             'start_date' => $request->start_date,
             'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
             'major_id' =>  $request->major_id,
-            'profile_id' => $request->profile_id,
         ]);
 
         if (!$edu->update()) {
@@ -560,11 +552,10 @@ class CreateCvController extends Controller
     {
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
-            'instructor' => 'required',
+            'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
             'desc' => 'required',
-            'phone_instructor' => 'required',
-            'email_instructor' => 'required|email',
+            'link_project' => 'required',
             'profile_id' => 'required',
         ]);
 
@@ -577,12 +568,11 @@ class CreateCvController extends Controller
         $project = new Project();
         $project->fill([
             'project_name' => $request->project_name,
-            'instructor' => $request->instructor,
+            'position' => $request->position,
             'start_date' => $request->start_date,
             'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
             'desc' => $request->desc,
-            'phone_instructor' =>  $request->phone_instructor,
-            'email_instructor' => $request->email_instructor,
+            'link_project' => $request->link_project,
             'profile_id' => $request->profile_id,
         ]);
 
@@ -603,12 +593,10 @@ class CreateCvController extends Controller
     {
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
-            'instructor' => 'required',
+            'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
             'desc' => 'required',
-            'phone_instructor' => 'required',
-            'email_instructor' => 'required|email',
-            'profile_id' => 'required',
+            'link_project' => 'required',
         ]);
 
         if ($validator_project->fails()) {
@@ -617,19 +605,16 @@ class CreateCvController extends Controller
             ], 422);
         }
         $project_id = $request->id;
-        $profile = Project::find($project_id);
-        $profile->fill([
+        $project = Project::find($project_id);
+        $project->fill([
             'project_name' => $request->project_name,
-            'instructor' => $request->instructor,
+            'position' => $request->position,
             'start_date' => $request->start_date,
             'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
             'desc' => $request->desc,
-            'phone_instructor' =>  $request->phone_instructor,
-            'email_instructor' => $request->email_instructor,
-            'profile_id' => $request->profile_id,
+            'link_project' => $request->link_project,
         ]);
-
-        if (!$profile->update()) {
+        if (!$project->update()) {
             return response()->json([
                 'status' => false,
                 'message' => 'Cập nhật thất bại!'
@@ -639,7 +624,7 @@ class CreateCvController extends Controller
         return response()->json([
             'is_check' => true,
             'success' => 'Cập nhật thành công!',
-            'data' => $profile,
+            'data' => $project,
         ], 201);
     }
     public function deleteProject(Request $request)
@@ -661,7 +646,7 @@ class CreateCvController extends Controller
     public function saveSkill(Request $request)
     {
         $validator_skill = Validator::make($request->all(), [
-            'skill_id' => 'required',
+            'name_skill' => 'required',
             'profile_id' => 'required',
         ]);
 
@@ -673,7 +658,7 @@ class CreateCvController extends Controller
 
         $skill_profile = new SkillProfile();
         $skill_profile->fill([
-            'skill_id' => $request->skill_id,
+            'name_skill' => $request->name_skill,
             'profile_id' => $request->profile_id,
         ]);
 
@@ -693,8 +678,7 @@ class CreateCvController extends Controller
     public function updateSkill(Request $request)
     {
         $validator_skill = Validator::make($request->all(), [
-            'skill_id' => 'required',
-            'profile_id' => 'required',
+            'name_skill' => 'required',
         ]);
 
         if ($validator_skill->fails()) {
@@ -706,8 +690,7 @@ class CreateCvController extends Controller
         $skill_profile_id = $request->id;
         $skill_profile = SkillProfile::find($skill_profile_id);
         $skill_profile->fill([
-            'skill_id' => $request->skill_id,
-            'profile_id' => $request->profile_id,
+            'name_skill' => $request->name_skill,
         ]);
 
         if (!$skill_profile->update()) {

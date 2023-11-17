@@ -13,12 +13,11 @@ class Project extends Model
     protected $fillable = [
         'id',
         'project_name',
-        'instructor',
+        'position',
         'start_date',
         'end_date',
         'desc',
-        'phone_instructor',
-        'email_instructor',
+        'link_project',
         'profile_id'
     ];
 }

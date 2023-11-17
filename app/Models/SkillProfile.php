@@ -10,7 +10,7 @@ class SkillProfile extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = "skill_profile";
-    protected $fillable = ['id', 'profile_id', 'skill_id'];
+    protected $fillable = ['id', 'profile_id', 'name_skill'];
     public function getNameSkill()
     {
         return $this->belongsTo(Skill::class, 'skill_id', 'id');

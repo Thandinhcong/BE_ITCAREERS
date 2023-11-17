@@ -23,7 +23,7 @@ return new class extends Migration
             // $table->string('edu_profile_id')->nullable();
             // $table->string('skill_profile')->nullable();
             // $table->string('academic_level_id')->nullable();
-            $table->string('district_id', 55)->nullable();
+            $table->string('address', 255)->nullable();
             $table->bigInteger('candidate_id')->nullable();
             //bổ sung
             $table->integer('total_exp')->default(0)->comment('tổng số năm kinh nghiệm');

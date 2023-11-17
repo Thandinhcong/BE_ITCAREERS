@@ -22,7 +22,7 @@ class Profile extends Model
         'career_goal',
         'candidate_id',
         'major_id',
-        'district_id',
+        'address',
         'path_cv',
         'coin',
     ];
