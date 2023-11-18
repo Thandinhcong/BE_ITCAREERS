@@ -3,121 +3,128 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\ProfileOpen;
 use App\Models\SaveProfile;
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProfileCandidate extends Controller
 {
-    public function __construct()
+    public function company_id()
     {
+        return Auth::guard('company')->user()->id;
+    }
+    public function hide_info($data)
+    {
+        foreach ($data as $customer) {
+            $extractedPhoneNumber = substr($customer->phone, 0, 6);
+            $customer->phone = str_pad($extractedPhoneNumber, 10, '*****', STR_PAD_RIGHT);
+        }
+        foreach ($data as $customer) {
+            $index = strpos($customer->email, '@');
+            $customer->email = substr($customer->email, 0, $index - 3) . str_repeat('*', 3) . substr($customer->email, $index);
+        }
+        return $data;
+    }
+    public function detail_candidate() {
+        $data['profie'] = DB::table('profile')
+        ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+        ->where('candidates.find_job', 1)
+        ->select(
+            'candidates.id as candidate_id',
+            'candidates.image',
+            'profile.id as profile_id',
+            'profile.name',
+            'profile.email',
+            'profile.phone',
+            'profile.address',
+            'profile.phone',
+            'profile.path_cv',
+            'profile.title',
+            'profile.coin',
+        )
+        ->get();
+        // $data['profile'] = $this->hide_info($data['profile']);
+        // $data['profie_exp'] =
+        // $data['project_name'] =
+        // $data['profie_exp'] =
+
     }
     public function index()
     {
-        // $company_id =Auth::guard('company')->user()->id;
-        // $data['profile_open'] = DB::table('profile_open')->where('company_id', $company_id)->count->get();
-        // $data['save_profile'] = DB::table('save_profile')->select('id')->where('company_id', $company_id)->get();
-        $data = DB::table('candidates')
-            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM profile_open WHERE candidates.id = profile_open.candidate_id) AS have_profile_open"))
-            // ->addSelect(DB::raw("(SELECT COUNT(*) FROM save_profile WHERE candidates.id = save_profile.candidate_id) AS have_save_profile"))
-            ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
-            ->leftJoin('save_profile', 'candidates.id', '=', 'save_profile.candidate_id')
-            ->leftJoin('profile_open', 'candidates.id', '=', 'profile_open.candidate_id')
+        $data = DB::table('profile')
+            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             ->where('candidates.find_job', 1)
             ->select(
                 'candidates.id as candidate_id',
                 'candidates.image',
-                'candidates.phone',
-                // 'profile.path_cv',
+                'profile.id as profile_id',
                 'profile.name',
                 'profile.email',
                 'profile.phone',
-                'profile.district_id',
+                'profile.address',
                 'profile.phone',
-                'save_profile.id as have_save_profile',
-                'profile_open.id as have_open_profile'
             )
             ->get();
-            foreach ($data as $customer) {
-                $extractedPhoneNumber = substr($customer->phone, 0, 6);
-                $customer->phone = str_pad($extractedPhoneNumber, 10, '*****', STR_PAD_RIGHT);
-              }
+        $data = $this->hide_info($data);
         return response()->json([
             "status" => 'success',
             "data" => $data,
         ], 200);
     }
-    // public function show_profile_open()
-    // {
-    //     $company_id = Auth::guard('company')->user()->id;
-    //     $data = DB::table('profile')
-    //         ->select(
-    //             'candidates.id as candidate_id',
-    //             'candidates.image',
-    //             'candidates.phone',
-    //             'curriculum_vitae.id as cv_id',
-    //             'curriculum_vitae.path_cv',
-    //             'profile.name',
-    //             'profile.email',
-    //             'profile.phone',
-    //             'profile.birth',
-    //         )
-    //         ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
-    //         ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
-    //         ->where('candidates.find_job', 1)
-    //         ->where('profile_open.company_id', $company_id)
-
-    //         ->whereExists(function (QueryBuilder $query) {
-    //             $query->select(DB::raw(1))
-    //                 ->from('profile_open')
-    //                 ->whereColumn('profile_open.candidate_id', 'candidates.id');
-    //         })
-    //         ->get();
-
-    //     return response()->json([
-    //         "status" => 'success',
-    //         "data" => $data,
-    //     ], 200);
-    // }
-    // public function show_save_profile()
-    // {
-    //     $company_id = Auth::guard('company')->user()->id;
-    //     $data = DB::table('profile')
-    //         ->select(
-    //             'candidates.id as candidate_id',
-    //             'candidates.image',
-    //             'candidates.phone',
-    //             'curriculum_vitae.id as cv_id',
-    //             'curriculum_vitae.path_cv',
-    //             'profile.name',
-    //             'profile.email',
-    //             'profile.phone',
-    //             'profile.birth',
-
-    //         )
-    //         ->join('candidates', 'candidates.id', '=', 'save_profile.candidate_id')
-    //         ->join('curriculum_vitae', 'candidates.main_cv', '=', 'curriculum_vitae.id')
-    //         ->join('profile', 'candidates.id', '=', 'profile.candidate_id')
-    //         ->where('save_profile.company_id', $company_id)
-    //         ->whereExists(function (QueryBuilder $query) {
-    //             $query->select(DB::raw(1))
-    //                 ->from('profile_open')
-    //                 ->whereColumn('save_profile.candidate_id', 'candidates.id');
-    //         })
-    //         ->get();
-    //     return response()->json([
-    //         "status" => 'success',
-    //         "data" => $data,
-    //     ], 200);
-    // }
+    public function show_profile_open()
+    {
+        $company_id = optional(Auth::guard('company')->user())->id;
+        $data = DB::table('profile')
+            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+            ->join('profile_open', 'candidates.id', '=', 'profile_open.candidate_id')
+            ->where('candidates.find_job', 1)
+            ->where('profile_open.company_id', $this->company_id())
+            ->select(
+                'candidates.id as candidate_id',
+                'candidates.image',
+                'profile.id as profile_id',
+                'profile.name',
+                'profile.email',
+                'profile.phone',
+                'profile.address',
+                'profile.phone',
+            )
+            ->get();
+        $data = $this->hide_info($data);
+        return response()->json([
+            "status" => 'success',
+            "data" => $data,
+        ], 200);
+    }
+    public function show_save_profile()
+    {
+        $data = DB::table('profile')
+            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+            ->join('save_profile', 'candidates.id', '=', 'save_profile.candidate_id')
+            ->where('candidates.find_job', 1)
+            ->where('save_profile.company_id', $this->company_id())
+            ->select(
+                'candidates.id as candidate_id',
+                'candidates.image',
+                'profile.id as profile_id',
+                'profile.name',
+                'profile.email',
+                'profile.phone',
+                'profile.address',
+                'profile.phone',
+            )
+            ->get();
+        $data = $this->hide_info($data);
+        return response()->json([
+            "status" => 'success',
+            "data" => $data,
+        ], 200);
+    }
     public function save_profile($id)
     {
-        $company_id = Auth::guard('company')->user()->id;
-        $check = DB::table('save_profile')->where('company_id', $company_id)->where('candidate_id', $id)
+        $check = DB::table('save_profile')->where('company_id', $this->company_id())->where('candidate_id', $id)
             ->first();
         if ($check) {
             return response()->json([
@@ -127,7 +134,7 @@ class ProfileCandidate extends Controller
         } else {
             $saveProfile = SaveProfile::create(
                 [
-                    'company_id' => $company_id,
+                    'company_id' => $this->company_id(),
                     'candidate_id' => $id
                 ]
             );
@@ -146,56 +153,51 @@ class ProfileCandidate extends Controller
     }
     public function open_profile($id)
     {
-        $company_id = Auth::guard('company')->user()->id;
-        $check = DB::table('profile_open')->where('company_id', $company_id)->where('candidate_id', $id)
+        $check = DB::table('profile_open')
+            ->where('company_id', $this->company_id())
+            ->where('candidate_id', $id)
             ->first();
         $check_coin = DB::table('companies')
             ->select('coin')
-            ->where('id', $company_id)->first();
-        if ($check_coin->coin == 0) {
+            ->where('id', $this->company_id())->first();
+        $coin_profile = DB::table('profile')
+            ->where('candidate_id', $id)
+            ->select(
+                'profile.coin',
+            )
+            ->first();
+        if ($check_coin->coin > $coin_profile->coin) {
+            if ($check) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error' => 'Bạn đã mua hồ sơ này'
+                ], 400);
+            } else {
+                $saveProfile = ProfileOpen::create(
+                    [
+                        'company_id' => $this->company_id(),
+                        'candidate_id' => $id
+                    ]
+                );
+                $coinCompanyAffter = ($check_coin->coin) - ($coin_profile->coin);
+                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+            }
+            if ($saveProfile) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Thêm thành công'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'error'
+                ], 500);
+            }
+        } else {
             return response()->json([
                 'status' => 'fail',
                 'error' => 'Bạn không đủ tiền'
             ], 400);
-        }
-        $check_profile_apply = DB::table('job_post_apply')
-            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
-            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->select(
-                'candidates.id',
-            )
-            ->where('companies.id', 1)->where('candidates.id', $id)->first();
-        if ($check_profile_apply) {
-            return response()->json([
-                'status' => 'fail',
-                'error' => 'ứng viên này đã gửi thông tin của mình đến bạn',
-
-            ], 400);
-        }
-        if ($check) {
-            return response()->json([
-                'status' => 'fail',
-                'error' => 'Đã lưu'
-            ], 400);
-        } else {
-            $saveProfile = ProfileOpen::create(
-                [
-                    'company_id' => $company_id,
-                    'candidate_id' => $id
-                ]
-            );
-        }
-        if ($saveProfile) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Thêm thành công'
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'error'
-            ], 500);
         }
     }
     public function cancel_save_profile($id)

@@ -276,6 +276,94 @@ class JobPostController extends Controller
             ], 404);
         }
     }
+    public function job_post_expires()
+    {
+        $company_id = Auth::user()->id;
+        $job_post = DB::table('job_post')->where('company_id',  $company_id)->where('end_date', '<=', now()->format('Y-m-d'))
+            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
+            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->join('companies', 'companies.id', '=', 'job_post.company_id')
+            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
+            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
+            ->join('major', 'major.id', '=', 'job_post.major_id')
+            ->join('district', 'district.id', '=', 'job_post.area_id')
+            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->select(
+                'job_post.id',
+                'job_post.title',
+                'job_post.min_salary',
+                'job_post.max_salary',
+                'job_position.job_position',
+                'experiences.experience',
+                'companies.name as company_name',
+                'companies.description',
+                'companies.address',
+                'companies.logo',
+                'working_form.working_form',
+                'academic_level.academic_level',
+                'major.major',
+                'district.name as district',
+                'province.province',
+                'job_post.start_date',
+                'job_post.end_date',
+                'job_post.quantity',
+                'job_post.requirement as require',
+                'job_post.interest',
+                'job_post.desc',
+                'job_post.status',
+            )->get();
+        return response()->json([
+            'data' => $job_post,
+        ]);
+    }
+    public function extend_job_post(Request $request, string $id)
+    {
+        $job_post_date = JobPost::find($id);
+        $validator = Validator::make($request->all(), [
+            // 'start_date' => 'required|',
+            'start_date' => 'date',
+            'end_date' => 'required|date|after:start_date|after:now',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages(),
+                'data' => $job_post_date
+            ], 400);
+        }
+        if ($job_post_date) {
+            $job_post_date->update($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Success',
+                'data' => $job_post_date
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+            ], 500);
+        }
+    }
+    public function job_post_static() {
+        
+    }
+    function stop_job_post(string $id)
+    {
+        $job_post_date = JobPost::find($id);
+        if ($job_post_date) {
+            $job_post_date->status = 3;
+            $job_post_date->update();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Success',
+                'data' => $job_post_date
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+            ], 500);
+        }
+    }
     public function list_candidate_apply_job(string $id)
     {
         $list_candidate_apply_job = DB::table('job_post_apply')
@@ -385,91 +473,6 @@ class JobPostController extends Controller
                 'data' => 'job post Not Found',
                 'data' => $profile
             ], 404);
-        }
-    }
-    public function job_post_expires()
-    {
-        $company_id = Auth::user()->id;
-        $job_post = DB::table('job_post')->where('company_id',  $company_id)->where('end_date', '<=', now()->format('Y-m-d'))
-            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
-            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
-            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
-            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
-            ->join('major', 'major.id', '=', 'job_post.major_id')
-            ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'district.province_id', '=', 'province.id',)
-            ->select(
-                'job_post.id',
-                'job_post.title',
-                'job_post.min_salary',
-                'job_post.max_salary',
-                'job_position.job_position',
-                'experiences.experience',
-                'companies.name as company_name',
-                'companies.description',
-                'companies.address',
-                'companies.logo',
-                'working_form.working_form',
-                'academic_level.academic_level',
-                'major.major',
-                'district.name as district',
-                'province.province',
-                'job_post.start_date',
-                'job_post.end_date',
-                'job_post.quantity',
-                'job_post.requirement as require',
-                'job_post.interest',
-                'job_post.desc',
-                'job_post.status',
-            )->get();
-        return response()->json([
-            'data' => $job_post,
-        ]);
-    }
-    public function extend_job_post(Request $request, string $id)
-    {
-        $job_post_date = JobPost::find($id);
-        $validator = Validator::make($request->all(), [
-            // 'start_date' => 'required|',
-            'start_date' => 'date',
-            'end_date' => 'required|date|after:start_date|after:now',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'fail',
-                'errors' => $validator->messages(),
-                'data' => $job_post_date
-            ], 400);
-        }
-        if ($job_post_date) {
-            $job_post_date->update($request->all());
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Update Success',
-                'data' => $job_post_date
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'fail',
-            ], 500);
-        }
-    }
-    function stop_job_post(string $id)
-    {
-        $job_post_date = JobPost::find($id);
-        if ($job_post_date) {
-            $job_post_date->status = 3;
-            $job_post_date->update();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Update Success',
-                'data' => $job_post_date
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'fail',
-            ], 500);
         }
     }
     public function list_candidate_applied()

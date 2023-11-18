@@ -25,7 +25,7 @@ class CompanyFactory extends Factory
             'founded_in' => fake()->date(),
             'name' => fake()->name(),
             'office' => 'Hà Nội',
-            'email' => fake()->email(),
+            'email' => "company@gmail.com",
             'password' => Hash::make(123456),
             'phone' => "0123456789",
             'map' => fake()->address(),

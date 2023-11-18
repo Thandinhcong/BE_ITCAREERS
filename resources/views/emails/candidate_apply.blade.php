@@ -10,15 +10,8 @@
 
 <body>
 
-    <h1>{{ $candidate->status }}</h1>
+    <h1>Ứng tuyển thành công</h1>
 
 
-  
-
-    <p>evaluate</p>
-
-     
-
-    <p>Thank you</p>
 
 </body>
