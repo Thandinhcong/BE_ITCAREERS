@@ -11,6 +11,7 @@ use App\Models\SaveJobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class CandidateApplyController extends Controller
@@ -59,7 +60,7 @@ class CandidateApplyController extends Controller
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
             ->get();
-        if ($data_check->count() > 0) {
+        if ($data_check->count() < 0) {
             return response()->json([
                 'error' => 'Bạn đã ứng tuyển',
             ], 400);
@@ -96,6 +97,10 @@ class CandidateApplyController extends Controller
                 }
             }
             if ($candidate_apply) {
+                Mail::send('emails.candidate_apply', compact('candidate_apply'), function ($email) use ($candidate_apply) {
+                        $email->subject('IT - Ứng tuyển thành công');
+                        $email->to("huyetcongtu4869@gmail.com");
+                    });
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Bạn đã ứng tuyển thành công ',
