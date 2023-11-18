@@ -33,7 +33,8 @@ class JobPostController extends Controller
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->join('province', 'district.province_id', '=', 'province.id')
+            ->groupBy('job_post_id')
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -58,6 +59,7 @@ class JobPostController extends Controller
                 'job_post.interest',
                 'job_post.desc',
                 'job_post.status',
+                DB::raw('count(job_post_id) as  quantity_apply'),
             )->get();
         if ($job_post->count() == 0) {
             return response()->json([
@@ -115,7 +117,7 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         } else {
-            $request['requirement']=$request['require'];
+            $request['requirement'] = $request['require'];
             $job_post = JobPost::create($request->all());
         }
         if ($job_post) {
@@ -206,7 +208,7 @@ class JobPostController extends Controller
             ], 400);
         }
         if ($job_post) {
-            $request['requirement']=$request['require'];
+            $request['requirement'] = $request['require'];
             $job_post = JobPost::create($request->all());
             $job_post->update($request->all());
             return response()->json([
@@ -344,8 +346,8 @@ class JobPostController extends Controller
             ], 500);
         }
     }
-    public function job_post_static() {
-        
+    public function job_post_static()
+    {
     }
     function stop_job_post(string $id)
     {
@@ -477,7 +479,7 @@ class JobPostController extends Controller
     }
     public function list_candidate_applied()
     {
-        $company_id=Auth::user()->id;
+        $company_id = Auth::user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')

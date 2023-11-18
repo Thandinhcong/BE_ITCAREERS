@@ -75,7 +75,6 @@ class ProfileCandidate extends Controller
     }
     public function show_profile_open()
     {
-        $company_id = optional(Auth::guard('company')->user())->id;
         $data = DB::table('profile')
             ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             ->join('profile_open', 'candidates.id', '=', 'profile_open.candidate_id')
