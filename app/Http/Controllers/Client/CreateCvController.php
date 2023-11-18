@@ -710,7 +710,7 @@ class CreateCvController extends Controller
     {
         $skill_profile_id = $request->id;
         if (isset($skill_profile_id)) {
-            $project = Project::find($skill_profile_id);
+            $project = SkillProfile::find($skill_profile_id);
             $project->delete();
             return response()->json([
                 'is_check' => true,
