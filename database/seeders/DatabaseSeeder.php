@@ -10,11 +10,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // \App\Models\User::factory(1)->create();
+        \App\Models\User::factory(1)->create();
         \App\Models\Candidate::factory(1)->create();
         \App\Models\Company::factory(1)->create();
         $this->call([
             ProvinceSeeder::class,
+            AcademicLevelSeeder::class,
             DistrictSeeder::class,
             ExperienceSeeder::class,
             JobPositionSeeder::class,
@@ -22,8 +23,7 @@ class DatabaseSeeder extends Seeder
             MajorSeeder::class,
             SelectSalaryResultSeeder::class,
             WorkingFormSeeder::class,
-            RoleSeeder::class,
-            AdminSeeder::class,
+          
         ]);
         JobPost::create([
             'title' => 'Bài đăng 1',

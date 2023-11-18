@@ -85,8 +85,11 @@ class CandidateApplyController extends Controller
                 ], 400);
             } else {
                 if ($request['path_cv']) {
-                    $request['curriculum_vitae_id'] = DB::table('curriculum_vitae')->insertGetId(
+                    $request['curriculum_vitae_id'] = DB::table('profile')->insertGetId(
                         [
+                            'name' => $request['name'],
+                            'phone' => $request['phone'],
+                            'email' =>$request['email'],
                             'path_cv' => $request['path_cv'],
                             'candidate_id' => 1
                         ]
@@ -98,9 +101,9 @@ class CandidateApplyController extends Controller
             }
             if ($candidate_apply) {
                 Mail::send('emails.candidate_apply', compact('candidate_apply'), function ($email) use ($candidate_apply) {
-                        $email->subject('IT - Ứng tuyển thành công');
-                        $email->to("huyetcongtu4869@gmail.com");
-                    });
+                    $email->subject('IT - Ứng tuyển thành công');
+                    $email->to($candidate_apply->email);
+                });
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Bạn đã ứng tuyển thành công ',
@@ -115,7 +118,7 @@ class CandidateApplyController extends Controller
     }
     public function show_save_job_post()
     {
-        $candidate_id = Auth::guard('company')->user()->id;
+        $candidate_id = Auth::user()->id;
         $data = DB::table('save_job_post')
             ->select(
                 'job_post.id',
@@ -132,7 +135,7 @@ class CandidateApplyController extends Controller
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id',)
             ->where('save_job_post.candidate_id', $candidate_id)
-            ->whereNull('save_job_post.deleted_at')
+            // ->whereNull('save_job_post.deleted_at')
             ->get();
         return response()->json([
             "status" => 'success',
@@ -141,7 +144,7 @@ class CandidateApplyController extends Controller
     }
     public function save_job_post($id)
     {
-        $candidate_id = Auth::guard('company')->user()->id;
+        $candidate_id = Auth::guard('candidate')->user()->id;
         $check = DB::table('save_job_post')
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
