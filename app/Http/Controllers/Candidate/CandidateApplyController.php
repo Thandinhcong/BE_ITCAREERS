@@ -60,7 +60,7 @@ class CandidateApplyController extends Controller
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
             ->get();
-        if ($data_check->count() < 0) {
+        if ($data_check->count() > 0) {
             return response()->json([
                 'error' => 'Bạn đã ứng tuyển',
             ], 400);

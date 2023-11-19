@@ -64,7 +64,6 @@ class ProfileCandidate extends Controller
                 'profile.email',
                 'profile.phone',
                 'profile.address',
-                'profile.phone',
             )
             ->get();
         $data = $this->hide_info($data);
