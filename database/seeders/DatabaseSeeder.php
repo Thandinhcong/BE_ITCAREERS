@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\JobPost;
+use App\Models\JobPostType;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,7 +24,7 @@ class DatabaseSeeder extends Seeder
             MajorSeeder::class,
             SelectSalaryResultSeeder::class,
             WorkingFormSeeder::class,
-          
+
         ]);
         JobPost::create([
             'title' => 'Bài đăng 1',
@@ -43,6 +44,13 @@ class DatabaseSeeder extends Seeder
             'area_id' => 2,
             'start_date' => '2023-10-04',
             'end_date' => '2023-10-010',
+        ]);
+        JobPostType::create([
+            'name' => 'Bài đăng 1',
+            'salary' => 100,
+        ]);JobPostType::create([
+            'name' => 'Bài đăng 2',
+            'salary' => 150,
         ]);
     }
 }

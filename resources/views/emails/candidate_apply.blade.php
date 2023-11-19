@@ -10,7 +10,7 @@
 
 <body>
 
-    <h1>Ứng tuyển thành công</h1>
+    <h1>{{var_dump($candidate_apply)}}</h1>
 
 
 

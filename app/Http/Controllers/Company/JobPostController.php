@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicLevel;
+use App\Models\Company;
 use App\Models\Experience;
 use App\Models\JobPosition;
 use App\Models\JobPost;
@@ -26,6 +27,7 @@ class JobPostController extends Controller
     {
         $company_id = Auth::user()->id;
         $job_post = DB::table('job_post')->where('company_id',  $company_id)
+            ->leftjoin('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
@@ -34,7 +36,7 @@ class JobPostController extends Controller
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id')
-            ->groupBy('job_post_id')
+            ->groupBy('job_post.id')
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -61,7 +63,7 @@ class JobPostController extends Controller
                 'job_post.status',
                 DB::raw('count(job_post_id) as  quantity_apply'),
             )->get();
-        if ($job_post->count() == 0) {
+        if ($job_post->count() === 0) {
             return response()->json([
                 "status" => 'fail',
                 "message" => "Job Post empty",
@@ -90,6 +92,10 @@ class JobPostController extends Controller
     }
     public function store(Request $request)
     {
+        $company_coin = DB::table('companies')
+            ->select('coin')
+            ->where('id', $this->company_id())->first();
+
         $valdator = Validator::make($request->all(), [
             'title' => 'required|',
             'job_position_id' => 'required|',
@@ -116,6 +122,19 @@ class JobPostController extends Controller
                 'status' => 422,
                 'errors' => $valdator->messages(),
             ], 422);
+        }
+        if ($request['type_job_post_id']) {
+            $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
+            $jobPostType = JobPostType::find($request['type_job_post_id']);
+            $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
+            if ($coinCompanyAffter < 0) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => 'Bạn không đủ tiền'
+                ], 422);
+            } else {
+                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+            }
         } else {
             $request['requirement'] = $request['require'];
             $job_post = JobPost::create($request->all());
@@ -133,50 +152,13 @@ class JobPostController extends Controller
             ], 500);
         }
     }
-    public function job_post_type(Request $request, string $id)
-    {
-        $coin_company = Auth::guard('company')->user();
-        $job_post = JobPost::find($id);
-        $salary_job_post_type = JobPostType::all();
-        $valdator = Validator::make($request->all(), [
-            'type_job_post_id' => 'required|int',
-        ]);
-        if ($valdator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $valdator->messages(),
-            ], 422);
-        }
-        if ($coin_company->coin < $salary_job_post_type[$request['type_job_post_id']]->salary) {
-            return response()->json([
-                'status' => 422,
-                'errors' => "không đủ tiền",
-            ], 422);
-        }
-        if ($job_post) {
-            $job_post->update($request->all());
-            $affected = DB::table('companies')
-                ->where('id', 1)
-                ->update(['coin' => $coin_company->coin - $salary_job_post_type[$request['type_job_post_id']]->salary]);
-            return response()->json([
-                'status' => 201,
-                'message' => 'Tạo thành công',
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Lỗi'
-            ], 500);
-        }
-        if ($coin_company->coin > $salary_job_post_type["1"]->salary) {
-            dd('đéo đủ tiền', $coin_company->coin, $salary_job_post_type["1"]->salary);
-        } else {
-            dd('đủ tiền');
-        }
-    }
+
     public function update(Request $request, string $id)
     {
         $job_post = JobPost::find($id);
+        $company_coin = DB::table('companies')
+            ->select('coin')
+            ->where('id', $this->company_id())->first();
         $validator = Validator::make($request->all(), [
             'title' => 'required|',
             'job_position_id' => 'required|',
@@ -190,7 +172,6 @@ class JobPostController extends Controller
             'require' => 'required|',
             'interest' => 'required|',
             'gender' => 'required',
-            // 'area_id' => 'required',
             'gender' => 'in:0,1,2',
             //Bắt buộc 1 trong 3 số trên
             'area_id' => 'required|',
@@ -206,10 +187,24 @@ class JobPostController extends Controller
                 'errors' => $validator->messages(),
                 'data' => $job_post
             ], 400);
+        } else {
+            $job_post = JobPost::find($id);
+        }
+        if ($request['type_job_post_id']) {
+            $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
+            $jobPostType = JobPostType::find($request['type_job_post_id']);
+            $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
+            if ($coinCompanyAffter < 0) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => 'Bạn không đủ tiền'
+                ], 422);
+            } else {
+                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+            }
         }
         if ($job_post) {
             $request['requirement'] = $request['require'];
-            $job_post = JobPost::create($request->all());
             $job_post->update($request->all());
             return response()->json([
                 'status' => 'success',
@@ -254,7 +249,7 @@ class JobPostController extends Controller
                 'job_post.quantity',
                 'job_post.requirement as require',
                 'job_post.interest',
-                'job_post.desv',
+                'job_post.desc',
                 'job_post.status',
                 'job_post.job_position_id',
                 'job_post.exp_id',
@@ -320,6 +315,9 @@ class JobPostController extends Controller
     }
     public function extend_job_post(Request $request, string $id)
     {
+        $company_coin = DB::table('companies')
+            ->select('coin')
+            ->where('id', $this->company_id())->first();
         $job_post_date = JobPost::find($id);
         $validator = Validator::make($request->all(), [
             // 'start_date' => 'required|',
@@ -332,6 +330,19 @@ class JobPostController extends Controller
                 'errors' => $validator->messages(),
                 'data' => $job_post_date
             ], 400);
+        }
+        if ($request['type_job_post_id']) {
+            $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
+            $jobPostType = JobPostType::find($request['type_job_post_id']);
+            $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
+            if ($coinCompanyAffter < 0) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => 'Bạn không đủ tiền'
+                ], 422);
+            } else {
+                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+            }
         }
         if ($job_post_date) {
             $job_post_date->update($request->all());
@@ -346,9 +357,7 @@ class JobPostController extends Controller
             ], 500);
         }
     }
-    public function job_post_static()
-    {
-    }
+
     function stop_job_post(string $id)
     {
         $job_post_date = JobPost::find($id);
@@ -445,7 +454,6 @@ class JobPostController extends Controller
         $profile = Db::table('curriculum_vitae')
             ->join('job_post_apply', 'curriculum_vitae.id', '=', 'curriculum_vitae.id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-
             ->select(
                 'job_post_apply.name',
                 'job_post_apply.email',

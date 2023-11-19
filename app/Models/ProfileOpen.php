@@ -9,5 +9,5 @@ class ProfileOpen extends Model
 {
     use HasFactory;
     protected $table='profile_open';
-    protected $fillable=['company_id','candidate_id'];
+    protected $fillable=['company_id','coin','candidate_id'];
 }

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('type_job_post', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->double('salary');
             $table->timestamps();
         });

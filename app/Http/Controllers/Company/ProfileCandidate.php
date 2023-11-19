@@ -175,7 +175,8 @@ class ProfileCandidate extends Controller
                 $saveProfile = ProfileOpen::create(
                     [
                         'company_id' => $this->company_id(),
-                        'candidate_id' => $id
+                        'candidate_id' => $id,
+                        'coin' => $coin_profile->coin
                     ]
                 );
                 $coinCompanyAffter = ($check_coin->coin) - ($coin_profile->coin);

@@ -44,8 +44,8 @@ class SearchController extends Controller
                     $q->whereNot('job_post.max_salary', '<=', $request->min_salary);
                 }
             })
-            // ->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->where('job_post.status', 1)
+            ->where('start_date', '<=', now()->format('Y-m-d'))
+            ->where('job_post.status', 1)
             ->get();
         return response()->json([
             'status' => 200,
