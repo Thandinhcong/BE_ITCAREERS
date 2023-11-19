@@ -25,7 +25,7 @@ class JobPostController extends Controller
 {
     public function company_id()
     {
-        return Auth::guard('company')->user()->id;
+        return Auth::user()->id;
     }
     public function index()
     {
