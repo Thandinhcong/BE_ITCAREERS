@@ -385,7 +385,7 @@ class JobPostController extends Controller
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
+            ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post.id as job_post_id',
@@ -396,7 +396,7 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
-                'curriculum_vitae.path_cv',
+                'profile.path_cv',
                 'candidates.image'
             )
             ->where('job_post.id', $id)->get();
@@ -496,7 +496,7 @@ class JobPostController extends Controller
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
+            ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post.id as job_post_id',
@@ -507,8 +507,8 @@ class JobPostController extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
-                'candidates.image',
-                'curriculum_vitae.path_cv'
+                'profile.path_cv',
+                'candidates.image'
             )
             ->where('job_post.company_id', $company_id)
             ->get();
