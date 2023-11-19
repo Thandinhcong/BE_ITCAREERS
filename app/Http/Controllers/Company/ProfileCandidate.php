@@ -13,7 +13,7 @@ class ProfileCandidate extends Controller
 {
     public function company_id()
     {
-        return Auth::guard('company')->user()->id;
+        return Auth::user()->id;
     }
     public function hide_info($data)
     {
@@ -64,6 +64,9 @@ class ProfileCandidate extends Controller
                 'profile.email',
                 'profile.phone',
                 'profile.address',
+                'profile.phone',
+                'profile.created_at',
+
             )
             ->get();
         $data = $this->hide_info($data);
@@ -88,6 +91,8 @@ class ProfileCandidate extends Controller
                 'profile.phone',
                 'profile.address',
                 'profile.phone',
+                'profile.created_at',
+
             )
             ->get();
         $data = $this->hide_info($data);
@@ -112,6 +117,8 @@ class ProfileCandidate extends Controller
                 'profile.phone',
                 'profile.address',
                 'profile.phone',
+                'profile.phone',
+                'profile.created_at',
             )
             ->get();
         $data = $this->hide_info($data);
