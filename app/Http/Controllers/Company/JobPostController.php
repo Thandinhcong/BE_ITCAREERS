@@ -141,6 +141,7 @@ class JobPostController extends Controller
             }
         } else {
             $request['requirement'] = $request['require'];
+            $request['company_id'] = $this->company_id();
             $job_post = JobPost::create($request->all());
         }
         if ($job_post) {
