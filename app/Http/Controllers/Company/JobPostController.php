@@ -23,6 +23,10 @@ use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
 {
+    public function company_id()
+    {
+        return Auth::guard('company')->user()->id;
+    }
     public function index()
     {
         $company_id = Auth::user()->id;

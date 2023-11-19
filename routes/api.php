@@ -188,7 +188,7 @@ Route::get('list_candidate_applied', [\App\Http\Controllers\Company\JobPostContr
 //Hiển thị bài đăng hết hạn
 Route::get('job_post_expires', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_expires']);
 //Đăng lại bài hết hạn
-// Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
+Route::post('extend_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'extend_job_post']);
 //Dừng tuyển bài đăng
 // Route::post('stop_job_post/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'stop_job_post']);
 //hiển thị ứng viên mở tìm kiếm việc

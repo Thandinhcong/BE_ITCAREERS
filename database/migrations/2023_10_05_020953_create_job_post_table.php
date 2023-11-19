@@ -21,9 +21,9 @@ return new class extends Migration
             $table->integer('working_form_id');
             $table->double('min_salary');
             $table->double('max_salary');
-            $table->string('requirement',400);
-            $table->string('desc',400);
-            $table->string('interest',400);
+            $table->string('requirement',400)->comment('yêu cầu công việc');
+            $table->string('desc',400)->comment('Mô tả công việc');
+            $table->string('interest',400)->comment('quyền lợi công việc');
             $table->integer('gender');
             $table->integer('area_id');
             $table->integer('major_id');
