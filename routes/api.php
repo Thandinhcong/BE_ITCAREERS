@@ -165,7 +165,9 @@ Route::group([
         // Mở khóa ứng viên
         Route::post('open_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
         //hiển thị ứng viên đã mở khóa
-        Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'profile_open']);
+        Route::get('profile_open', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_profile_open']);
+        //hiển thị ứng viên đã lưu
+        Route::get('profile_save', [\App\Http\Controllers\Company\ProfileCandidate::class, 'show_save_profile']);
         //Lưu ứng viên
         Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'save_profile']);
         //Hủy lưu ứng viên

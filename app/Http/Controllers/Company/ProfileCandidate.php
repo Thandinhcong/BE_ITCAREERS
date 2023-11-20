@@ -101,6 +101,7 @@ class ProfileCandidate extends Controller
                 'profile.phone','profile.path_cv',
                 'profile.address',
                 'candidates.id as candidate_id',
+                'profile.created_at',
                 'candidates.image',
             )
             ->get();
@@ -124,6 +125,7 @@ class ProfileCandidate extends Controller
                 'profile.phone',
                 'profile.address',
                 'candidates.id as candidate_id',
+                'profile.created_at',
                 'candidates.image',
             )
             ->get();
