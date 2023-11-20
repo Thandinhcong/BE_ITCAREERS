@@ -28,7 +28,8 @@ class ManageCandidateApply extends Controller
                 'job_post_apply.phone',
                 'job_post_apply.name',
                 'profile.path_cv',
-                'candidates.image'
+                'candidates.image',
+                'profile.id',
             )
             ->where('job_post.id', $id)->get();
         if ($list_candidate_apply_job) {
@@ -143,7 +144,8 @@ class ManageCandidateApply extends Controller
                     'job_post_apply.phone',
                     'job_post_apply.name',
                     'candidates.image',
-                    'profile.path_cv'
+                    'profile.path_cv',
+                    'profile.id',
                 )
             ->where('job_post.company_id',  $company_id)
             ->get();
