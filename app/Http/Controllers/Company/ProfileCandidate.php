@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Candidate;
 use App\Models\Company;
 use App\Models\ProfileOpen;
 use App\Models\SaveProfile;
@@ -13,60 +14,72 @@ class ProfileCandidate extends Controller
 {
     public function company_id()
     {
-        return Auth::guard('company')->user()->id;
+        return Auth::user()->id;
+        // return 1;
     }
     public function hide_info($data)
     {
-        foreach ($data as $customer) {
-            $extractedPhoneNumber = substr($customer->phone, 0, 6);
-            $customer->phone = str_pad($extractedPhoneNumber, 10, '*****', STR_PAD_RIGHT);
+        $check_open = DB::table('profile_open')
+        ->join('candidates', 'profile_open.candidate_id', '=', 'candidates.id')
+        ->join('profile', 'profile.id', '=', 'candidates.main_cv')
+            ->where('profile_open.company_id',$this->company_id())
+            ->where('profile_open.candidate_id', $data->candidate_id)
+            ->select(
+                'profile_open.candidate_id',
+                'profile.path_cv',
+                // 'profile.id'
+            )
+            ->first();
+        $check_save = DB::table('save_profile')
+            ->where('company_id',$this->company_id())
+            ->where('candidate_id', $data->candidate_id)
+            ->select(
+                'candidate_id'
+            )
+            ->first();
+        if ($check_open) {
+            $data->path_cv = $check_open->path_cv;
+            $data->open_profile = 'đã mua';
+        } else {
+            $data->path_cv = null;
+            $data->open_profile = 'chưa mua';
+            $extractedPhoneNumber = substr($data->phone, 0, 6);
+            $data->phone = str_pad($extractedPhoneNumber, 10, '*****', STR_PAD_RIGHT);
+            $index = strpos($data->email, '@');
+            $data->email = substr($data->email, 0, $index - 3) . str_repeat('*', 3) . substr($data->email, $index);
         }
-        foreach ($data as $customer) {
-            $index = strpos($customer->email, '@');
-            $customer->email = substr($customer->email, 0, $index - 3) . str_repeat('*', 3) . substr($customer->email, $index);
+        if ($check_save) {
+            $data->save_profile = 'đã lưu';
+        } else {
+            $data->save_profile = 'chưa lưu';
         }
         return $data;
     }
-    public function detail_candidate() {
-        $data['profie'] = DB::table('profile')
-        ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
-        ->where('candidates.find_job', 1)
-        ->select(
-            'candidates.id as candidate_id',
-            'candidates.image',
-            'profile.id as profile_id',
-            'profile.name',
-            'profile.email',
-            'profile.phone',
-            'profile.address',
-            'profile.phone',
-            'profile.path_cv',
-            'profile.title',
-            'profile.coin',
-        )
-        ->get();
-        // $data['profile'] = $this->hide_info($data['profile']);
-        // $data['profie_exp'] =
-        // $data['project_name'] =
-        // $data['profie_exp'] =
-
-    }
     public function index()
     {
-        $data = DB::table('profile')
-            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+        $data = DB::table('candidates')
+            ->join('profile', 'profile.id', '=', 'candidates.main_cv')
+            // ->leftJoin('project', 'profile.id', '=', 'project.profile_id')
+            // ->leftJoin('edu', 'profile.id', '=', 'edu.profile_id')
+            // ->leftJoin('skill_profile', 'profile.id', '=', 'skill_profile.profile_id')
+            ->groupBy('candidates.id')
             ->where('candidates.find_job', 1)
             ->select(
-                'candidates.id as candidate_id',
-                'candidates.image',
-                'profile.id as profile_id',
                 'profile.name',
+                'profile.title',
+                'profile.id',
                 'profile.email',
                 'profile.phone',
                 'profile.address',
+                'candidates.id as candidate_id',
+                'candidates.image',
+                // DB::raw('GROUP_CONCAT(project.project_name SEPARATOR ",") as project_name'),
+                // DB::raw('GROUP_CONCAT(edu.name SEPARATOR ",") as edu_name'),
             )
             ->get();
-        $data = $this->hide_info($data);
+        foreach ($data as $customer) {
+            $this->hide_info($customer);
+        }
         return response()->json([
             "status" => 'success',
             "data" => $data,
@@ -80,17 +93,16 @@ class ProfileCandidate extends Controller
             ->where('candidates.find_job', 1)
             ->where('profile_open.company_id', $this->company_id())
             ->select(
+                'profile.name',
+                'profile.title',
+                'profile.id',
+                'profile.email',
+                'profile.phone','profile.path_cv',
+                'profile.address',
                 'candidates.id as candidate_id',
                 'candidates.image',
-                'profile.id as profile_id',
-                'profile.name',
-                'profile.email',
-                'profile.phone',
-                'profile.address',
-                'profile.phone',
             )
             ->get();
-        $data = $this->hide_info($data);
         return response()->json([
             "status" => 'success',
             "data" => $data,
@@ -101,21 +113,22 @@ class ProfileCandidate extends Controller
         $data = DB::table('profile')
             ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             ->join('save_profile', 'candidates.id', '=', 'save_profile.candidate_id')
-            ->where('candidates.find_job', 1)
+            // ->where('candidates.find_job', 1)
             ->where('save_profile.company_id', $this->company_id())
             ->select(
-                'candidates.id as candidate_id',
-                'candidates.image',
-                'profile.id as profile_id',
                 'profile.name',
+                'profile.title',
+                'profile.id',
                 'profile.email',
                 'profile.phone',
                 'profile.address',
-                'profile.phone',
+                'candidates.id as candidate_id',
+                'candidates.image',
             )
             ->get();
-        $data = $this->hide_info($data);
-        return response()->json([
+            foreach ($data as $customer) {
+                $this->hide_info($customer);
+            }        return response()->json([
             "status" => 'success',
             "data" => $data,
         ], 200);
