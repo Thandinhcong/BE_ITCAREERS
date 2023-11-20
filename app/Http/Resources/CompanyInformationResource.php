@@ -33,6 +33,7 @@ class CompanyInformationResource extends JsonResource
             'company_size_max' => $this->company_size_max,
             'company_size_min' => $this->company_size_min,
             'status' => $this->status,
+            'coin' => $this->coin,
         ];
     }
 }

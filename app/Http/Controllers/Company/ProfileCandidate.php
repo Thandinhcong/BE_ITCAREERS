@@ -71,6 +71,7 @@ class ProfileCandidate extends Controller
                 'profile.email',
                 'profile.phone',
                 'profile.address',
+                'profile.created_at',
                 'candidates.id as candidate_id',
                 'candidates.image',
                 // DB::raw('GROUP_CONCAT(project.project_name SEPARATOR ",") as project_name'),
