@@ -144,7 +144,7 @@ class CandidateApplyController extends Controller
     }
     public function save_job_post($id)
     {
-        $candidate_id = Auth::guard('candidate')->user()->id;
+        $candidate_id = Auth::user()->id;
         $check = DB::table('save_job_post')
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
