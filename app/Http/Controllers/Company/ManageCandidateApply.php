@@ -16,7 +16,7 @@ class ManageCandidateApply extends Controller
         $list_candidate_apply_job = DB::table('job_post_apply')
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
+            ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post.id as job_post_id',
@@ -27,7 +27,7 @@ class ManageCandidateApply extends Controller
                 'job_post_apply.email',
                 'job_post_apply.phone',
                 'job_post_apply.name',
-                'curriculum_vitae.path_cv',
+                'profile.path_cv',
                 'candidates.image'
             )
             ->where('job_post.id', $id)->get();
@@ -87,22 +87,25 @@ class ManageCandidateApply extends Controller
     }
     public function candidate_detail(string $id)
     {
-        $profile = Db::table('curriculum_vitae')
-            ->join('job_post_apply', 'curriculum_vitae.id', '=', 'curriculum_vitae.id')
+        $profile = Db::table('profile')
+            ->join('job_post_apply', 'job_post_apply.curriculum_vitae_id', '=', 'profile.id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-
             ->select(
-                'job_post_apply.name',
-                'job_post_apply.email',
-                'job_post_apply.phone',
+                'profile.name',
+                'profile.title',
+                'profile.id',
+                'profile.email',
+                'profile.phone',
+                'profile.address',
+                'candidates.id as candidate_id',
                 'candidates.image',
                 'job_post_apply.introduce',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
-                'curriculum_vitae.path_cv',
+                'profile.path_cv',
                 'job_post_apply.created_at',
             )
-            ->where('job_post_apply.curriculum_vitae_id', $id)
+            ->where('profile.id', $id)
             ->first();
         if ($profile) {
             JobPostApply::where('id', $id)->update(['status' => 1]);
@@ -126,23 +129,23 @@ class ManageCandidateApply extends Controller
     {
         $company_id=Auth::user()->id;
         $list_candidate_apply_job = DB::table('job_post_apply')
-            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('curriculum_vitae', 'curriculum_vitae.id', '=', 'job_post_apply.curriculum_vitae_id')
-            ->select(
-                'job_post.title as job_post_name',
-                'job_post.id as job_post_id',
-                'job_post_apply.created_at as time_apply',
-                'job_post_apply.qualifying_round_id',
-                'job_post_apply.id as candidate_code',
-                'job_post_apply.status',
-                'job_post_apply.email',
-                'job_post_apply.phone',
-                'job_post_apply.name',
-                'candidates.image',
-                'curriculum_vitae.path_cv'
-            )
-            ->where('job_post.company_id', $company_id)
+                ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+                ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
+                ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
+                ->select(
+                    'job_post.title as job_post_name',
+                    'job_post.id as job_post_id',
+                    'job_post_apply.created_at as time_apply',
+                    'job_post_apply.qualifying_round_id',
+                    'job_post_apply.id as candidate_code',
+                    'job_post_apply.status',
+                    'job_post_apply.email',
+                    'job_post_apply.phone',
+                    'job_post_apply.name',
+                    'candidates.image',
+                    'profile.path_cv'
+                )
+            ->where('job_post.company_id',  $company_id)
             ->get();
         if ($list_candidate_apply_job) {
             return response()->json([
