@@ -178,9 +178,9 @@ class CandidateApplyController extends Controller
     {
         $cancel_save_profile = SaveJobPost::find($id);
         if (!$cancel_save_profile) {
-            return response()->json(['message' => 'SaveJobPost not found'], 404);
+            return response()->json(['error' => 'SaveJobPost not found'], 404);
         }
         $cancel_save_profile->delete();
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Xóa thành công'], 204);
     }
 }
