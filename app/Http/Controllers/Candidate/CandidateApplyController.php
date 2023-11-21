@@ -89,7 +89,7 @@ class CandidateApplyController extends Controller
                         [
                             'name' => $request['name'],
                             'phone' => $request['phone'],
-                            'email' =>$request['email'],
+                            'email' => $request['email'],
                             'path_cv' => $request['path_cv'],
                             'candidate_id' => 1
                         ]
@@ -176,11 +176,15 @@ class CandidateApplyController extends Controller
     }
     public function cancel_save_job_post($id)
     {
-        $cancel_save_profile = SaveJobPost::find($id);
+        $candidate_id = 1;
+        // Auth::user()->id;
+        $cancel_save_profile = SaveJobPost::where('candidate_id', $candidate_id)->where('job_post_id', $id)->first();
+        // dd($cancel_save_profile);
         if (!$cancel_save_profile) {
             return response()->json(['error' => 'SaveJobPost not found'], 404);
         }
         $cancel_save_profile->delete();
-        return response()->json(['message' => 'Xóa thành công'], 204);
-    }
+        return response()->json([
+            'message' => 'Xóa thành công'
+        ], 200);    }
 }

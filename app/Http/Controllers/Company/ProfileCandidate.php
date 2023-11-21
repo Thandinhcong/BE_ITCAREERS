@@ -14,15 +14,16 @@ class ProfileCandidate extends Controller
 {
     public function company_id()
     {
-        return Auth::user()->id;
         // return 1;
+        return Auth::user()->id;
+        
     }
     public function hide_info($data)
     {
         $check_open = DB::table('profile_open')
-        ->join('candidates', 'profile_open.candidate_id', '=', 'candidates.id')
-        ->join('profile', 'profile.id', '=', 'candidates.main_cv')
-            ->where('profile_open.company_id',$this->company_id())
+            ->join('candidates', 'profile_open.candidate_id', '=', 'candidates.id')
+            ->join('profile', 'profile.id', '=', 'candidates.main_cv')
+            ->where('profile_open.company_id', $this->company_id())
             ->where('profile_open.candidate_id', $data->candidate_id)
             ->select(
                 'profile_open.candidate_id',
@@ -31,7 +32,7 @@ class ProfileCandidate extends Controller
             )
             ->first();
         $check_save = DB::table('save_profile')
-            ->where('company_id',$this->company_id())
+            ->where('company_id', $this->company_id())
             ->where('candidate_id', $data->candidate_id)
             ->select(
                 'candidate_id'
@@ -98,7 +99,8 @@ class ProfileCandidate extends Controller
                 'profile.title',
                 'profile.id',
                 'profile.email',
-                'profile.phone','profile.path_cv',
+                'profile.phone',
+                'profile.path_cv',
                 'profile.address',
                 'candidates.id as candidate_id',
                 'profile.created_at',
@@ -129,9 +131,10 @@ class ProfileCandidate extends Controller
                 'candidates.image',
             )
             ->get();
-            foreach ($data as $customer) {
-                $this->hide_info($customer);
-            }        return response()->json([
+        foreach ($data as $customer) {
+            $this->hide_info($customer);
+        }
+        return response()->json([
             "status" => 'success',
             "data" => $data,
         ], 200);
@@ -174,13 +177,13 @@ class ProfileCandidate extends Controller
         $check_coin = DB::table('companies')
             ->select('coin')
             ->where('id', $this->company_id())->first();
-        $coin_profile = DB::table('profile')
-            ->where('candidate_id', $id)
-            ->select(
-                'profile.coin',
-            )
-            ->first();
-        if ($check_coin->coin > $coin_profile->coin) {
+        // $coin_profile = DB::table('profile')
+        //     ->where('candidate_id', $id)
+        //     ->select(
+        //         'profile.coin',
+        //     )
+        //     ->first();
+        if ($check_coin->coin > 20000) {
             if ($check) {
                 return response()->json([
                     'status' => 'fail',
@@ -191,10 +194,10 @@ class ProfileCandidate extends Controller
                     [
                         'company_id' => $this->company_id(),
                         'candidate_id' => $id,
-                        'coin' => $coin_profile->coin
+                        'coin' => 20000
                     ]
                 );
-                $coinCompanyAffter = ($check_coin->coin) - ($coin_profile->coin);
+                $coinCompanyAffter = ($check_coin->coin) - (20000);
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
             if ($saveProfile) {
@@ -217,7 +220,9 @@ class ProfileCandidate extends Controller
     }
     public function cancel_save_profile($id)
     {
-        $saveProfile = SaveProfile::find($id);
+        $saveProfile = SaveProfile::where('candidate_id', $id)
+            ->where('company_id', $this->company_id())
+            ->first();
         if (!$saveProfile) {
             return response()->json(['message' => 'save_profile not found'], 404);
         }
