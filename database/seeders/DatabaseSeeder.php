@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
 
         ]);
         JobPost::create([
-            'title' => 'Bài đăng 1',
+            'title' => 'Senior ReactJS',
             'job_position_id' => 1,
             'exp_id' => 2,
             'quantity' => 4,
@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             'area_id' => 2,
             'start_date' => '2023-10-04',
             'end_date' => '2023-10-010',
+            "desc"=>"anh thản cho em làm với",
         ]);
         JobPostType::create([
             'name' => 'Bài đăng 1',

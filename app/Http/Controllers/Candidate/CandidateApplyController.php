@@ -140,7 +140,7 @@ class CandidateApplyController extends Controller
         return response()->json([
             "status" => 'success',
             "data" => $data,
-        ], 404);
+        ], 200);
     }
     public function save_job_post($id)
     {
