@@ -382,24 +382,8 @@ class JobPostController extends Controller
     }
     public function list_candidate_apply_job(string $id)
     {
-        $list_candidate_apply_job = DB::table('job_post_apply')
-            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
-            ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
-            ->select(
-                'job_post.title as job_post_name',
-                'job_post.id as job_post_id',
-                'job_post_apply.created_at as time_apply',
-                'job_post_apply.qualifying_round_id',
-                'job_post_apply.id as candidate_code',
-                'job_post_apply.status',
-                'job_post_apply.email',
-                'job_post_apply.phone',
-                'job_post_apply.name',
-                'profile.path_cv',
-                'candidates.image'
-            )
-            ->where('job_post.id', $id)->get();
+        $list_candidate_apply_job = Company::all();
+        dd($list_candidate_apply_job);
         if ($list_candidate_apply_job) {
             return response()->json([
                 'status' => 200,
