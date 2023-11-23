@@ -125,6 +125,8 @@ Route::group([
         Route::post('update_cv/save_skill', [\App\Http\Controllers\Client\CreateCvController::class, 'saveSkill']);
         Route::post('update_cv/update_skill/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateSkill']);
         Route::get('update_cv/delete_skill/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteSkill']);
+        //save cv
+        Route::post('update_cv/saveCV/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'saveCV']);
         //Việc làm đã ứng tuyển
         Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
         //Việc làm đã lưu

@@ -722,4 +722,31 @@ class CreateCvController extends Controller
             'message' => 'Xóa thất bại!'
         ], 400);
     }
+    public function saveCV(Request $request)
+    {
+        $profile_id = $request->profile_id;
+        $cv = Profile::where('id', $profile_id)->first();
+        $path_cv = $request->path_cv;
+        if (isset($cv) && isset($path_cv)) {
+            $path_cv_old = $cv->path_cv;
+            if ($path_cv === $path_cv_old) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'CV chưa có thay đổi',
+                ]);
+            } else {
+                $cv->update([
+                    'path_cv' => $path_cv,
+                ]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Lưu thành công CV',
+                ]);
+            }
+        }
+        return response()->json([
+            'status' => false,
+            'message' => 'Lưu CV thất bại',
+        ]);
+    }
 }

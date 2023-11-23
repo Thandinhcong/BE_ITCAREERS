@@ -127,7 +127,7 @@ class CandidateApplyController extends Controller
                 'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
-                'companies.name as company_name',
+                'companies.company_name as company_name',
                 'companies.logo'
             )
             ->join('job_post', 'save_job_post.job_post_id', '=', 'job_post.id')
