@@ -176,8 +176,7 @@ class CandidateApplyController extends Controller
     }
     public function cancel_save_job_post($id)
     {
-        $candidate_id = 1;
-        // Auth::user()->id;
+        $candidate_id =Auth::user()->id;
         $cancel_save_profile = SaveJobPost::where('candidate_id', $candidate_id)->where('job_post_id', $id)->first();
         // dd($cancel_save_profile);
         if (!$cancel_save_profile) {
