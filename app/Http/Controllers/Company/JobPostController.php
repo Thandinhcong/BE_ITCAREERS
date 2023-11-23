@@ -130,7 +130,7 @@ class JobPostController extends Controller
         if ($request['type_job_post_id']) {
             $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
             $jobPostType = JobPostType::find($request['type_job_post_id']);
-            $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
+            $coinCompanyAffter = $company_coin->coin- ($jobPostType->salary) * $interval ;
             if ($coinCompanyAffter < 0) {
                 return response()->json([
                     'status' => 422,
