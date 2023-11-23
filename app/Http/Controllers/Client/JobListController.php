@@ -63,6 +63,7 @@ class JobListController extends Controller
     public function job_list()
     {
         $job_list = DB::table('job_post')->where('start_date', '<=', now()->format('Y-m-d'))
+        ->where('end_date', '>=', now()->format('Y-m-d'))
             ->where('job_post.status', 1)
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')

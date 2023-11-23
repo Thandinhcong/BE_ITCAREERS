@@ -177,7 +177,7 @@ class JobPostController extends Controller
             'min_salary' => 'required',
             'max_salary' => 'required',
             'min_salary' => 'lte:max_salary',
-            'require' => 'required|',
+            'requirement' => 'required|',
             'interest' => 'required|',
             'gender' => 'required',
             'gender' => 'in:0,1,2',
@@ -210,6 +210,7 @@ class JobPostController extends Controller
             } else {
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
+            
         }
         if ($job_post) {
             $request['requirement'] = $request['require'];
