@@ -57,6 +57,7 @@ class CVController extends Controller
         try {
             $id = $request->id;
             $id_candidate = Auth::user()->id;
+            $main_cv = Auth::user();
             $get_all_cv = Profile::where('candidate_id', $id_candidate)
                 ->where('is_active', 1)->first();
             if (isset($get_all_cv->is_active)) {
@@ -66,6 +67,9 @@ class CVController extends Controller
             $cv_up = Profile::find($id);
             $cv_up->is_active = 1;
             $cv_up->save();
+            $main_cv->update(
+                ['main_cv' => $id]
+            );
             return response()->json([
                 'status' => true,
                 'message' => 'Cập nhật thành công'

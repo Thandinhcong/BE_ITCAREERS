@@ -24,7 +24,6 @@ class Profile extends Model
         'major_id',
         'address',
         'path_cv',
-        'coin',
     ];
 
     public function candidate()
