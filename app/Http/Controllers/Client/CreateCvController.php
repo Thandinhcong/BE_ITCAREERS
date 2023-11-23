@@ -111,7 +111,7 @@ class CreateCvController extends Controller
         if (is_string($cv->birth)) {
             $cv_get->birth = Carbon::parse($cv->birth);
         }
-        $cv->birth = $cv_get->birth->format('d-m-Y');
+        $cv->birth = $cv_get->birth->format('m-d-Y');
         $cv->major = $major ? $major->major : null;
         $cv->job_position = $job_position ? $job_position->job_position : null;
 
@@ -143,8 +143,8 @@ class CreateCvController extends Controller
                 )
                 ->get();
             foreach ($this->data['exps'] as $exp) {
-                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('d-m-Y');
-                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('d-m-Y');
+                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('m-d-Y');
+                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('m-d-Y');
             }
 
             $this->data['projects'] = DB::table('project')->where('profile_id', '=', $profile_id)
@@ -161,8 +161,8 @@ class CreateCvController extends Controller
                 ->whereNull('deleted_at')
                 ->get();
             foreach ($this->data['projects'] as $exp) {
-                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('d-m-Y');
-                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('d-m-Y');
+                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('m-d-Y');
+                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('m-d-Y');
             }
             $this->data['educations'] = DB::table('edu')
                 ->where('profile_id', '=', $profile_id)
@@ -181,8 +181,8 @@ class CreateCvController extends Controller
                 )
                 ->get();
             foreach ($this->data['educations'] as $exp) {
-                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('d-m-Y');
-                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('d-m-Y');
+                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('m-d-Y');
+                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('m-d-Y');
             }
         }
         return response()->json([
@@ -254,7 +254,7 @@ class CreateCvController extends Controller
         $validator_exp = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:m-d-Y',
             'profile_id' => 'required',
         ]);
 
@@ -401,7 +401,7 @@ class CreateCvController extends Controller
             'name' => 'required|string',
             'gpa' => 'required',
             'type_degree' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:m-d-Y',
             'major_id' => '',
             'profile_id' => 'required',
         ]);
@@ -442,7 +442,7 @@ class CreateCvController extends Controller
             'name' => 'required|string',
             'gpa' => 'required',
             'type_degree' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:m-d-Y',
             'major_id' => 'required',
         ]);
 
@@ -495,7 +495,7 @@ class CreateCvController extends Controller
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:m-d-Y',
             'desc' => 'required',
             'link_project' => 'required',
             'profile_id' => 'required',
@@ -536,7 +536,7 @@ class CreateCvController extends Controller
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:m-d-Y',
             'desc' => 'required',
             'link_project' => 'required',
         ]);
