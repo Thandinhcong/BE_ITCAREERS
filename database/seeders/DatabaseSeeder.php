@@ -46,7 +46,6 @@ class DatabaseSeeder extends Seeder
             'start_date' => '2023-10-04',
             'end_date' => '2023-10-010',
             "desc"=>"anh thản cho em làm với",
-            "job_post_type":1
         ]);
         JobPostType::create([
             'name' => 'Bài đăng 1',

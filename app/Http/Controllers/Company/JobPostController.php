@@ -110,7 +110,7 @@ class JobPostController extends Controller
             'min_salary' => 'required',
             'max_salary' => 'required',
             'min_salary' => 'lte:max_salary',
-            'require' => 'required|',
+            'requirement' => 'required|',
             'interest' => 'required|',
             'gender' => 'required',
             'gender' => 'in:0,1,2',
@@ -127,10 +127,14 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         }
-        if ($request['type_job_post_id']) {
+        $request->company_id = $this->company_id();
+        // dd($request->type_job_post_id);
+        if ($request->type_job_post_id!=null) {
             $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
             $jobPostType = JobPostType::find($request['type_job_post_id']);
-            $coinCompanyAffter = $company_coin->coin- ($jobPostType->salary) * $interval ;
+            // dd($jobPostType);
+            $coinCompanyAffter = $company_coin->coin - ($jobPostType->salary) * $interval;
+            // dd($coinCompanyAffter);
             if ($coinCompanyAffter < 0) {
                 return response()->json([
                     'status' => 422,
@@ -138,10 +142,9 @@ class JobPostController extends Controller
                 ], 422);
             } else {
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+                $job_post = JobPost::create($request->all());
             }
         } else {
-            $request['requirement'] = $request['require'];
-            $request['company_id'] = $this->company_id();
             $job_post = JobPost::create($request->all());
         }
         if ($job_post) {
