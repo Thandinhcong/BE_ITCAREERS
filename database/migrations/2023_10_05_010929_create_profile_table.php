@@ -29,7 +29,7 @@ return new class extends Migration
             $table->integer('total_exp')->default(0)->comment('tổng số năm kinh nghiệm');
             $table->integer('is_active')->default(0)->comment('0: All Cv, 1: CV main');
             $table->string('image')->nullable()->comment('Ảnh Cv');
-            $table->double('coin')->default(0)->comment('giá trị cv');
+            // $table->double('coin')->default(0)->comment('giá trị cv');
             $table->string('path_cv')->nullable();
             $table->timestamps();
         });
