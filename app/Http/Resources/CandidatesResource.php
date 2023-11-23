@@ -26,7 +26,8 @@ class CandidatesResource extends JsonResource
             'image' => $this->image,
             'type' => $this->type,
             'status' => $this->status,
-            'coin' => $this->coin
+            'coin' => $this->coin,
+            'find_job' => $this->find_job
         ];
     }
 }
