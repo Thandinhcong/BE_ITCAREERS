@@ -16,15 +16,16 @@ class Profile extends Model
         'name',
         'email',
         'phone',
-        'image',
         'birth',
-        'path_cv',
-        'career_goal',
-        'candidate_id',
         'major_id',
         'address',
+        'candidate_id',
+        'total_exp',
+        'is_active',
+        'image',
         'path_cv',
-        'coin',
+        'careers_goal',
+        'job_position_id'
     ];
 
     public function candidate()

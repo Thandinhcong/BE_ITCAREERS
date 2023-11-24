@@ -7,6 +7,7 @@ use App\Models\AcademicLevel;
 use App\Models\District;
 use App\Models\Edu;
 use App\Models\Exp;
+use App\Models\JobPosition;
 use App\Models\Major;
 use App\Models\Profile;
 use App\Models\Project;
@@ -31,11 +32,9 @@ class CreateCvController extends Controller
      */
     public function getData(Request $request)
     {
-        $this->data['skills'] = Skill::all();
         $this->data['major'] = Major::all();
         $this->data['academic'] = AcademicLevel::all();
-        $this->data['districts'] = District::all();
-        $this->data['province'] = Province::all();
+        $this->data['job_position'] = JobPosition::all();
         return response()->json([
             'status' => true,
             'data' => $this->data,
@@ -84,6 +83,12 @@ class CreateCvController extends Controller
             ->join('major', 'major.id', '=', 'profile.major_id')
             ->select('major.major')
             ->first();
+        $job_position = DB::table('profile')
+            ->where('profile.candidate_id', '=', $candidate_id)
+            ->where('profile.id', '=', $profile_id)
+            ->join('job_position', 'job_position.id', '=', 'profile.job_position_id')
+            ->select('job_position.job_position')
+            ->first();
         $cv_get = Profile::where('id', $profile_id)->first();
         $cv = Profile::where('id', $profile_id)
             ->select(
@@ -95,15 +100,20 @@ class CreateCvController extends Controller
                 'birth',
                 'major_id as major',
                 'address',
+                'job_position_id as job_position',
                 'candidate_id',
                 'total_exp',
                 'is_active',
                 'image',
-                'coin',
                 'path_cv',
             )
             ->first();
+        if (is_string($cv->birth)) {
+            $cv_get->birth = Carbon::parse($cv->birth);
+        }
+        $cv->birth = $cv_get->birth ? $cv_get->birth->format('Y-m-d') : null;
         $cv->major = $major ? $major->major : null;
+        $cv->job_position = $job_position ? $job_position->job_position : null;
 
         $this->data['cv'] = $cv;
         if (!empty($cv)) {
@@ -116,8 +126,44 @@ class CreateCvController extends Controller
                     'profile_id'
                 )
                 ->get();
-            $this->data['exps'] = DB::table('exp')->where('profile_id', '=', $profile_id)->whereNull('deleted_at')->get();
-            $this->data['projects'] = DB::table('project')->where('profile_id', '=', $profile_id)->whereNull('deleted_at')->get();
+
+            $this->data['exps'] = DB::table('exp')
+                ->where('profile_id', '=', $profile_id)
+                ->whereNull('deleted_at')
+                ->select(
+                    'id',
+                    'company_name',
+                    'position',
+                    'start_date',
+                    'end_date',
+                    'profile_id',
+                    'created_at',
+                    'updated_at',
+                    'deleted_at'
+                )
+                ->get();
+            foreach ($this->data['exps'] as $exp) {
+                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('Y-m-d');
+                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('Y-m-d');
+            }
+
+            $this->data['projects'] = DB::table('project')->where('profile_id', '=', $profile_id)
+                ->select(
+                    'id',
+                    'project_name',
+                    'position',
+                    'start_date',
+                    'end_date',
+                    'desc',
+                    'link_project',
+                    'profile_id',
+                )
+                ->whereNull('deleted_at')
+                ->get();
+            foreach ($this->data['projects'] as $exp) {
+                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('Y-m-d');
+                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('Y-m-d');
+            }
             $this->data['educations'] = DB::table('edu')
                 ->where('profile_id', '=', $profile_id)
                 ->join('major', 'major.id', '=', 'edu.major_id')
@@ -134,8 +180,10 @@ class CreateCvController extends Controller
                     'profile_id',
                 )
                 ->get();
-
-            //  dd($this->data['exps']);
+            foreach ($this->data['educations'] as $exp) {
+                $exp->start_date = \Carbon\Carbon::parse($exp->start_date)->format('Y-m-d');
+                $exp->end_date = \Carbon\Carbon::parse($exp->end_date)->format('Y-m-d');
+            }
         }
         return response()->json([
             'status' => true,
@@ -150,7 +198,8 @@ class CreateCvController extends Controller
             'email' => '',
             'phone' => '',
             'major_id' => '',
-            'profile_id' => ''
+            'profile_id' => '',
+            'job_position_id' => ''
         ]);
         if ($validator_info->fails()) {
             return response()->json([
@@ -167,6 +216,7 @@ class CreateCvController extends Controller
         $cv->birth = $request->birth;
         $cv->address = $request->address;
         $cv->image = $request->image;
+        $cv->job_position_id = $request->job_position_id;
 
         $res = $cv->update();
         if ($res == null) {
@@ -218,11 +268,10 @@ class CreateCvController extends Controller
         $exp->fill([
             'company_name' => $request->company_name,
             'position' => $request->position,
-            'start_date' => $request->start_date,
-            'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now() : $request->end_date),
             'profile_id' => $request->profile_id,
         ]);
-
         if (!$exp->save()) {
             return response()->json([
                 'status' => false,
@@ -243,30 +292,8 @@ class CreateCvController extends Controller
 
             $total_months = $start_date->diffInMonths($end_date);
             $total_years = floor($total_months / 12);
-
-            $thresholds = [
-                1 => 2000,
-                2 => 3000,
-                3 => 4000,
-                4 => 5000,
-                5 => 7000,
-            ];
-
-            $coin = 2000;
-
-            foreach ($thresholds as $years => $thresholdCoin) {
-                if ($total_years <= $years) {
-                    $coin = $thresholdCoin;
-                    break;
-                }
-            }
-
-            if ($total_years > 5) {
-                $coin = 7000;
-            }
             Profile::where('id', $exp_id)->update([
                 'total_exp' => $total_years,
-                'coin' => $coin,
             ]);
         }
 
@@ -282,7 +309,7 @@ class CreateCvController extends Controller
         $validator_exp = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required|date_format:Y-m-d',
+            'start_date' => 'required',
             'profile_id' => 'required',
         ]);
         if ($validator_exp->fails()) {
@@ -296,8 +323,8 @@ class CreateCvController extends Controller
         $exp->fill([
             'company_name' => $request->company_name,
             'position' => $request->position,
-            'start_date' => $request->start_date,
-            'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now() : $request->end_date),
             'profile_id' => $request->profile_id,
         ]);
 
@@ -321,30 +348,8 @@ class CreateCvController extends Controller
 
             $total_months = $start_date->diffInMonths($end_date);
             $total_years = floor($total_months / 12);
-
-            $thresholds = [
-                1 => 2000,
-                2 => 3000,
-                3 => 4000,
-                4 => 5000,
-                5 => 7000,
-            ];
-
-            $coin = 2000;
-
-            foreach ($thresholds as $years => $thresholdCoin) {
-                if ($total_years <= $years) {
-                    $coin = $thresholdCoin;
-                    break;
-                }
-            }
-
-            if ($total_years > 5) {
-                $coin = 7000;
-            }
             Profile::where('id', $exp_id)->update([
                 'total_exp' => $total_years,
-                'coin' => $coin,
             ]);
         }
 
@@ -372,70 +377,8 @@ class CreateCvController extends Controller
 
             $total_months = $start_date->diffInMonths($end_date);
             $total_years = floor($total_months / 12);
-
-            $thresholds = [
-                1 => 2000,
-                2 => 3000,
-                3 => 4000,
-                4 => 5000,
-                5 => 7000,
-            ];
-
-            $coin = 2000;
-
-            foreach ($thresholds as $years => $thresholdCoin) {
-                if ($total_years <= $years) {
-                    $coin = $thresholdCoin;
-                    break;
-                }
-            }
-
-            if ($total_years > 5) {
-                $coin = 7000;
-            }
             Profile::where('id', $exp_id)->update([
                 'total_exp' => $total_years,
-                'coin' => $coin,
-            ]);
-        }
-
-        $latestRecord = Exp::where('profile_id', $profile_id_exp)
-            ->orderBy('start_date', 'asc')
-            ->orderBy('end_date', 'desc')
-            ->select('start_date', 'end_date')
-            ->whereNull('deleted_at')
-            ->first();
-
-        if ($latestRecord) {
-            $start_date = Carbon::parse($latestRecord->start_date);
-            $end_date = Carbon::parse($latestRecord->end_date);
-            $total_months = $start_date->diffInMonths($end_date);
-            $total_years = floor($total_months / 12);
-
-            $thresholds = [
-                1 => 2000,
-                2 => 3000,
-                3 => 4000,
-                4 => 5000,
-                5 => 7000,
-            ];
-
-            $coin = 2000;
-
-            foreach ($thresholds as $years => $thresholdCoin) {
-                if ($total_years <= $years) {
-                    $coin = $thresholdCoin;
-                    break;
-                }
-            }
-
-            if ($total_years > 5) {
-                $coin = 7000;
-            }
-
-            Profile::where('id', $exp_id)->update([
-                'total_exp' => $total_years,
-                'coin' => $coin,
             ]);
         }
         if (isset($exp_id)) {
@@ -474,8 +417,8 @@ class CreateCvController extends Controller
             'name' => $request->name,
             'gpa' => $request->gpa,
             'type_degree' =>  $request->type_degree,
-            'start_date' => $request->start_date,
-            'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date),
             'major_id' =>  $request->major_id,
             'profile_id' => $request->profile_id,
         ]);
@@ -514,9 +457,8 @@ class CreateCvController extends Controller
             'name' => $request->name,
             'gpa' => $request->gpa,
             'type_degree' =>  $request->type_degree,
-            'start_date' => $request->start_date,
-            'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
-            'major_id' =>  $request->major_id,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date),
         ]);
 
         if (!$edu->update()) {
@@ -569,8 +511,8 @@ class CreateCvController extends Controller
         $project->fill([
             'project_name' => $request->project_name,
             'position' => $request->position,
-            'start_date' => $request->start_date,
-            'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date),
             'desc' => $request->desc,
             'link_project' => $request->link_project,
             'profile_id' => $request->profile_id,
@@ -609,8 +551,8 @@ class CreateCvController extends Controller
         $project->fill([
             'project_name' => $request->project_name,
             'position' => $request->position,
-            'start_date' => $request->start_date,
-            'end_date' => empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date),
             'desc' => $request->desc,
             'link_project' => $request->link_project,
         ]);
