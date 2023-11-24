@@ -442,7 +442,7 @@ class CreateCvController extends Controller
             'name' => 'required|string',
             'gpa' => 'required',
             'type_degree' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:Y-m-d',
             'major_id' => 'required',
         ]);
 
@@ -495,7 +495,7 @@ class CreateCvController extends Controller
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:Y-m-d',
             'desc' => 'required',
             'link_project' => 'required',
             'profile_id' => 'required',
@@ -536,7 +536,7 @@ class CreateCvController extends Controller
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required|date_format:d-m-Y',
+            'start_date' => 'required|date_format:Y-m-d',
             'desc' => 'required',
             'link_project' => 'required',
         ]);
