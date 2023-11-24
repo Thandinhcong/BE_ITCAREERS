@@ -89,6 +89,7 @@ class JobPostController extends Controller
         $d['major_id'] = Major::all();
         $d['district_id'] = District::all();
         $d['province_id'] = Province::all();
+        $d['type_job_post'] = JobPostType::all();
         return response()->json([
             'status' => 'success',
             'data' => $d,
