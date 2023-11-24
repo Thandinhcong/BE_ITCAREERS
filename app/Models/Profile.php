@@ -25,7 +25,6 @@ class Profile extends Model
         'image',
         'path_cv',
         'careers_goal',
-        'job_position_id'
     ];
 
     public function candidate()
