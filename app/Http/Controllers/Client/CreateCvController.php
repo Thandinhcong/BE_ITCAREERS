@@ -112,7 +112,7 @@ class CreateCvController extends Controller
         if (is_string($cv->birth)) {
             $cv_get->birth = Carbon::parse($cv->birth);
         }
-        $cv->birth = $cv_get->birth->format('m-d-Y');
+        $cv->birth =  $cv_get->birth ? $cv_get->birth->format('m-d-Y') : null;
         $cv->major = $major ? $major->major : null;
         $cv->job_position = $job_position ? $job_position->job_position : null;
 
@@ -218,7 +218,7 @@ class CreateCvController extends Controller
         $cv->email = $request->email;
         $cv->phone = $request->phone;
         $cv->major_id = $request->major_id;
-        $cv->birth = $request->birth;
+        $cv->birth = Carbon::parse($request->birth);
         $cv->address = $request->address;
         $cv->image = $request->image;
         $cv->job_position_id = $request->job_position_id;
