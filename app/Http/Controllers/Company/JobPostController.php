@@ -40,6 +40,7 @@ class JobPostController extends Controller
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id')
+            ->join('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id')
             ->groupBy('job_post.id')
             ->select(
                 'job_post.id',
@@ -58,6 +59,7 @@ class JobPostController extends Controller
                 'major.major',
                 'district.name as district',
                 'province.province',
+                'type_job_post.name',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
@@ -211,7 +213,7 @@ class JobPostController extends Controller
             } else {
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
-            
+
         }
         if ($job_post) {
             $request['requirement'] = $request['require'];
