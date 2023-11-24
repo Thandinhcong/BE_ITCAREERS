@@ -70,6 +70,7 @@ Route::group([
         Route::resource('candidate', CandidatesController::class);
         Route::resource('company', CompanyController::class);
         Route::resource('man-web', ManagementWebController::class);
+        Route::resource('rev-sta', \App\Http\Controllers\Admin\RevenueStatisticsController::class);
     });
 });
 Route::resource('experience', ExperienceController::class);
