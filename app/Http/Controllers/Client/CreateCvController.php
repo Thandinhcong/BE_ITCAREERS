@@ -101,6 +101,7 @@ class CreateCvController extends Controller
                 'major_id as major',
                 'address',
                 'job_position_id as job_position',
+                'careers_goal',
                 'candidate_id',
                 'total_exp',
                 'is_active',
@@ -194,12 +195,16 @@ class CreateCvController extends Controller
     public function updateInfo(Request $request)
     {
         $validator_info = Validator::make($request->all(), [
-            'name' => '',
-            'email' => '',
-            'phone' => '',
-            'major_id' => '',
-            'profile_id' => '',
-            'job_position_id' => ''
+            'title' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'major_id' => 'required',
+            'birth' => 'required|date_format:m-d-Y',
+            'profile_id' => 'required',
+            'job_position_id' => 'required',
+            'careers_goal' => 'required',
+            'image' => 'required',
         ]);
         if ($validator_info->fails()) {
             return response()->json([
@@ -217,6 +222,7 @@ class CreateCvController extends Controller
         $cv->address = $request->address;
         $cv->image = $request->image;
         $cv->job_position_id = $request->job_position_id;
+        $cv->careers_goal = $request->careers_goal;
 
         $res = $cv->update();
         if ($res == null) {
@@ -309,7 +315,7 @@ class CreateCvController extends Controller
         $validator_exp = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required',
+            'start_date' => 'required|date_format:m-d-Y',
             'profile_id' => 'required',
         ]);
         if ($validator_exp->fails()) {

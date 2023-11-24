@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('profile', function (Blueprint $table) {
             $table->softDeletes();
             $table->integer('job_position_id')->nullable();
+            $table->longText('careers_goal')->nullable();
         });
     }
 
