@@ -213,7 +213,7 @@ class CreateCvController extends Controller
         $cv->email = $request->email;
         $cv->phone = $request->phone;
         $cv->major_id = $request->major_id;
-        $cv->birth = $request->birth;
+        $cv->birth = Carbon::parse($request->birth);
         $cv->address = $request->address;
         $cv->image = $request->image;
         $cv->job_position_id = $request->job_position_id;
