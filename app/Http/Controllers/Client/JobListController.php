@@ -60,11 +60,32 @@ class JobListController extends Controller
             ], 404);
         }
     }
+    public function check_save($job_list)
+    {
+        $candidate_id = Auth::user()->id;
+        $check_save = DB::table('save_job_post')
+            ->join('candidates', 'save_job_post.candidate_id', '=', 'candidates.id')
+            ->join('job_post', 'save_job_post.job_post_id', '=', 'job_post.id')
+            ->where('save_job_post.candidate_id', $candidate_id)
+            ->where('save_job_post.job_post_id', $job_list->id)
+            ->select(
+                'job_post.id',
+            )
+            ->first();
+        if ($check_save) {
+            $job_list->id = $check_save->id;
+            $job_list->save_job_post = 'đã lưu';
+        } else {
+            $job_list->save_job_post = 'chưa lưu';
+        }
+        return $job_list;
+    }
     public function job_list()
     {
-        $job_list = DB::table('job_post')->where('start_date', '<=', now()->format('Y-m-d'))
-        ->where('end_date', '>=', now()->format('Y-m-d'))
-            ->where('job_post.status', 1)
+        $job_list = DB::table('job_post')
+            // ->where('start_date', '<=', now()->format('Y-m-d'))
+            // ->where('end_date', '>=', now()->format('Y-m-d'))
+            // ->where('job_post.status', 1)
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id',)
@@ -78,8 +99,14 @@ class JobListController extends Controller
                 'job_post.created_at',
                 'companies.company_name as company_name',
                 'companies.logo',
+
             )->get();
-        if ($job_list->count() > 0) {
+        if (Auth::guard('candidate')->check()) {
+            foreach ($job_list as $data) {
+                $this->check_save($data);
+            }
+        }
+        if ($job_list != []) {
             return response()->json([
                 'status' => 200,
                 'job_list' => $job_list
@@ -92,6 +119,4 @@ class JobListController extends Controller
             ], 404);
         }
     }
-  
-  
 }
