@@ -126,7 +126,7 @@ class JobPostController extends Controller
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
-                'job_post.requirement as require',
+                'job_post.requirement',
                 'job_post.interest',
                 'job_post.desc',
                 'job_post.status',
