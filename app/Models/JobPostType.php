@@ -10,6 +10,6 @@ class JobPostType extends Model
     use HasFactory;
     protected $table="type_job_post";
     protected $fillable = [
-        'salary' ,  'name', 
+        'salary' ,  'name', 'desc'
     ];
 }

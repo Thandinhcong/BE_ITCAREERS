@@ -49,9 +49,11 @@ class DatabaseSeeder extends Seeder
         ]);
         JobPostType::create([
             'name' => 'Bài đăng 1',
+            'desc'=>'nội dung',
             'salary' => 100,
         ]);JobPostType::create([
             'name' => 'Bài đăng 2',
+            'desc'=>'nội dung 1',
             'salary' => 150,
         ]);
         ManagementWeb::create([

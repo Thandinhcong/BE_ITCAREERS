@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->double('salary');
-            $table->double('desc');
+            $table->string('desc');
             $table->timestamps();
         });
     }
