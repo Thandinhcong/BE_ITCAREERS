@@ -83,12 +83,6 @@ class CreateCvController extends Controller
             ->join('major', 'major.id', '=', 'profile.major_id')
             ->select('major.major')
             ->first();
-        $job_position = DB::table('profile')
-            ->where('profile.candidate_id', '=', $candidate_id)
-            ->where('profile.id', '=', $profile_id)
-            ->join('job_position', 'job_position.id', '=', 'profile.job_position_id')
-            ->select('job_position.job_position')
-            ->first();
         $cv_get = Profile::where('id', $profile_id)->first();
         $cv = Profile::where('id', $profile_id)
             ->select(
@@ -100,12 +94,12 @@ class CreateCvController extends Controller
                 'birth',
                 'major_id as major',
                 'address',
-                'job_position_id as job_position',
                 'candidate_id',
                 'total_exp',
                 'is_active',
                 'image',
                 'path_cv',
+                'careers_goal',
             )
             ->first();
         if (is_string($cv->birth)) {
@@ -113,7 +107,6 @@ class CreateCvController extends Controller
         }
         $cv->birth = $cv_get->birth ? $cv_get->birth->format('Y-m-d') : null;
         $cv->major = $major ? $major->major : null;
-        $cv->job_position = $job_position ? $job_position->job_position : null;
 
         $this->data['cv'] = $cv;
         if (!empty($cv)) {
@@ -194,12 +187,14 @@ class CreateCvController extends Controller
     public function updateInfo(Request $request)
     {
         $validator_info = Validator::make($request->all(), [
-            'name' => '',
-            'email' => '',
-            'phone' => '',
+            'title' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
             'major_id' => '',
-            'profile_id' => '',
-            'job_position_id' => ''
+            'birth' => 'required',
+            'careers_goal' => 'required',
+            'image' => 'required',
         ]);
         if ($validator_info->fails()) {
             return response()->json([
@@ -213,10 +208,10 @@ class CreateCvController extends Controller
         $cv->email = $request->email;
         $cv->phone = $request->phone;
         $cv->major_id = $request->major_id;
-        $cv->birth = $request->birth;
+        $cv->birth = Carbon::parse($request->birth);
         $cv->address = $request->address;
         $cv->image = $request->image;
-        $cv->job_position_id = $request->job_position_id;
+        $cv->careers_goal = $request->careers_goal;
 
         $res = $cv->update();
         if ($res == null) {
