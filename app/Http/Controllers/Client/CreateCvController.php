@@ -194,7 +194,7 @@ class CreateCvController extends Controller
             'major_id' => '',
             'birth' => 'required',
             'careers_goal' => 'required',
-            'image' => 'required',
+            'image' => '',
         ]);
         if ($validator_info->fails()) {
             return response()->json([

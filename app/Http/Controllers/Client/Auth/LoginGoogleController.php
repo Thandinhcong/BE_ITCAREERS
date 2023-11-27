@@ -49,21 +49,17 @@ class LoginGoogleController extends Controller
             $user = Candidate::where('google_id', $google_user->getId())
                 ->orWhere('email', $google_user->getEmail())
                 ->first();
-            if ($user) {
-                Auth::login($user);
-                return redirect()->away('http://localhost:5173');
-            } else {
-                $new_user = Candidate::create([
+            if (!$user) {
+                Candidate::create([
                     'name' => $google_user->getName(),
                     'email' => $google_user->getEmail(),
                     'google_id' => $google_user->getId(),
                     'image' => $google_user->getAvatar(),
                 ]);
-                Auth::login($new_user);
-                return redirect()->away('http://localhost:5173');
             }
+            return redirect('http://localhost:5173?token=' . $google_user->token);
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    }
+    }        
 }
