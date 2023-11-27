@@ -143,6 +143,7 @@ Route::get('job_detail/{id}', [\App\Http\Controllers\Client\JobListController::c
 Route::resource('list_company', \App\Http\Controllers\Client\ListCompanyController::class);
 Route::get('search', [\App\Http\Controllers\Client\SearchController::class, 'search']);
 Route::get('select_salary_result', [\App\Http\Controllers\Client\SearchController::class, 'select_salary_result']);
+Route::get('location_work', [\App\Http\Controllers\Client\JobListController::class, 'location_work']);
 
 //Company
 Route::group([

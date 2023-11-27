@@ -14,7 +14,7 @@ class SearchController extends Controller
         return response()->json([
             'status' => 200,
             'data' => SelectSalaryResult::all(),
-        ], 200);        
+        ], 200);
     }
     public function search(Request $request)
     {
@@ -35,7 +35,8 @@ class SearchController extends Controller
             ->leftJoin('province', 'district.province_id', '=', 'province.id')
             ->where(function ($q) use ($request) {
                 if (!empty($request->search)) {
-                    $q->whereFullText(['title', 'requirement'], $request->search);
+                    $q->whereFullText(['title', 'desc'], $request->search)
+                    ->orwhere('job_post.title', 'LIKE', '%' . $request->search . '%');
                 }
                 if (!empty($request->province)) {
                     $q->where('province.id', '=', $request->province);
@@ -44,8 +45,9 @@ class SearchController extends Controller
                     $q->whereNot('job_post.max_salary', '<=', $request->min_salary);
                 }
             })
-            ->where('start_date', '<=', now()->format('Y-m-d'))
-            ->where('job_post.status', 1)
+            // ->where('start_date', '<=', now()->format('Y-m-d'))
+            // ->where('end_date', '>=', now()->format('Y-m-d'))
+            // ->where('job_post.status', 1)
             ->get();
         return response()->json([
             'status' => 200,

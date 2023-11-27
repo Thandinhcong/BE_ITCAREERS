@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('job_post', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->fulltext();
             $table->integer('job_position_id');
             $table->integer('quantity')->comment('số lượng');
             $table->integer('academic_level_id')->comment('đại học, cao đẳng');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->double('min_salary');
             $table->double('max_salary');
             $table->string('requirement',400)->comment('yêu cầu công việc');
-            $table->string('desc',400)->comment('Mô tả công việc');
+            $table->string('desc',400)->comment('Mô tả công việc')->fulltext();
             $table->string('interest',400)->comment('quyền lợi công việc');
             $table->integer('gender');
             $table->integer('area_id');
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->integer('type_job_post_id')->default(0);
             $table->integer('status')->default(0)->comment('0:pending, 1:active, 2:block, 3:stop');
             $table->timestamps();
-            $table->fullText(['title', 'requirement']);
+            $table->fullText(['title', 'desc']);
             $table->softDeletes();
         });
     }

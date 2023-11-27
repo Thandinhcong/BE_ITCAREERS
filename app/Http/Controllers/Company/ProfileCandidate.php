@@ -75,9 +75,7 @@ class ProfileCandidate extends Controller
                 'profile.image',
                 'profile.birth',
                 'profile.careers_goal',
-                'profile.total_exp
-                ',
-
+                'profile.total_exp',
                 'profile.created_at',
                 'candidates.id as candidate_id',
                 'candidates.image',
