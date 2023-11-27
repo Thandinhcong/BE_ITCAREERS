@@ -56,7 +56,7 @@ class JobPostController extends Controller
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id')
-            ->join('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id')
+            ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id')
             ->groupBy('job_post.id')
             ->select(
                 'job_post.id',
@@ -83,6 +83,7 @@ class JobPostController extends Controller
                 'job_post.interest',
                 'job_post.desc',
                 'job_post.status',
+                'type_job_post.name as type_job_post.name',
                 DB::raw('count(job_post_id) as  quantity_apply'),
             )->get();
         if ($job_post->count() === 0) {
@@ -107,6 +108,7 @@ class JobPostController extends Controller
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id',)
+            ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -138,6 +140,7 @@ class JobPostController extends Controller
                 'job_post.gender',
                 'district.province_id',
                 'district.id as district_id',
+                'type_job_post.name as type_job_post.name',
             )->first();
         if ($job_post) {
             return response()->json([
@@ -152,135 +155,6 @@ class JobPostController extends Controller
             ], 404);
         }
     }
-
-    public function store(Request $request)
-    {
-        $company_coin = DB::table('companies')
-            ->select('coin')
-            ->where('id', $this->company_id())
-            ->first();
-        $valdator = Validator::make($request->all(), [
-            'title' => 'required|',
-            'job_position_id' => 'required|',
-            'quantity' => 'required|integer',
-            'academic_level_id' => 'required|',
-            'exp_id' => 'required|',
-            'working_form_id' => 'required|',
-            'min_salary' => 'required',
-            'max_salary' => 'required',
-            'min_salary' => 'lte:max_salary',
-            'requirement' => 'required|',
-            'interest' => 'required|',
-            'gender' => 'required',
-            'gender' => 'in:0,1,2',
-            'area_id' => 'required|',
-            'desc' => 'required|',
-            'major_id' => 'required|',
-            'start_date' => 'required|after:yesterday',
-            'end_date' => 'required|after:start_date',
-        ]);
-        if ($valdator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'errors' => $valdator->messages(),
-            ], 422);
-        }
-        if ($request->type_job_post_id != null) {
-            $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
-            // dd($interval);
-            $jobPostType = JobPostType::find($request['type_job_post_id']);
-            $coinCompanyAffter = $company_coin->coin - ($jobPostType->salary) * $interval;
-            if ($coinCompanyAffter < 0) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => 'Bạn không đủ tiền'
-                ], 422);
-            } else {
-                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
-                $job_post = JobPost::create($request->all());
-            }
-        } else {
-            $job_post = JobPost::create($request->all(),['company_id'=>1]);
-        }
-        if ($job_post) {
-            return response()->json([
-                'status' => 201,
-                'message' => 'Tạo thành công',
-                'job_post_id' => $job_post
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Lỗi'
-            ], 500);
-        }
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $job_post = JobPost::find($id);
-        $company_coin = DB::table('companies')
-            ->select('coin')
-            ->where('id', $this->company_id())->first();
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|',
-            'job_position_id' => 'required|',
-            'quantity' => 'required|integer',
-            'academic_level_id' => 'required|',
-            'exp_id' => 'required|',
-            'working_form_id' => 'required|',
-            'min_salary' => 'required',
-            'max_salary' => 'required',
-            'min_salary' => 'lte:max_salary',
-            'requirement' => 'required|',
-            'interest' => 'required|',
-            'gender' => 'required',
-            'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên
-            'area_id' => 'required|',
-            'desc' => 'required|',
-            'major_id' => 'required|',
-            'start_date' => 'required|',
-            'start_date' => 'required|date|',
-            'end_date' => 'required|date|after:start_date|after:now',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'fail',
-                'errors' => $validator->messages(),
-                'data' => $job_post
-            ], 400);
-        } else {
-            $job_post = JobPost::find($id);
-        }
-        if ($request['type_job_post_id']) {
-            $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
-            $jobPostType = JobPostType::find($request['type_job_post_id']);
-            $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
-            if ($coinCompanyAffter < 0) {
-                return response()->json([
-                    'status' => 422,
-                    'errors' => 'Bạn không đủ tiền'
-                ], 422);
-            } else {
-                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
-            }
-        }
-        if ($job_post) {
-            $request['requirement'] = $request['require'];
-            $job_post->update($request->all());
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Update Success',
-                'data' => $job_post
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'fail',
-            ], 500);
-        }
-    }
-
     public function job_post_expires()
     {
         $company_id = Auth::user()->id;
@@ -321,6 +195,166 @@ class JobPostController extends Controller
             'data' => $job_post,
         ]);
     }
+    public function store(Request $request)
+    {
+        $company_coin = DB::table('companies')
+            ->select('coin')
+            ->where('id', $this->company_id())
+            ->first();
+        $valdator = Validator::make($request->all(), [
+            'title' => 'required|',
+            'job_position_id' => 'required|',
+            'quantity' => 'required|integer',
+            'academic_level_id' => 'required|',
+            'exp_id' => 'required|',
+            'working_form_id' => 'required|',
+            'min_salary' => 'required',
+            'max_salary' => 'required',
+            'min_salary' => 'lte:max_salary',
+            'requirement' => 'required|',
+            'interest' => 'required|',
+            'gender' => 'required',
+            'gender' => 'in:0,1,2',
+            'area_id' => 'required|',
+            'desc' => 'required|',
+            'major_id' => 'required|',
+            'start_date' => 'required|after:yesterday',
+            'end_date' => 'required|after:start_date',
+        ]);
+        if ($valdator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $valdator->messages(),
+            ], 422);
+        }
+        switch ($request->type_job_post_id) {
+            case '0':
+                $job_post = JobPost::create($request->all());
+                break;
+            default:
+                $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
+                $jobPostType = JobPostType::find($request['type_job_post_id']);
+                $coinCompanyAffter = $company_coin->coin - ($jobPostType->salary) * $interval;
+                if ($coinCompanyAffter < 0) {
+                    return response()->json([
+                        'status' => 422,
+                        'errors' => 'Bạn không đủ tiền'
+                    ], 422);
+                }
+                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+                $job_post = JobPost::create($request->all());
+                break;
+        }
+        if ($job_post) {
+            return response()->json([
+                'status' => 201,
+                'message' => 'Tạo thành công',
+                'job_post_id' => $job_post
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi'
+            ], 500);
+        }
+    }
+    public function update(Request $request, string $id)
+    {
+        // $company_coin = DB::table('companies')
+        //     ->select('coin')
+        //     ->where('id', $this->company_id())->first();
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|',
+            'job_position_id' => 'required|',
+            'quantity' => 'required|integer',
+            'academic_level_id' => 'required|',
+            'exp_id' => 'required|',
+            'working_form_id' => 'required|',
+            'min_salary' => 'required',
+            'max_salary' => 'required',
+            'min_salary' => 'lte:max_salary',
+            'requirement' => 'required|',
+            'interest' => 'required|',
+            'gender' => 'required',
+            'gender' => 'in:0,1,2',
+            //Bắt buộc 1 trong 3 số trên
+            'area_id' => 'required|',
+            'desc' => 'required|',
+            'major_id' => 'required|',
+            // 'start_date' => 'required|',
+            // 'start_date' => 'required|date|',
+            // 'end_date' => 'required|date|after:start_date|after:now',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages(),
+            ], 400);
+        }
+
+        $job_post = JobPost::find($id);
+        // $check_day_update = ((strtotime($request->end_date) - strtotime($job_post->end_date)) / 86400);
+        // $dayPostBeforeEdit = ((strtotime($job_post->end_date) - strtotime($job_post->start_date)) / 86400) + 1;
+        // $jobPostTypeBefore = JobPostType::find($job_post->type_job_post_id);
+        // $jobPostTypeAfter = JobPostType::find($request['type_job_post_id']);
+        // $jobPostDifferencePrice = $jobPostTypeAfter->salary - $jobPostTypeBefore->salary;
+        // return ($check_day_update);
+        // if ($job_post) {
+        //     if ($job_post->type_job_post_id != 0) {
+        //         //Trường hợp thêm ngày đăng
+        //         if ($job_post->end_date < $request->end_date) {
+        //             //trường hợp vẫn giữ gói đăng cũ
+        //             if ($request->type_job_post_id == $job_post->type_job_post_id) {
+        //                 $coinCompanyAffter = $company_coin->coin - $jobPostTypeBefore->salary * $check_day_update;
+        //                 if ($coinCompanyAffter < 0) {
+        //                     return response()->json([
+        //                         'status' => 422,
+        //                         'errors' => 'Bạn không đủ tiền'
+        //                     ], 422);
+        //                 }
+        //             }
+        //             //Trường hợp chọn gói đăng mới với mệnh giá cao hơn
+        //             else {
+        //                 $coinCompanyAffter = $company_coin->coin - $jobPostDifferencePrice * $dayPostBeforeEdit - $check_day_update * $jobPostTypeAfter->salary;
+        //                 if ($coinCompanyAffter < 0) {
+        //                     return response()->json([
+        //                         'status' => 422,
+        //                         'errors' => 'Bạn không đủ tiền'
+        //                     ], 422);
+        //                 }
+        //             }
+        //             Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+        //         } else {
+        //             if ($request->type_job_post_id == $job_post->type_job_post_id) {
+        //                 $coinCompanyAffter = $company_coin->coin - $jobPostTypeBefore->salary * $check_day_update;
+        //                 if ($coinCompanyAffter < 0) {
+        //                     return response()->json([
+        //                         'status' => 422,
+        //                         'errors' => 'Bạn không đủ tiền'
+        //                     ], 422);
+        //                 }
+        //             }
+        //         }
+        //     }
+        if ($job_post->status == 1) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Bài đăng đã được hiển thị không thể sửa '
+            ], 200);
+        }
+        if ($job_post->status !=1) {
+            $job_post->update($request->all());
+            $job_post->update(['status' => 0]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Success'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+            ], 500);
+        }
+    }
     public function extend_job_post(Request $request, string $id)
     {
         $company_coin = DB::table('companies')
@@ -328,8 +362,8 @@ class JobPostController extends Controller
             ->where('id', $this->company_id())->first();
         $job_post_date = JobPost::find($id);
         $validator = Validator::make($request->all(), [
-            // 'start_date' => 'required|',
             'start_date' => 'date',
+            'type_job_post_id' => 'required',
             'end_date' => 'required|date|after:start_date|after:now',
         ]);
         if ($validator->fails()) {
@@ -340,7 +374,7 @@ class JobPostController extends Controller
             ], 400);
         }
         if ($request['type_job_post_id']) {
-            $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400;
+            $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400 + 1;
             $jobPostType = JobPostType::find($request['type_job_post_id']);
             $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
             if ($coinCompanyAffter < 0) {
@@ -354,6 +388,7 @@ class JobPostController extends Controller
         }
         if ($job_post_date) {
             $job_post_date->update($request->all());
+            $job_post_date->update(['status' => 0]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success',
@@ -370,8 +405,7 @@ class JobPostController extends Controller
     {
         $job_post_date = JobPost::find($id);
         if ($job_post_date) {
-            $job_post_date->status = 3;
-            $job_post_date->update();
+            $job_post_date->update(['status' => 3]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success',
