@@ -61,6 +61,7 @@ class JobListController extends Controller
         }
     }
     
+   
     public function job_list()
     {
         $job_list = DB::table('job_post')
@@ -83,6 +84,7 @@ class JobListController extends Controller
 
             )->get();
         
+          
         if ($job_list != []) {
             return response()->json([
                 'status' => 200,

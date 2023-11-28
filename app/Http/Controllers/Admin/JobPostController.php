@@ -65,7 +65,7 @@ class JobPostController extends Controller
     public function update(Request $request, $id)
     {
         $valdator = Validator::make($request->all(), [
-            'status' => 'required|in:0,1,2'
+            'status' => 'required|in:1,2'
         ]);
         if ($valdator->fails()) {
             return response()->json([
@@ -88,11 +88,5 @@ class JobPostController extends Controller
             ], 404);
         }
     }
-    public function messages()
-    {
-        return [
-            'status.min' => 'Error',
-            'status.max' => 'Error',
-        ];
-    }
+  
 }

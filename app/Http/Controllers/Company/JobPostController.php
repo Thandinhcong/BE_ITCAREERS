@@ -48,14 +48,14 @@ class JobPostController extends Controller
     {
         $job_post = DB::table('job_post')->where('company_id',  $this->company_id())
             ->leftjoin('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
-            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
-            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
-            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
-            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
-            ->join('major', 'major.id', '=', 'job_post.major_id')
-            ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'district.province_id', '=', 'province.id')
+            ->leftjoin('job_position', 'job_position.id', '=', 'job_post.job_position_id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->leftjoin('companies', 'companies.id', '=', 'job_post.company_id')
+            ->leftjoin('working_form', 'working_form.id', '=', 'job_post.working_form_id')
+            ->leftjoin('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
+            ->leftjoin('major', 'major.id', '=', 'job_post.major_id')
+            ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id')
             ->groupBy('job_post.id')
             ->select(
@@ -83,7 +83,7 @@ class JobPostController extends Controller
                 'job_post.interest',
                 'job_post.desc',
                 'job_post.status',
-                'type_job_post.name as type_job_post.name',
+                'type_job_post.name as type_job_post_name',
                 DB::raw('count(job_post_id) as  quantity_apply'),
             )->get();
         if ($job_post->count() === 0) {
@@ -100,14 +100,14 @@ class JobPostController extends Controller
     public function show(string $id)
     {
         $job_post = DB::table('job_post')->where('job_post.id', $id)
-            ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
-            ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
-            ->join('working_form', 'working_form.id', '=', 'job_post.working_form_id')
-            ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
-            ->join('major', 'major.id', '=', 'job_post.major_id')
-            ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->leftjoin('job_position', 'job_position.id', '=', 'job_post.job_position_id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->leftjoin('companies', 'companies.id', '=', 'job_post.company_id')
+            ->leftjoin('working_form', 'working_form.id', '=', 'job_post.working_form_id')
+            ->leftjoin('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
+            ->leftjoin('major', 'major.id', '=', 'job_post.major_id')
+            ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id',)
             ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id',)
             ->select(
                 'job_post.id',
@@ -140,8 +140,9 @@ class JobPostController extends Controller
                 'job_post.gender',
                 'district.province_id',
                 'district.id as district_id',
-                'type_job_post.name as type_job_post.name',
-            )->first();
+                'type_job_post.name as type_job_post_name',
+            )
+            ->first();
         if ($job_post) {
             return response()->json([
                 'status' => 200,
@@ -376,7 +377,7 @@ class JobPostController extends Controller
         if ($request['type_job_post_id']) {
             $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400 + 1;
             $jobPostType = JobPostType::find($request['type_job_post_id']);
-            $coinCompanyAffter = ($jobPostType->salary) * $interval - $company_coin->coin;
+            $coinCompanyAffter = $company_coin->coin -($jobPostType->salary) * $interval ;
             if ($coinCompanyAffter < 0) {
                 return response()->json([
                     'status' => 422,
