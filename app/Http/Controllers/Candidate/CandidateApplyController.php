@@ -129,7 +129,7 @@ class CandidateApplyController extends Controller
                 'job_post.max_salary',
                 'companies.company_name as company_name',
                 'companies.logo',
-                'save_job_post.create_at'
+                'save_job_post.created_at'
             )
             ->join('job_post', 'save_job_post.job_post_id', '=', 'job_post.id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
@@ -137,7 +137,7 @@ class CandidateApplyController extends Controller
             ->join('province', 'district.province_id', '=', 'province.id',)
             ->where('save_job_post.candidate_id', $candidate_id)
              // ->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->where('end_date', '>=', now()->format('Y-m-d'))
+            ->where('end_date', '>=', now()->format('Y-m-d'))
             // ->whereNull('save_job_post.deleted_at')
             ->get();
         return response()->json([
