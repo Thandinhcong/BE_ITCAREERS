@@ -141,6 +141,7 @@ class JobPostController extends Controller
                 'district.province_id',
                 'district.id as district_id',
                 'type_job_post.name as type_job_post_name',
+                'type_job_post.id as type_job_post_id',
             )
             ->first();
         if ($job_post) {
