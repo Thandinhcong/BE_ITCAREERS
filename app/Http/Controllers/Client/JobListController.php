@@ -60,26 +60,7 @@ class JobListController extends Controller
             ], 404);
         }
     }
-    public function check_save($job_list)
-    {
-        $candidate_id = Auth::user()->id;
-        $check_save = DB::table('save_job_post')
-            ->join('candidates', 'save_job_post.candidate_id', '=', 'candidates.id')
-            ->join('job_post', 'save_job_post.job_post_id', '=', 'job_post.id')
-            ->where('save_job_post.candidate_id', $candidate_id)
-            ->where('save_job_post.job_post_id', $job_list->id)
-            ->select(
-                'job_post.id',
-            )
-            ->first();
-        if ($check_save) {
-            $job_list->id = $check_save->id;
-            $job_list->save_job_post = 'đã lưu';
-        } else {
-            $job_list->save_job_post = 'chưa lưu';
-        }
-        return $job_list;
-    }
+   
     public function job_list()
     {
         $job_list = DB::table('job_post')
@@ -101,9 +82,7 @@ class JobListController extends Controller
                 'companies.logo',
 
             )->get();
-            foreach ($job_list as $data) {
-                $this->check_save($data);
-        }
+          
         if ($job_list != []) {
             return response()->json([
                 'status' => 200,

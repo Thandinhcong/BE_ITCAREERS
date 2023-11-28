@@ -35,8 +35,7 @@ class SearchController extends Controller
             ->leftJoin('province', 'district.province_id', '=', 'province.id')
             ->where(function ($q) use ($request) {
                 if (!empty($request->search)) {
-                    $q->whereFullText(['title', 'desc'], $request->search)
-                    ->orwhere('job_post.title', 'LIKE', '%' . $request->search . '%');
+                    $q->whereFullText(['title', 'desc'], $request->search);
                 }
                 if (!empty($request->province)) {
                     $q->where('province.id', '=', $request->province);
