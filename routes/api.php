@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/login', [\App\Http\Controllers\Controller::class, 'index'])->name('login');
 
 
 
@@ -90,7 +91,6 @@ Route::group([
         Route::resource('refreshPass', RefreshPasswordCandidateController::class);
         Route::get('user', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'user']);
         Route::delete('logout', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'logout']);
-        Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
         //Việc làm đã ứng tuyển
         Route::get('job_apply', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'job_apply']);
         //Việc làm đã lưu

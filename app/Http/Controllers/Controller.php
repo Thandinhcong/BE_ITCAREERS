@@ -9,4 +9,11 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    public function index()
+    {
+        return response()->json([
+            // 'status' => 'success',
+            'message' => 'Cần đăng nhập',
+        ], 200);
+    }
 }
