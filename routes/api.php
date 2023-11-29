@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/login', [\App\Http\Controllers\Controller::class, 'index'])->name('login');
+// Route::get('/login', [\App\Http\Controllers\Controller::class, 'index'])->name('login');
 
 
 
