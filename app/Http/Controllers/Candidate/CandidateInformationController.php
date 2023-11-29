@@ -5,12 +5,24 @@ namespace App\Http\Controllers\Candidate;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CandidatesResource;
 use App\Models\Candidate;
+use App\Models\District;
+use App\Models\Experience;
+use App\Models\Major;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
+use function Laravel\Prompts\table;
 
 class CandidateInformationController extends Controller
 {
+    private $v;
+    public function __construct()
+    {
+        $this->v = [];
+    }
 
     public function index()
     {
@@ -66,6 +78,88 @@ class CandidateInformationController extends Controller
                 'status' => false,
                 'message' => 'Chuyển trạng thái thất bại',
             ], 400);
+        }
+    }
+    public function getDataInformationFindJob()
+    {
+        $this->v['experience'] = Experience::all();
+        $this->v['major'] = Major::all();
+        $this->v['province'] = Province::all();
+        $this->v['district'] = District::all();
+        return response()->json([
+            'status' => true,
+            'data' => $this->v,
+        ], 200);
+    }
+    public function getInfoFindJob()
+    {
+        $candidate = Auth::user();
+        $id = Auth::user()->id;
+        $major = DB::table('candidates')
+            ->where('candidates.id', '=', $id)
+            ->leftJoin('major', 'major.id', '=', 'candidates.major_id')
+            ->select('major.major')
+            ->first();
+
+        $experience = DB::table('candidates')
+            ->where('candidates.id', '=', $id)
+            ->leftJoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
+            ->select('experiences.experience')
+            ->first();
+
+        $work_location = DB::table('candidates')
+            ->where('candidates.id', '=', $id)
+            ->leftJoin('district', 'district.id', '=', 'candidates.district_id')
+            ->leftJoin('province', 'province.id', '=', 'district.province_id')
+            ->select('district.name', 'province.province')
+            ->first();
+
+        $info_find_job = DB::table('candidates')
+            ->where('candidates.id', '=', $id)
+            ->select(
+                'experience_id as experience',
+                'major_id as major',
+                'desired_salary',
+                'district_id as work_location'
+            )
+            ->first();
+
+        $info_find_job->major = $major ? $major->major : null;
+        $info_find_job->work_location = $work_location ? $work_location->name . ', ' . $work_location->province : null;
+        $info_find_job->experience = $experience ? $experience->experience : null;
+
+        $this->v['info_find_job'] = $info_find_job;
+
+        return response()->json([
+            'status' => true,
+            'info_find_job' => $this->v,
+        ], 200);
+    }
+    public function saveInformationFindJob(Request $request)
+    {
+        $candidate = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'experience_id' => 'required',
+            'district_id' => 'required',
+            'desired_salary' => 'required',
+            'major_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages()
+            ], 400);
+        }
+        if ($candidate) {
+            $candidate->update($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'update success'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+            ], 500);
         }
     }
 }

@@ -106,6 +106,10 @@ Route::group([
         Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
 
         Route::post('find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'findJob']);
+        //Information Find Job
+        Route::get('get_data_find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'getDataInformationFindJob']);
+        Route::post('save_info_find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'saveInformationFindJob']);
+        Route::get('get_info_find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'getInfoFindJob']);
         // create cv
         Route::get('cv', [App\Http\Controllers\Client\CVController::class, 'index']);
         Route::post('active_cv', [\App\Http\Controllers\Client\CVController::class, 'activeCV']);
