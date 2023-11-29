@@ -159,8 +159,7 @@ class JobPostController extends Controller
     }
     public function job_post_expires()
     {
-        $company_id = Auth::user()->id;
-        $job_post = DB::table('job_post')->where('company_id',  $company_id)->where('end_date', '<=', now()->format('Y-m-d'))
+        $job_post = DB::table('job_post')->where('company_id',  $this->company_id())->where('end_date', '<=', now()->format('Y-m-d'))
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
