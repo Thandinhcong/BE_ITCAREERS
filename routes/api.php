@@ -17,6 +17,7 @@ use App\Http\Controllers\Candidate\RefreshPasswordCandidateController;
 use App\Http\Controllers\Candidate\RefreshPasswordController;
 use App\Http\Controllers\Company\RefreshPasswordCompanyController;
 use App\Models\Candidate;
+use Google\Service\Adsense\Row;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -115,6 +116,7 @@ Route::group([
         Route::post('active_cv', [\App\Http\Controllers\Client\CVController::class, 'activeCV']);
         Route::get('delete_cv/{id}', [\App\Http\Controllers\Client\CVController::class, 'destroyCv']);
         Route::post('create_cv', [\App\Http\Controllers\Client\CreateCvController::class, 'createCV']);
+        Route::post('upload_cv', [\App\Http\Controllers\Client\CVController::class, 'store']);
         Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);
         Route::get('update_cv/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'index']);
         Route::post('update_cv/update_info/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateInfo']);

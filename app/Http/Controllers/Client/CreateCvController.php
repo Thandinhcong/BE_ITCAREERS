@@ -46,9 +46,10 @@ class CreateCvController extends Controller
         if (Auth::check()) {
             $candidate = Auth::user();
             $candidate_id = $candidate->id;
-            $path_cv = $request->path_cv;
             $cv = new Profile();
-            $check_count = Profile::where('candidate_id', $candidate_id)->count();
+            $check_count = Profile::where('candidate_id', $candidate_id)
+                ->where('type', 1)
+                ->count();
             if ($check_count >= 3) {
                 return response()->json([
                     'status' => false,
@@ -62,7 +63,7 @@ class CreateCvController extends Controller
                 $cv->image = $candidate->image;
                 $cv->address = $candidate->address;
                 $cv->birth = $candidate->birth;
-                $cv->path_cv = $path_cv;
+                $cv->type = 1;
                 $cv->save();
                 $profile_id = $cv->id;
                 return response()->json([
