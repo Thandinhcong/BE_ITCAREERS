@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('profile', function (Blueprint $table) {
             $table->softDeletes();
             $table->longText('careers_goal')->nullable();
+            $table->integer('type')->nullable()->comment('0: cv upload, 1: cv create');
         });
     }
 
