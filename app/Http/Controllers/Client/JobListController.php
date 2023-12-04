@@ -89,10 +89,11 @@ class JobListController extends Controller
                 'type_job_post.id as id_type_job_post',
                 'type_job_post.name as name_type_job_post',
                 'job_post.created_at',
+                'job_post.start_date',
+                'job_post.desc',
                 'companies.company_name as company_name',
                 'companies.logo',
             )->get();
-            
         if ($job_list->count()>0) {
             return response()->json([
                 'status' => 200,

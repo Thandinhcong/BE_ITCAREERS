@@ -40,7 +40,7 @@ class PaymentController extends Controller
     }
     public function insertInvoice(Request $request)
     {
-        $user_id = Auth::guard('company')->user()->id;
+        $user_id = Auth::user()->id;
         $package_id = $request->package_id;
         $package = Packages::find($package_id);
         $data_invoice = [
@@ -51,7 +51,19 @@ class PaymentController extends Controller
             'total' => 1
         ];
         $invoice = Invoice::create($data_invoice);
-        $this->data['invoice'] = Invoice::with('package')->where('id', $invoice->id)->first();
+        $this->data['invoice'] = Invoice::with('package')
+        ->select(
+            'invoices.id as invoice_id',
+            'invoices.user_id',
+            'invoices.package_id',
+            'invoices.status',
+            'invoices.amount',
+            'invoices.total',
+            'invoices.created_at',
+            'invoices.updated_at',
+        )
+        ->where('id', $invoice->id)
+        ->first();
         return response()->json([
             'status' => true,
             'invoice' => $this->data['invoice']
@@ -61,7 +73,8 @@ class PaymentController extends Controller
     public function payment(Request $request)
     {
         $host = $request->getHttpHost();
-        $vnp_Returnurl = url('') . "/api/company/vnpay_return";
+        // $vnp_Returnurl = url('') . "/api/company/vnpay_return";
+        $vnp_Returnurl = "http://127.0.0.1:5173/business/deposit";
         $vnp_TmnCode = $this->vnp_TmnCode; //Website ID in VNPAY System
         $vnp_HashSecret = $this->vnp_HashSecret; //Secret key
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -119,7 +132,7 @@ class PaymentController extends Controller
 
         $vnp_Url = $vnp_Url . "?" . $query;
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         $returnData = array(
@@ -216,7 +229,7 @@ class PaymentController extends Controller
         $Status = 0; // Là trạng thái thanh toán của giao dịch chưa có IPN lưu tại hệ thống của merchant chiều khởi tạo URL thanh toán.
         $orderId = $inputData['vnp_TxnRef'];
         try {
-            //Check Orderid    
+            //Check Orderid
             //Kiểm tra checksum của dữ liệu
             if ($secureHash == $vnp_SecureHash) {
                 $invoice = Invoice::with('package')->find($orderId);
@@ -230,13 +243,13 @@ class PaymentController extends Controller
                                 $Status = 2; // Trạng thái thanh toán thất bại / lỗi
                             }
                             $invoice->update(['status' => $Status]);
-                            $company = Company::where('id', auth('company')->user()->id)->first();
+                            $company = Company::where('id', Auth::user()->id)->first();
                             $company->coin = $company->coin + $invoice->package->coin;
                             $company->save();
-                            updateProcess(Auth::guard('company')->user()->id, "Thực hiện nạp {$invoice->package->coin} coin vào tài khoản", $invoice->package->coin, 0, 0);
+                            updateProcess(Auth::user()->id, "Thực hiện nạp {$invoice->package->coin} coin vào tài khoản", $invoice->package->coin, 0, 0);
                             $vnpay_payment = Vnpay_payment::create($request->all());
                             $returnData['RspCode'] = '00';
-                            $returnData['Message'] = 'Xác nhận thành công';
+                            $returnData['Message'] = 'Giao dịch thành công!';
                         } else {
                             $returnData['RspCode'] = '02';
                             $returnData['Message'] = 'Đơn đặt hàng đã được xác nhận';
