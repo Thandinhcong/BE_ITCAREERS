@@ -86,6 +86,7 @@ class JobPostController extends Controller
                 'job_post.desc',
                 'job_post.status',
                 'type_job_post.name as type_job_post_name',
+                'type_job_post.id as type_job_post_id',
                 DB::raw('count(job_post_id) as  quantity_apply'),
             )->get();
         if ($job_post->count() === 0) {

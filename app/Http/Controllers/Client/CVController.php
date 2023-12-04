@@ -8,6 +8,7 @@ use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CVController extends Controller
 {
@@ -28,29 +29,60 @@ class CVController extends Controller
     public function store(Request $request)
     {
         $candidate = Auth::user();
-        $candidate_id = $candidate->id;
-        $cv = new Profile();
-        $path_cv = $request->path_cv;
-        $check_count = Profile::where('candidate_id', $candidate_id)->count();
-        if ($check_count >= 3) {
+            $candidate_id = $candidate->id;
+        $validator = Validator::make($request->all(), [
+            'path_cv' => 'required',
+            'title' => 'required',
+          
+        ]);
+        if ($validator->fails()) {
             return response()->json([
-                'status' => false,
-                'message' => 'Bạn đã tạo tối đa 3 CV !!!'
-            ], 400);
-        } else {
-            $cv->candidate_id = $candidate_id;
-            $cv->name = $candidate->name;
-            $cv->email = $candidate->email;
-            $cv->phone = $candidate->phone;
-            $cv->image = $request->image;
-            $cv->path_cv = $path_cv;
-            $cv->save();
-            $profile_id = $cv->id;
-            return response()->json([
-                'profile_id' => $profile_id,
-                'message' => 'Tạo thành công'
-            ], 201);
-        }
+                'error' => $validator->errors()
+            ], 404);
+        };
+        $check_count = Profile::where('candidate_id', $candidate_id)
+                ->where('type', 0)
+                ->count();
+            if ($check_count >= 3) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Bạn đã upload tối đa 3 CV !!!'
+                ], 400);
+            } else {
+
+                $path_cv = $request->path_cv;
+                $title = $request->title;
+                $pathInfo = pathinfo($path_cv);
+                $fileExtension = strtolower($pathInfo['extension']);
+                if ($fileExtension === 'pdf') {
+                    $candidate = Auth::user();
+                    $candidate_id = $candidate->id;
+                    $cv = new Profile();
+                    $path_cv = $request->path_cv;
+                    if ($candidate) {
+                        $cv->title = $title;
+                        $cv->candidate_id = $candidate_id;
+                        $cv->name = $candidate->name;
+                        $cv->email = $candidate->email;
+                        $cv->phone = $candidate->phone;
+                        $cv->image = $request->image;
+                        $cv->path_cv = $path_cv;
+                        $cv->type = 0;
+                        $cv->save();
+                        $profile_id = $cv->id;
+                        return response()->json([
+                            'profile_id' => $profile_id,
+                            'message' => 'Tạo thành công'
+                        ], 201);
+                    }
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Vui lòng chọn file pdf'
+                    ], 400);
+                }
+            }
+
     }
     public function activeCV(Request $request)
     {

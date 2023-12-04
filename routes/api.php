@@ -17,6 +17,7 @@ use App\Http\Controllers\Candidate\RefreshPasswordCandidateController;
 use App\Http\Controllers\Candidate\RefreshPasswordController;
 use App\Http\Controllers\Company\RefreshPasswordCompanyController;
 use App\Models\Candidate;
+use Google\Service\Adsense\Row;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,11 +36,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/login', function () {
-    return response()->json([
-        'message' => 'Cần đăng nhập',
-    ], 200);
-})->name('login');
+// Route::get('/login', function () {
+//     return response()->json([
+//         'message' => 'Cần đăng nhập',
+//     ], 200);
+// })->name('login');
 
 
 
@@ -75,6 +76,7 @@ Route::group([
         Route::resource('candidate', CandidatesController::class);
         Route::resource('company', CompanyController::class);
         Route::resource('man-web', ManagementWebController::class);
+        Route::resource('rev-sta', \App\Http\Controllers\Admin\RevenueStatisticsController::class);
     });
 });
 Route::resource('experience', ExperienceController::class);
@@ -105,11 +107,16 @@ Route::group([
         Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
 
         Route::post('find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'findJob']);
+        //Information Find Job
+        Route::get('get_data_find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'getDataInformationFindJob']);
+        Route::post('save_info_find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'saveInformationFindJob']);
+        Route::get('get_info_find_job', [\App\Http\Controllers\Candidate\CandidateInformationController::class, 'getInfoFindJob']);
         // create cv
         Route::get('cv', [App\Http\Controllers\Client\CVController::class, 'index']);
         Route::post('active_cv', [\App\Http\Controllers\Client\CVController::class, 'activeCV']);
         Route::get('delete_cv/{id}', [\App\Http\Controllers\Client\CVController::class, 'destroyCv']);
         Route::post('create_cv', [\App\Http\Controllers\Client\CreateCvController::class, 'createCV']);
+        Route::post('upload_cv', [\App\Http\Controllers\Client\CVController::class, 'store']);
         Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 'getData']);
         Route::get('update_cv/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'index']);
         Route::post('update_cv/update_info/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateInfo']);
