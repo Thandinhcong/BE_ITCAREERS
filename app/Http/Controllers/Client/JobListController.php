@@ -13,7 +13,8 @@ class JobListController extends Controller
 {
     public function job_detail(string $id)
     {
-        $job_detail = DB::table('job_post')->where('job_post.id', $id)
+        $job_detail = DB::table('job_post')
+            ->where('job_post.id', $id)
             ->join('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->join('experiences', 'experiences.id', '=', 'job_post.exp_id')
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
@@ -39,6 +40,8 @@ class JobListController extends Controller
                 'province.province',
                 'job_post.start_date',
                 'job_post.end_date',
+                'job_post.status',
+                'job_post.type_job_post_id',
                 'job_post.quantity',
                 'job_post.requirement as require',
                 'job_post.interest',
@@ -60,17 +63,22 @@ class JobListController extends Controller
             ], 404);
         }
     }
-    
-   
+
+
     public function job_list()
     {
         $job_list = DB::table('job_post')
-            // ->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->where('end_date', '>=', now()->format('Y-m-d'))
-            // ->where('job_post.status', 1)
+        //Ngày đăng phỉa trùng hoặc sau thời điểm hiện tại
+            ->where('start_date', '<=', now()->format('Y-m-d'))
+            //Ngày kết thúc phải trc howcj tại thời điểm hiện tại
+            ->where('end_date', '>=', now()->format('Y-m-d'))
+            //Trạng thái của bài đăng 0:đang mở 1:đã được active
+            ->whereIn('job_post.status', [1, 0])
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id',)
+            ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id',)
+            ->orderByDesc('type_job_post_id')
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -78,14 +86,13 @@ class JobListController extends Controller
                 'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
+                'type_job_post.name',
                 'job_post.created_at',
                 'companies.company_name as company_name',
                 'companies.logo',
-
             )->get();
-        
-          
-        if ($job_list != []) {
+            
+        if ($job_list->count()>0) {
             return response()->json([
                 'status' => 200,
                 'job_list' => $job_list
@@ -97,13 +104,14 @@ class JobListController extends Controller
                 'job_list' => []
             ], 404);
         }
-    } public function location_work()
+    }
+    public function location_work()
     {
-//
+        //
         $job_list = DB::table('job_post')
-            // ->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->where('end_date', '>=', now()->format('Y-m-d'))
-            // ->where('job_post.status', 1)
+            ->where('start_date', '<=', now()->format('Y-m-d'))
+            ->where('end_date', '>=', now()->format('Y-m-d'))
+            ->whereIn('job_post.status', [1, 0])
             ->join('district', 'job_post.area_id', '=', 'district.id')
             ->join('province', 'district.province_id', '=', 'province.id')
             ->groupBy('province.id')
@@ -113,7 +121,7 @@ class JobListController extends Controller
                 'province.province',
                 DB::raw('count(*) as  job_count'),
             )->limit(3)->get();
-           
+
         if ($job_list != []) {
             return response()->json([
                 'status' => 200,

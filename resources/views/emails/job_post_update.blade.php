@@ -47,10 +47,9 @@
             độc đáo, có hơn 1 triệu người sử dụng thường xuyên.</p>
     </header>
     <main>
-        <div>Chào bạn {{$candidate_apply->name}},</div>
-        Bạn đã ứng tuyển thành công vị trí <b>{{$job_apply->title}}</b> của nhà tuyển dụng
-         <b>{{$company_apply->company_name}}</b>
+        <div>Bài đăng của bạn với tiêu đề là {{$job_post->title}} đã cập nhật thành công </div>
         trên nền tảng tuyển dụng {{$manage_web->name_web}} vào lúc 16:43 06/09/2023.
+        Vui lòng ấn vào đường link sau đây để hướng tới bài đăng của mình <a>{{$job_post->id}}</a>
     </main>
 </body>
 

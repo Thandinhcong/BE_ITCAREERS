@@ -10,5 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-   
+    public function candidate_id()
+    {
+        $candidate_id = Auth::user()->id;
+        return $candidate_id;
+    }
 }

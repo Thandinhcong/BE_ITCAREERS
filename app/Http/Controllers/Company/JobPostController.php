@@ -13,6 +13,7 @@ use App\Models\Level;
 use App\Models\Major;
 use App\Models\District;
 use App\Models\JobPostType;
+use App\Models\ManagementWeb;
 use App\Models\Province;
 use App\Models\WorkingForm;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
 {
+
     public function company_id()
     {
         return Auth::user()->id;
@@ -228,14 +230,21 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         }
+        $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
+        if ($interval<10) {
+            return response()->json([
+                'status' => 422,
+                'errors' => "Tối thiểu 10 ngày",
+            ], 422);
+        }
         switch ($request->type_job_post_id) {
             case '0':
                 $job_post = JobPost::create($request->all());
                 break;
             default:
-                $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
                 $jobPostType = JobPostType::find($request['type_job_post_id']);
-                $coinCompanyAffter = $company_coin->coin - ($jobPostType->salary) * $interval;
+                $coinForJob_post=($jobPostType->salary) * $interval;
+                $coinCompanyAffter = $company_coin->coin -  $coinForJob_post;
                 if ($coinCompanyAffter < 0) {
                     return response()->json([
                         'status' => 422,
@@ -247,6 +256,12 @@ class JobPostController extends Controller
                 break;
         }
         if ($job_post) {
+            $company_info=Auth::user();
+            $manage_web = ManagementWeb::find(1);
+            Mail::send('emails.job_post_store', compact('job_post', 'manage_web','company_info',), function ($email) use ( $manage_web,$company_info) {
+                $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được đăng thành công');
+                $email->to($company_info->email);
+            });
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
@@ -261,30 +276,27 @@ class JobPostController extends Controller
     }
     public function update(Request $request, string $id)
     {
-        // $company_coin = DB::table('companies')
-        //     ->select('coin')
-        //     ->where('id', $this->company_id())->first();
         $validator = Validator::make($request->all(), [
-            'title' => 'required|',
-            'job_position_id' => 'required|',
-            'quantity' => 'required|integer',
-            'academic_level_id' => 'required|',
-            'exp_id' => 'required|',
-            'working_form_id' => 'required|',
-            'min_salary' => 'required',
-            'max_salary' => 'required',
-            'min_salary' => 'lte:max_salary',
-            'requirement' => 'required|',
-            'interest' => 'required|',
-            'gender' => 'required',
-            'gender' => 'in:0,1,2',
-            //Bắt buộc 1 trong 3 số trên
-            'area_id' => 'required|',
-            'desc' => 'required|',
-            'major_id' => 'required|',
-            // 'start_date' => 'required|',
-            // 'start_date' => 'required|date|',
-            // 'end_date' => 'required|date|after:start_date|after:now',
+            // 'title' => 'required|',
+            // 'job_position_id' => 'required|',
+            // 'quantity' => 'required|integer',
+            // 'academic_level_id' => 'required|',
+            // 'exp_id' => 'required|',
+            // 'working_form_id' => 'required|',
+            // 'min_salary' => 'required',
+            // 'max_salary' => 'required',
+            // 'min_salary' => 'lte:max_salary',
+            // 'requirement' => 'required|',
+            // 'interest' => 'required|',
+            // 'gender' => 'required',
+            // 'gender' => 'in:0,1,2',
+            // //Bắt buộc 1 trong 3 số trên
+            // 'area_id' => 'required|',
+            // 'desc' => 'required|',
+            // 'major_id' => 'required|',
+            // // 'start_date' => 'required|',
+            // // 'start_date' => 'required|date|',
+            // // 'end_date' => 'required|date|after:start_date|after:now',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -346,10 +358,17 @@ class JobPostController extends Controller
         if ($job_post->status !=1) {
             $job_post->update($request->all());
             $job_post->update(['status' => 0]);
+            $company_info=Auth::user();
+            $manage_web = ManagementWeb::find(1);
+            Mail::send('emails.job_post_update', compact('job_post', 'manage_web','company_info',), function ($email) use ( $manage_web,$company_info) {
+                $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
+                $email->to($company_info->email);
+            });
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success'
             ], 200);
+         
         } else {
             return response()->json([
                 'status' => 'fail',
@@ -402,20 +421,20 @@ class JobPostController extends Controller
         }
     }
 
-    function stop_job_post(string $id)
-    {
-        $job_post_date = JobPost::find($id);
-        if ($job_post_date) {
-            $job_post_date->update(['status' => 3]);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Update Success',
-                'data' => $job_post_date
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'fail',
-            ], 500);
-        }
-    }
+    // function stop_job_post(string $id)
+    // {
+    //     $job_post_date = JobPost::find($id);
+    //     if ($job_post_date) {
+    //         $job_post_date->update(['status' => 3]);
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'Update Success',
+    //             'data' => $job_post_date
+    //         ], 200);
+    //     } else {
+    //         return response()->json([
+    //             'status' => 'fail',
+    //         ], 500);
+    //     }
+    // }
 }

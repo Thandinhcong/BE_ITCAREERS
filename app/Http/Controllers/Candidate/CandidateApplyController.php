@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Candidate;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CandidateApplyResource;
 use App\Models\CandidateApply;
+use App\Models\Company;
 use App\Models\CurriculumVitae;
+use App\Models\JobPost;
 use App\Models\JobPostApply;
+use App\Models\ManagementWeb;
 use App\Models\SaveJobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +39,6 @@ class CandidateApplyController extends Controller
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.updated_at',
                 'job_post_apply.status',
-                'job_post_apply.status',
             )->get();
         if ($job_apply) {
             return response()->json([
@@ -60,6 +62,21 @@ class CandidateApplyController extends Controller
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
             ->get();
+        $job_apply = JobPost::find($id);
+        $now = now();
+        if ($job_apply->status == 2 || $job_apply->end_date < $now) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Bài đăng đã bị khóa do vi phạm các nguyên tắc của nền tảng
+                 hoặc đã hết thời gian tuyển dụng'
+            ], 400);
+        }  if ( $job_apply->start_date > $now) {
+            return response()->json([
+                'status' => 'fail',
+                'error' => 'Bài đăng chưa đến thời gian tuyển dụng'
+            ], 400);
+        }
+        $company_apply = Company::find($job_apply->company_id);
         if ($data_check->count() > 0) {
             return response()->json([
                 'error' => 'Bạn đã ứng tuyển',
@@ -68,9 +85,9 @@ class CandidateApplyController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'phone' => 'required',
-                'email' => 'required',
+                'email' => 'required|email',
                 'path_cv' => 'required_without:curriculum_vitae_id',
-                // 'path_cv' => 'mimes:pdf'
+                'path_cv' => 'mimetypes:application/pdf|max:400000'
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -81,7 +98,7 @@ class CandidateApplyController extends Controller
             if ($request['path_cv'] && $request['curriculum_vitae_id']) {
                 return response()->json([
                     'status' => 'fail',
-                    'errors' => 'Không được chọn cả 2 '
+                    'errors' => 'Bạn chỉ được chọn 1 hồ sơ chính để ứng tuyển'
                 ], 400);
             } else {
                 if ($request['path_cv']) {
@@ -91,7 +108,7 @@ class CandidateApplyController extends Controller
                             'phone' => $request['phone'],
                             'email' => $request['email'],
                             'path_cv' => $request['path_cv'],
-                            'candidate_id' => 1
+                            'candidate_id' => $this->candidate_id()
                         ]
                     );
                     $candidate_apply = JobPostApply::create($request->all());
@@ -100,8 +117,9 @@ class CandidateApplyController extends Controller
                 }
             }
             if ($candidate_apply) {
-                Mail::send('emails.candidate_apply', compact('candidate_apply'), function ($email) use ($candidate_apply) {
-                    $email->subject('IT - Ứng tuyển thành công');
+                $manage_web = ManagementWeb::find(1);
+                Mail::send('emails.candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ($candidate_apply, $manage_web) {
+                    $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
                     $email->to($candidate_apply->email);
                 });
                 return response()->json([
@@ -136,7 +154,7 @@ class CandidateApplyController extends Controller
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id',)
             ->where('save_job_post.candidate_id', $candidate_id)
-             // ->where('start_date', '<=', now()->format('Y-m-d'))
+            ->where('start_date', '<=', now()->format('Y-m-d'))
             ->where('end_date', '>=', now()->format('Y-m-d'))
             // ->whereNull('save_job_post.deleted_at')
             ->get();
@@ -179,7 +197,7 @@ class CandidateApplyController extends Controller
     }
     public function cancel_save_job_post($id)
     {
-        $candidate_id =Auth::user()->id;
+        $candidate_id = Auth::user()->id;
         $cancel_save_profile = SaveJobPost::where('candidate_id', $candidate_id)->where('job_post_id', $id)->first();
         // dd($cancel_save_profile);
         if (!$cancel_save_profile) {
@@ -188,5 +206,6 @@ class CandidateApplyController extends Controller
         $cancel_save_profile->delete();
         return response()->json([
             'message' => 'Xóa thành công'
-        ], 200);    }
+        ], 200);
+    }
 }

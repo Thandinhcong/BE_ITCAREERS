@@ -47,9 +47,9 @@
             độc đáo, có hơn 1 triệu người sử dụng thường xuyên.</p>
     </header>
     <main>
-        <div>Chào bạn {{$candidate_apply->name}},</div>
-        Bạn đã ứng tuyển thành công vị trí <b>{{$job_apply->title}}</b> của nhà tuyển dụng
-         <b>{{$company_apply->company_name}}</b>
+        <div>Chào bạn {{$profile->name}},</div>
+        Nhà tuyển dụng đã xem và đang đánh giá hồ sơ mà bạn đã ứng tuyển vào vị trí <b>{{$profile->job_post_title}}</b>
+        của nhà tuyển dụng<b>{{$profile->company_name}}</b>
         trên nền tảng tuyển dụng {{$manage_web->name_web}} vào lúc 16:43 06/09/2023.
     </main>
 </body>

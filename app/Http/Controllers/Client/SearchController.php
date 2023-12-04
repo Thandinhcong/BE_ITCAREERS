@@ -44,9 +44,12 @@ class SearchController extends Controller
                     $q->whereNot('job_post.max_salary', '<=', $request->min_salary);
                 }
             })
-            // ->where('start_date', '<=', now()->format('Y-m-d'))
-            // ->where('end_date', '>=', now()->format('Y-m-d'))
-            // ->where('job_post.status', 1)
+            //Ngày đăng phỉa trùng hoặc sau thời điểm hiện tại
+            ->where('start_date', '<=', now()->format('Y-m-d'))
+            //Ngày kết thúc phải trc howcj tại thời điểm hiện tại
+            ->where('end_date', '>=', now()->format('Y-m-d'))
+            //Trạng thái của bài đăng 0:đang mở 1:đã được active
+            ->whereIn('job_post.status', [1, 0])
             ->get();
         return response()->json([
             'status' => 200,
