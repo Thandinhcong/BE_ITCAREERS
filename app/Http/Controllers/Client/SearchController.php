@@ -51,7 +51,7 @@ class SearchController extends Controller
             //Ngày kết thúc phải trc howcj tại thời điểm hiện tại
             ->where('end_date', '>=', now()->format('Y-m-d'))
             //Trạng thái của bài đăng 0:đang mở 1:đã được active
-            ->whereIn('job_post.status', [1, 0])
+            ->where('job_post.status', 1)
             ->get();
         return response()->json([
             'status' => 200,
