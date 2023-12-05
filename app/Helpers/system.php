@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\HistoryPayment;
 use Illuminate\Support\Facades\DB;
 
 if (!function_exists('updateProcess')) {
@@ -14,6 +15,6 @@ if (!function_exists('updateProcess')) {
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-        DB::table('history_payments')->insert($data);
+        HistoryPayment::create($data);
     }
 }

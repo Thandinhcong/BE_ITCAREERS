@@ -52,18 +52,18 @@ class PaymentController extends Controller
         ];
         $invoice = Invoice::create($data_invoice);
         $this->data['invoice'] = Invoice::with('package')
-        ->select(
-            'invoices.id as invoice_id',
-            'invoices.user_id',
-            'invoices.package_id',
-            'invoices.status',
-            'invoices.amount',
-            'invoices.total',
-            'invoices.created_at',
-            'invoices.updated_at',
-        )
-        ->where('id', $invoice->id)
-        ->first();
+            ->select(
+                'invoices.id as invoice_id',
+                'invoices.user_id',
+                'invoices.package_id',
+                'invoices.status',
+                'invoices.amount',
+                'invoices.total',
+                'invoices.created_at',
+                'invoices.updated_at',
+            )
+            ->where('id', $invoice->id)
+            ->first();
         return response()->json([
             'status' => true,
             'invoice' => $this->data['invoice']
@@ -284,8 +284,18 @@ class PaymentController extends Controller
     }
     public function historyPayment()
     {
-        $this->data['history'] = HistoryPayment::where([['user_id', Auth::guard('company')->user()->id], ['type_account', 0]])->take(5)->orderby('created_at', 'DESC')->get();
-        $this->data['history_all'] = HistoryPayment::where([['user_id', Auth::guard('company')->user()->id], ['type_account', 0]])->orderby('created_at', 'DESC')->get();
+        $this->data['history'] = DB::table('history_payments')
+            ->where('user_id', '=', Auth::user()->id)
+            ->where('type_account', '=', 0)
+            ->orderBy('created_at', 'DESC')
+            ->limit(5)
+            ->offset(0)
+            ->get();
+        $this->data['history_all'] = DB::table('history_payments')
+            ->where('user_id', '=', Auth::user()->id)
+            ->where('type_account', '=', 0)
+            ->orderBy('created_at', 'DESC')
+            ->get();
         if ($this->data['history']->count() == 0) {
             return response()->json([
                 'status' => false,
