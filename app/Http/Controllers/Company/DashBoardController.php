@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\JobPost;
 use App\Models\JobPostApply;
 use App\Models\ProfileOpen;
+use App\Models\Vnpay_payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,6 +30,7 @@ class DashBoardController extends Controller
         }
         $this->v['countNotSuitable'] = JobPostApply::where('qualifying_round_id', 0)->get()->toArray();
         $this->v['countSuitable'] = JobPostApply::where('qualifying_round_id', 1)->get()->toArray();
+        $this->v['countView'] = JobPost::where('id', "=", $company_id)->select('view')->first();
         $this->v['countAddCoin'] = Company::where('id', "=", $company_id)->select('coin')->first();
         $this->v['countSpendCoin'] = ProfileOpen::where('id', "=", $company_id)->select('coin')->first();
         $getModel = JobPostApply::getCadidate($request, $company_id);
@@ -41,7 +43,9 @@ class DashBoardController extends Controller
             ];
             return response()->json($data);
         }
-
+        $totalMoney = Vnpay_payment::getMoneyMonthly();
+        $this->v['day'] = $totalMoney['time'];
+        $this->v['totalMoneyDay'] =  $totalMoney['money'];
         return $this->v;
     }
 }
