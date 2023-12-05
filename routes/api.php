@@ -204,6 +204,7 @@ Route::group([
         Route::get('vnpay_ipn', [App\Http\Controllers\Company\PaymentController::class, 'vnpay_ipn'])->name('vnpay_ipn');
         Route::get('history_payment', [App\Http\Controllers\Company\PaymentController::class, 'historyPayment'])->name('historyPayment');
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
+        Route::resource('dashboard', \App\Http\Controllers\Company\DashBoardController::class);
     });
 });
 Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);

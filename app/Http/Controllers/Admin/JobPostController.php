@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ManagementWeb;
+use App\Models\Company;
+
+use Illuminate\Support\Facades\Auth;
 
 class JobPostController extends Controller
 {
@@ -77,17 +81,21 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages()
             ], 422);
         } else {
-            $jobPost = jobPost::find($id);
+            $job_post = jobPost::find($id);
         }
-        if ($jobPost) {
-            $jobPost->update(['status' => $request->status]);
-            // Mail::send('emails.notification_job_post_status', compact('jobPost', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ($candidate_apply, $manage_web) {
-            //     $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
-            //     $email->to($candidate_apply->email);
+        if ($job_post) {
+            $company_info=Company::find($job_post->company_id);
+
+            $job_post->update(['status' => $request->status]);
+            $manage_web = ManagementWeb::find(1);
+            // Mail::send('emails.job_post_update', compact('job_post', 'manage_web'), function ($email) use ( $manage_web,$company_info) {
+            //     $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
+            //     $email->to($company_info->email);
             // });
             return response()->json([
                 'status' => 201,
                 'message' => 'Sửa thành công',
+                'email'=>$company_info->email
             ], 200);
         } else {
             return response()->json([

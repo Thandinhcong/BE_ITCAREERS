@@ -87,7 +87,7 @@ class CandidateApplyController extends Controller
                 'phone' => 'required',
                 'email' => 'required|email',
                 'path_cv' => 'required_without:curriculum_vitae_id',
-                'path_cv' => 'mimetypes:application/pdf|max:400000'
+                // 'path_cv' => 'mimetypes:application/pdf|max:400000'
             ]);
             if ($validator->fails()) {
                 return response()->json([

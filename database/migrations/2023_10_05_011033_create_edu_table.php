@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('type_degree', 55);
             $table->date('start_date');
             $table->date('end_date');
-            $table->bigInteger('major_id');
+            $table->string('major');
             $table->bigInteger('profile_id');
             $table->timestamps();
             $table->softDeletes();

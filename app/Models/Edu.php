@@ -16,7 +16,7 @@ class Edu extends Model
         'type_degree',
         'start_date',
         'end_date',
-        'major_id',
+        'major',
         'profile_id'
     ];
 }

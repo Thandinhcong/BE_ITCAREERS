@@ -73,7 +73,7 @@ class JobListController extends Controller
             //Ngày kết thúc phải trc howcj tại thời điểm hiện tại
             ->where('end_date', '>=', now()->format('Y-m-d'))
             //Trạng thái của bài đăng 0:đang mở 1:đã được active
-            ->whereIn('job_post.status', [1, 0])
+            ->where('job_post.status', 1)
             ->join('companies', 'companies.id', '=', 'job_post.company_id')
             ->join('district', 'district.id', '=', 'job_post.area_id')
             ->join('province', 'district.province_id', '=', 'province.id',)
@@ -86,12 +86,14 @@ class JobListController extends Controller
                 'province.province',
                 'job_post.min_salary',
                 'job_post.max_salary',
-                'type_job_post.name',
+                'type_job_post.id as id_type_job_post',
+                'type_job_post.name as name_type_job_post',
                 'job_post.created_at',
+                'job_post.start_date',
+                'job_post.desc',
                 'companies.company_name as company_name',
                 'companies.logo',
             )->get();
-            
         if ($job_list->count()>0) {
             return response()->json([
                 'status' => 200,
@@ -111,7 +113,7 @@ class JobListController extends Controller
         $job_list = DB::table('job_post')
             ->where('start_date', '<=', now()->format('Y-m-d'))
             ->where('end_date', '>=', now()->format('Y-m-d'))
-            ->whereIn('job_post.status', [1, 0])
+            ->where('job_post.status', 1)
             ->join('district', 'job_post.area_id', '=', 'district.id')
             ->join('province', 'district.province_id', '=', 'province.id')
             ->groupBy('province.id')
