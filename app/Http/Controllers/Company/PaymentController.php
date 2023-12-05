@@ -40,10 +40,12 @@ class PaymentController extends Controller
     }
     public function insertInvoice(Request $request)
     {
+        $id = random_int(1, 1000000);
         $user_id = Auth::user()->id;
         $package_id = $request->package_id;
         $package = Packages::find($package_id);
         $data_invoice = [
+            'id' => $id,
             'user_id' => $user_id,
             'package_id' => $package_id,
             'status' => 0,
