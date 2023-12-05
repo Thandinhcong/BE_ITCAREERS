@@ -45,13 +45,14 @@ class DatabaseSeeder extends Seeder
             'area_id' => 2,
             'start_date' => '2023-10-04',
             'end_date' => '2023-10-010',
-            "desc"=>"anh thản cho em làm với",
-            "job_post_type":1
+            "desc" => "anh thản cho em làm với",
+            "job_post_type" => 1
         ]);
         JobPostType::create([
             'name' => 'Bài đăng 1',
             'salary' => 100,
-        ]);JobPostType::create([
+        ]);
+        JobPostType::create([
             'name' => 'Bài đăng 2',
             'salary' => 150,
         ]);
