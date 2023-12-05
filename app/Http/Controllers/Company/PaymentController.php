@@ -298,6 +298,8 @@ class PaymentController extends Controller
             ->where('type_account', '=', 0)
             ->orderBy('created_at', 'DESC')
             ->get();
+        $this->data['history'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])->take(5)->orderby('created_at', 'DESC')->get();
+        $this->data['history_all'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])->orderby('created_at', 'DESC')->get();
         if ($this->data['history']->count() == 0) {
             return response()->json([
                 'status' => false,
@@ -313,7 +315,6 @@ class PaymentController extends Controller
     }
     public function refund()
     {
-
         $vnp_TmnCode = $this->vnp_TmnCode; //Website ID in VNPAY System
         $vnp_HashSecret = $this->vnp_HashSecret; //Secret key
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
