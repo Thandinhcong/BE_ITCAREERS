@@ -9,9 +9,5 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-    // public function candidate_id()
-    // {
-    //     $candidate_id = Auth::user()->id;
-    //     return $candidate_id;
-    // }
+  
 }
