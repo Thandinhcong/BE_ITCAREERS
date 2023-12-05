@@ -17,7 +17,7 @@ class Profile extends Model
         'email',
         'phone',
         'birth',
-        'major_id',
+        'major',
         'address',
         'candidate_id',
         'total_exp',
