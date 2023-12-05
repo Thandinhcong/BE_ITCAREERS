@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('company_name', 50);
-            $table->string('tax_code', 50)->nullable();
             $table->string('address')->nullable();
             $table->date('founded_in')->comment('ngày thành lập')->nullable();
             $table->string('name')->nullable()->comment('Người dại diện');
@@ -30,6 +29,7 @@ return new class extends Migration
             $table->integer('coin')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
+            $table->string('tax_code', 50)->nullable();
             $table->integer('status')->default(0)->comment('0:pending, 1:active ,2:block');
             $table->integer('company_size_max')->nullable();
             $table->integer('company_size_min')->nullable();

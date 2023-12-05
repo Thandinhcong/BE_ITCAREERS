@@ -514,13 +514,14 @@
                             <tr>
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
-                                        <p>Cảm ơn nhà tuyển dụng
-                                            <b>{{$company_info->company_name}}</b>
-                                            đã sử dụng dịch vụ đăng bài tuyển dụng của chúng tôi với tiêu đề là
-                                            <a href="#"><b>{{$job_post->title}}</b></a> trên nền tảng tuyển dụng 
+                                    @if ($major == null && $skill_seeker == null)
+
+                                        <p>Bài đăng của bạn với tiêu đề là
+                                            <a href="#"><b>{{$job_post->title}}</b></a> đã cập nhật thành công trên nền tảng tuyển dụng 
                                             {{$manage_web->name_web}}
                                         </p>
                                         </p>
+                                        @endif
                                     </div>
 
                                 </td>
@@ -532,5 +533,3 @@
         </div>
     </center>
 </body>
-
-</html>

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('company_id');
             $table->integer('candidate_id');
             $table->integer('coin');
+            $table->string('start');
+            $table->string('comment');
             $table->timestamps();
         });
     }

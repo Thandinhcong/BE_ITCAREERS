@@ -122,6 +122,10 @@ class CandidateApplyController extends Controller
                     $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
                     $email->to($candidate_apply->email);
                 });
+                Mail::send('emails.notification_company_candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ( $manage_web,$company_apply) {
+                    $email->subject($manage_web->name_web . ' - Ứng viên ứng tuyển');
+                    $email->to($company_apply->email);
+                });
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Bạn đã ứng tuyển thành công ',

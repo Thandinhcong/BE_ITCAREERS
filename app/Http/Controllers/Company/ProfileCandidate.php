@@ -9,6 +9,8 @@ use App\Models\ProfileOpen;
 use App\Models\SaveProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileCandidate extends Controller
 {
@@ -16,7 +18,6 @@ class ProfileCandidate extends Controller
     {
         // return 1;
         return Auth::user()->id;
-        
     }
     public function hide_info($data)
     {
@@ -181,12 +182,12 @@ class ProfileCandidate extends Controller
         $check_coin = DB::table('companies')
             ->select('coin')
             ->where('id', $this->company_id())->first();
-        // $coin_profile = DB::table('profile')
-        //     ->where('candidate_id', $id)
-        //     ->select(
-        //         'profile.coin',
-        //     )
-        //     ->first();
+        $coin_profile = DB::table('profile')
+            ->where('candidate_id', $id)
+            ->select(
+                'profile.coin',
+            )
+            ->first();
         if ($check_coin->coin > 20000) {
             if ($check) {
                 return response()->json([
@@ -198,10 +199,10 @@ class ProfileCandidate extends Controller
                     [
                         'company_id' => $this->company_id(),
                         'candidate_id' => $id,
-                        'coin' => 20000
+                        'coin' =>  $coin_profile->coin
                     ]
                 );
-                $coinCompanyAffter = ($check_coin->coin) - (20000);
+                $coinCompanyAffter = ($check_coin->coin) - ($coin_profile->coin);
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
             if ($saveProfile) {
@@ -221,6 +222,23 @@ class ProfileCandidate extends Controller
                 'error' => 'Bạn không đủ tiền'
             ], 400);
         }
+    }
+    public function feeback_profile(Request $request, $id)
+    {
+        $profile_open = DB::table('profile')
+            ->select('coin')
+            ->where('id', $this->company_id())
+            ->first();
+        $valdator = Validator::make($request->all(), [
+            'start' => 'required|',
+        ]);
+        if ($valdator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $valdator->messages(),
+            ], 422);
+        }
+
     }
     public function cancel_save_profile($id)
     {

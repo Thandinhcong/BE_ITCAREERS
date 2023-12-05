@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class JobPostController extends Controller
@@ -80,6 +81,10 @@ class JobPostController extends Controller
         }
         if ($jobPost) {
             $jobPost->update(['status' => $request->status]);
+            // Mail::send('emails.notification_job_post_status', compact('jobPost', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ($candidate_apply, $manage_web) {
+            //     $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
+            //     $email->to($candidate_apply->email);
+            // });
             return response()->json([
                 'status' => 201,
                 'message' => 'Sửa thành công',
