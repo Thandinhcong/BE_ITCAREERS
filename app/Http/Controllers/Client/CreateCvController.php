@@ -23,9 +23,37 @@ use Illuminate\Support\Facades\Validator;
 class CreateCvController extends Controller
 {
     private $data;
+    private $message_val;
     public function __construct()
     {
         $this->data = [];
+        $this->message_val = [
+            'title.required' => 'Vui lòng nhập tiêu đề!',
+            'name.required' => 'Vui lòng nhập tên!',
+            'email.required' => 'Vui lòng nhập email!',
+            'email.email' => 'Vui lòng nhập đúng định dạng email!',
+            'phone.required' => 'Vui lòng nhập số điện thoại!',
+            'address.required' => 'Vui lòng nhập địa chỉ!',
+            'image.image' => 'Chọn file ảnh!',
+            'image.mimes' => 'Chọn file ảnh có định dạng jpg,png,jpeg!',
+            'image.max' => 'Chọn ảnh có kích thước nhỏ hơn 5mb!',
+            'major.required' => 'Vui lòng nhập chuyên ngành!',
+            'birth.required' => 'Vui lòng nhập ngày sinh!',
+            'careers_goal.required' => 'Vui lòng nhập mục tiêu nghề nghiệp!',
+            'image' => 'Vui lòng thêm ảnh',
+            'company_name.required' => 'Vui lòng nhập tên công ty!',
+            'position.required' => 'Vui lòng nhập vị trí làm việc!',
+            'start_date.required' => 'Vui lòng nhập ngày bắt đầu!',
+            'end_date.after' => 'Ngày kết thúc không nhỏ hơn ngày bắt đầu!',
+            'gpa.required' => 'Vui lòng nhập GPA!',
+            'gpa.min' => 'Điểm GPA không nhỏ hơn 0!',
+            'gpa.max' => 'Điệm GPA không quá 10!',
+            'type_degree.required' => 'Vui lòng chọn Trình độ học vấn!',
+            'project_name.required' => 'Vui lòng nhập tên dự án!',
+            'desc.required' => 'Vui lòng nhập mô tả dự án!',
+            'link_project.required' => 'Vui lòng nhập link dự án!',
+            'name_skill.required'   => 'Vui lòng nhập tên kĩ năng!',
+        ];
     }
     /**
      * Display a listing of the resource.
@@ -78,12 +106,6 @@ class CreateCvController extends Controller
         $candidate = Auth::user();
         $candidate_id = $candidate->id;
         $profile_id = $request->profile_id;
-        $major = DB::table('profile')
-            ->where('profile.candidate_id', '=', $candidate_id)
-            ->where('profile.id', '=', $profile_id)
-            ->join('major', 'major.id', '=', 'profile.major_id')
-            ->select('major.major')
-            ->first();
         $cv_get = Profile::where('id', $profile_id)->first();
         $cv = Profile::where('id', $profile_id)
             ->select(
@@ -93,7 +115,7 @@ class CreateCvController extends Controller
                 'email',
                 'phone',
                 'birth',
-                'major_id as major',
+                'major',
                 'address',
                 'candidate_id',
                 'total_exp',
@@ -107,8 +129,6 @@ class CreateCvController extends Controller
             $cv_get->birth = Carbon::parse($cv->birth);
         }
         $cv->birth = $cv_get->birth ? $cv_get->birth->format('Y-m-d') : null;
-        $cv->major = $major ? $major->major : null;
-
         $this->data['cv'] = $cv;
         if (!empty($cv)) {
             $this->data['skill_cv'] = DB::table('skill_profile')
@@ -160,7 +180,6 @@ class CreateCvController extends Controller
             }
             $this->data['educations'] = DB::table('edu')
                 ->where('profile_id', '=', $profile_id)
-                ->join('major', 'major.id', '=', 'edu.major_id')
                 ->join('academic_level', 'academic_level.id', '=', 'edu.type_degree')
                 ->whereNull('edu.deleted_at')
                 ->select(
@@ -170,7 +189,7 @@ class CreateCvController extends Controller
                     'academic_level.academic_level as type_degree',
                     'start_date',
                     'end_date',
-                    'major.major',
+                    'major',
                     'profile_id',
                 )
                 ->get();
@@ -187,16 +206,18 @@ class CreateCvController extends Controller
 
     public function updateInfo(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_info = Validator::make($request->all(), [
             'title' => 'required',
             'name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
-            'major_id' => '',
+            'major' => 'required',
             'birth' => 'required',
+            'address' => 'required',
             'careers_goal' => 'required',
-            'image' => '',
-        ]);
+            'image' => 'required',
+        ], $messages);
         if ($validator_info->fails()) {
             return response()->json([
                 'error' => $validator_info->errors()
@@ -208,7 +229,7 @@ class CreateCvController extends Controller
         $cv->name = $request->name;
         $cv->email = $request->email;
         $cv->phone = $request->phone;
-        $cv->major_id = $request->major_id;
+        $cv->major = $request->major;
         $cv->birth = Carbon::parse($request->birth);
         $cv->address = $request->address;
         $cv->image = $request->image;
@@ -246,13 +267,14 @@ class CreateCvController extends Controller
                 'message' => "Bạn chỉ có thể tối đa 5 kinh nghiệm"
             ], 400);
         }
-
+        $messages =  $this->message_val;
         $validator_exp = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'date_format:Y-m-d|after:start_date',
             'profile_id' => 'required',
-        ]);
+        ], $messages);
 
         if ($validator_exp->fails()) {
             return response()->json([
@@ -302,12 +324,13 @@ class CreateCvController extends Controller
     }
     public function updateExp(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_exp = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required',
-            'profile_id' => 'required',
-        ]);
+            'end_date' => 'date_format:Y-m-d|after:start_date',
+        ], $messages);
         if ($validator_exp->fails()) {
             return response()->json([
                 'error' => $validator_exp->errors()
@@ -393,14 +416,16 @@ class CreateCvController extends Controller
 
     public function saveEdu(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_edu = Validator::make($request->all(), [
             'name' => 'required|string',
-            'gpa' => 'required',
+            'gpa' => 'required|min:0|max:10',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'major_id' => '',
+            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'major' => 'required',
             'profile_id' => 'required',
-        ]);
+        ], $messages);
 
         if ($validator_edu->fails()) {
             return response()->json([
@@ -415,7 +440,7 @@ class CreateCvController extends Controller
             'type_degree' =>  $request->type_degree,
             'start_date' => Carbon::parse($request->start_date),
             'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date),
-            'major_id' =>  $request->major_id,
+            'major' =>  $request->major,
             'profile_id' => $request->profile_id,
         ]);
 
@@ -434,13 +459,15 @@ class CreateCvController extends Controller
     }
     public function updateEdu(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_edu = Validator::make($request->all(), [
             'name' => 'required|string',
             'gpa' => 'required',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'major_id' => 'required',
-        ]);
+            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'major' => 'required',
+        ], $messages);
 
         if ($validator_edu->fails()) {
             return response()->json([
@@ -455,6 +482,7 @@ class CreateCvController extends Controller
             'type_degree' =>  $request->type_degree,
             'start_date' => Carbon::parse($request->start_date),
             'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now()->toDateString() : $request->end_date),
+            'major' =>  $request->major,
         ]);
 
         if (!$edu->update()) {
@@ -488,14 +516,16 @@ class CreateCvController extends Controller
     }
     public function saveProject(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'date_format:Y-m-d|after:start_date',
             'desc' => 'required',
             'link_project' => 'required',
             'profile_id' => 'required',
-        ]);
+        ], $messages);
 
         if ($validator_project->fails()) {
             return response()->json([
@@ -529,13 +559,15 @@ class CreateCvController extends Controller
     }
     public function updateProject(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_project = Validator::make($request->all(), [
             'project_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'date_format:Y-m-d|after:start_date',
             'desc' => 'required',
             'link_project' => 'required',
-        ]);
+        ], $messages);
 
         if ($validator_project->fails()) {
             return response()->json([
@@ -583,10 +615,11 @@ class CreateCvController extends Controller
     }
     public function saveSkill(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_skill = Validator::make($request->all(), [
             'name_skill' => 'required',
             'profile_id' => 'required',
-        ]);
+        ], $messages);
 
         if ($validator_skill->fails()) {
             return response()->json([
@@ -615,9 +648,10 @@ class CreateCvController extends Controller
     }
     public function updateSkill(Request $request)
     {
+        $messages =  $this->message_val;
         $validator_skill = Validator::make($request->all(), [
             'name_skill' => 'required',
-        ]);
+        ], $messages);
 
         if ($validator_skill->fails()) {
             return response()->json([
