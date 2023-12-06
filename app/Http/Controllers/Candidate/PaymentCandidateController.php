@@ -75,7 +75,7 @@ class PaymentCandidateController extends Controller
     {
         $host = $request->getHttpHost();
         $vnp_Returnurl = url('') . "/api/candidate/vnpay_return";
-        // $vnp_Returnurl = "http://127.0.0.1:5173/business/deposit";
+        $vnp_Returnurl = "http://localhost:5173/user/recharge";
         $vnp_TmnCode = $this->vnp_TmnCode; //Website ID in VNPAY System
         $vnp_HashSecret = $this->vnp_HashSecret; //Secret key
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
