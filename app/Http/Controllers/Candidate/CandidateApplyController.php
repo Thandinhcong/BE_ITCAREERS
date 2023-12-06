@@ -57,11 +57,16 @@ class CandidateApplyController extends Controller
             ], 404);
         }
     }
+    public function candidate_id()
+    {
+        return Auth::user()->id;
+    }
     public function candidate_apply(Request $request, string $id)
     {
         $candidate_id = Auth::user()->id;
         $request['job_post_id'] = $id;
         $request['candidate_id'] = $candidate_id;
+
         $data_check = DB::table('job_post_apply')
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
