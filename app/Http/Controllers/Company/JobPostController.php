@@ -257,12 +257,6 @@ class JobPostController extends Controller
                 break;
         }
         if ($job_post) {
-            $company_info=Auth::user();
-            $manage_web = ManagementWeb::find(1);
-            Mail::send('emails.job_post_store', compact('job_post', 'manage_web','company_info',), function ($email) use ( $manage_web,$company_info) {
-                $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được đăng thành công');
-                $email->to($company_info->email);
-            });
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
