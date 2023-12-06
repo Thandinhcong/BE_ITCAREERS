@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\Validator;
 
 class CandidateApplyController extends Controller
 {
+    public function candidate_id()
+    {
+        return Auth::user()->id;
+    }
     public function job_apply()
     {
         $candidate_id = Auth::user()->id;
