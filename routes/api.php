@@ -146,6 +146,13 @@ Route::group([
         Route::post('save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'save_job_post']);
         //Hủy lưu việc làm
         Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
+        //Payment 
+        Route::get('get_list_package', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'getListPackage']);
+        Route::post('insert_invoice', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'insertInvoice']);
+        Route::post('payment', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'payment'])->name('payment');
+        Route::get('vnpay_return', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'vnpay_return'])->name('vnpay_return');
+        Route::get('vnpay_ipn', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'vnpay_ipn'])->name('vnpay_ipn');
+        Route::get('history_payment', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'historyPayment'])->name('historyPayment');
     });
 });
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
