@@ -43,9 +43,6 @@ class DashBoardController extends Controller
             ];
             return response()->json($data);
         }
-        $totalMoney = Vnpay_payment::getMoneyMonthly();
-        $this->v['day'] = $totalMoney['time'];
-        $this->v['totalMoneyDay'] =  $totalMoney['money'];
         return $this->v;
     }
 }
