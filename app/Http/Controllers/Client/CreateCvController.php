@@ -45,12 +45,13 @@ class CreateCvController extends Controller
             'position.required' => 'Vui lòng nhập vị trí làm việc!',
             'start_date.required' => 'Vui lòng nhập ngày bắt đầu!',
             'end_date.after' => 'Ngày kết thúc không nhỏ hơn ngày bắt đầu!',
+            'end_date.before' => 'Ngày kết thúc không lớn hơn ngày hiện tại!',
             'gpa.required' => 'Vui lòng nhập GPA!',
             'gpa.min' => 'Điểm GPA không nhỏ hơn 0!',
             'gpa.max' => 'Điệm GPA không quá 10!',
             'type_degree.required' => 'Vui lòng chọn Trình độ học vấn!',
             'project_name.required' => 'Vui lòng nhập tên dự án!',
-            'desc.required' => 'Vui lòng nhập mô tả dự án!',
+            'desc.required' => 'Vui lòng nhập mô tả!',
             'link_project.required' => 'Vui lòng nhập link dự án!',
             'name_skill.required'   => 'Vui lòng nhập tên kĩ năng!',
         ];
@@ -115,7 +116,6 @@ class CreateCvController extends Controller
                 'email',
                 'phone',
                 'birth',
-                'major',
                 'address',
                 'candidate_id',
                 'total_exp',
@@ -212,7 +212,6 @@ class CreateCvController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
-            'major' => 'required',
             'birth' => 'required',
             'address' => 'required',
             'careers_goal' => 'required',
@@ -229,7 +228,6 @@ class CreateCvController extends Controller
         $cv->name = $request->name;
         $cv->email = $request->email;
         $cv->phone = $request->phone;
-        $cv->major = $request->major;
         $cv->birth = Carbon::parse($request->birth);
         $cv->address = $request->address;
         $cv->image = $request->image;
@@ -272,8 +270,9 @@ class CreateCvController extends Controller
             'company_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'profile_id' => 'required',
+            'desc' => 'required'
         ], $messages);
 
         if ($validator_exp->fails()) {
@@ -289,6 +288,7 @@ class CreateCvController extends Controller
             'start_date' => Carbon::parse($request->start_date),
             'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now() : $request->end_date),
             'profile_id' => $request->profile_id,
+            'desc' => $request->desc,
         ]);
         if (!$exp->save()) {
             return response()->json([
@@ -329,7 +329,8 @@ class CreateCvController extends Controller
             'company_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required',
-            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'desc' => 'required'
         ], $messages);
         if ($validator_exp->fails()) {
             return response()->json([
@@ -344,7 +345,7 @@ class CreateCvController extends Controller
             'position' => $request->position,
             'start_date' => Carbon::parse($request->start_date),
             'end_date' => Carbon::parse(empty($request->end_date) ? Carbon::now() : $request->end_date),
-            'profile_id' => $request->profile_id,
+            'desc' => $request->desc,
         ]);
 
         if (!$exp->update()) {
@@ -422,7 +423,7 @@ class CreateCvController extends Controller
             'gpa' => 'required|min:0|max:10',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'major' => 'required',
             'profile_id' => 'required',
         ], $messages);
@@ -465,7 +466,7 @@ class CreateCvController extends Controller
             'gpa' => 'required',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'major' => 'required',
         ], $messages);
 
@@ -521,7 +522,7 @@ class CreateCvController extends Controller
             'project_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'desc' => 'required',
             'link_project' => 'required',
             'profile_id' => 'required',
@@ -564,7 +565,7 @@ class CreateCvController extends Controller
             'project_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date',
+            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'desc' => 'required',
             'link_project' => 'required',
         ], $messages);
