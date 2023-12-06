@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->date('birth')->nullable();
             // $table->string('exp_id')->nullable();
-            $table->string('major')->nullable();
+            // $table->string('major')->nullable();
             // $table->string('edu_profile_id')->nullable();
             // $table->string('skill_profile')->nullable();
             // $table->string('academic_level_id')->nullable();

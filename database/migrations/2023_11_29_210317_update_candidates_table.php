@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('experience_id')->nullable()->comment('Kinh nghiệm');
             $table->double('district_id')->nullable()->comment('Địa điểm làm việc');
             $table->double('desired_salary')->nullable()->comment('Mức lương mong muốn');
-            $table->integer('major_id')->nullable();
+            $table->string('major')->nullable();
         });
     }
 
