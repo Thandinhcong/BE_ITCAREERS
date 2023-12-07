@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
 use App\Models\Company;
+use App\Models\Profile;
 use App\Models\ProfileOpen;
 use App\Models\SaveProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileCandidate extends Controller
@@ -17,30 +18,33 @@ class ProfileCandidate extends Controller
     public function company_id()
     {
         // return 1;
-        return Auth::user()->id;
+        return auth('company')->user()->id;
     }
     public function hide_info($data)
     {
         $check_open = DB::table('profile_open')
-            ->join('candidates', 'profile_open.candidate_id', '=', 'candidates.id')
-            ->join('profile', 'profile.id', '=', 'candidates.main_cv')
+            ->join('profile', 'profile.id', '=', 'profile_open.profile_id')
             ->where('profile_open.company_id', $this->company_id())
-            ->where('profile_open.candidate_id', $data->candidate_id)
+            ->where('profile_open.profile_id', $data->candidate_id)
             ->select(
-                'profile_open.candidate_id',
+                'profile_open.profile_id',
+                'profile_open.start',
+                'profile_open.comment',
                 'profile.path_cv',
                 // 'profile.id'
             )
             ->first();
         $check_save = DB::table('save_profile')
             ->where('company_id', $this->company_id())
-            ->where('candidate_id', $data->candidate_id)
+            ->where('profile_id', $data->candidate_id)
             ->select(
-                'candidate_id'
+                'profile_id'
             )
             ->first();
         if ($check_open) {
             $data->path_cv = $check_open->path_cv;
+            $data->start = $check_open->start;
+            $data->comment = $check_open->comment;
             $data->open_profile = 'đã mua';
         } else {
             $data->path_cv = null;
@@ -64,8 +68,8 @@ class ProfileCandidate extends Controller
             // ->leftJoin('project', 'profile.id', '=', 'project.profile_id')
             // ->leftJoin('edu', 'profile.id', '=', 'edu.profile_id')
             // ->leftJoin('skill_profile', 'profile.id', '=', 'skill_profile.profile_id')
-            ->groupBy('candidates.id')
-            ->where('candidates.find_job', 1)
+            // ->groupBy('candidates.id')
+            // ->where('candidates.find_job', 1)
             ->select(
                 'profile.name',
                 'profile.title',
@@ -95,10 +99,10 @@ class ProfileCandidate extends Controller
     public function show_profile_open()
     {
         $data = DB::table('profile')
-            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
-            ->join('profile_open', 'candidates.id', '=', 'profile_open.candidate_id')
-            ->where('candidates.find_job', 1)
-            ->where('profile_open.company_id', $this->company_id())
+        ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+        ->join('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+        ->where('candidates.find_job', 1)
+        ->where('profile_open.company_id', $this->company_id())
             ->select(
                 'profile.name',
                 'profile.title',
@@ -110,6 +114,7 @@ class ProfileCandidate extends Controller
                 'candidates.id as candidate_id',
                 'profile.created_at',
                 'candidates.image',
+                'candidates.find_job'
             )
             ->get();
         return response()->json([
@@ -120,20 +125,20 @@ class ProfileCandidate extends Controller
     public function show_save_profile()
     {
         $data = DB::table('profile')
-            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
-            ->join('save_profile', 'candidates.id', '=', 'save_profile.candidate_id')
-            // ->where('candidates.find_job', 1)
+            ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->join('save_profile', 'profile.id', '=', 'save_profile.profile_id')
+            ->where('candidates.find_job', 1)
             ->where('save_profile.company_id', $this->company_id())
             ->select(
-                'profile.name',
-                'profile.title',
-                'profile.id',
-                'profile.email',
-                'profile.phone',
-                'profile.address',
-                'candidates.id as candidate_id',
-                'profile.created_at',
-                'candidates.image',
+                    'profile.name',
+                    'profile.title',
+                    'profile.id',
+                    'profile.email',
+                    'profile.phone',
+                    'profile.address',
+                    'candidates.id as candidate_id',
+                    'profile.created_at',
+                    'candidates.image',
             )
             ->get();
         foreach ($data as $customer) {
@@ -146,7 +151,7 @@ class ProfileCandidate extends Controller
     }
     public function save_profile($id)
     {
-        $check = DB::table('save_profile')->where('company_id', $this->company_id())->where('candidate_id', $id)
+        $check = DB::table('save_profile')->where('company_id', $this->company_id())->where('profile_id', $id)
             ->first();
         if ($check) {
             return response()->json([
@@ -157,7 +162,7 @@ class ProfileCandidate extends Controller
             $saveProfile = SaveProfile::create(
                 [
                     'company_id' => $this->company_id(),
-                    'candidate_id' => $id
+                    'profile_id' => $id
                 ]
             );
         }
@@ -177,13 +182,13 @@ class ProfileCandidate extends Controller
     {
         $check = DB::table('profile_open')
             ->where('company_id', $this->company_id())
-            ->where('candidate_id', $id)
+            ->where('profile_id', $id)
             ->first();
         $check_coin = DB::table('companies')
             ->select('coin')
             ->where('id', $this->company_id())->first();
         $coin_profile = DB::table('profile')
-            ->where('candidate_id', $id)
+            ->where('id', $id)
             ->select(
                 'profile.coin',
             )
@@ -198,7 +203,7 @@ class ProfileCandidate extends Controller
                 $saveProfile = ProfileOpen::create(
                     [
                         'company_id' => $this->company_id(),
-                        'candidate_id' => $id,
+                        'profile_id' => $id,
                         'coin' =>  $coin_profile->coin
                     ]
                 );
@@ -223,14 +228,12 @@ class ProfileCandidate extends Controller
             ], 400);
         }
     }
+
     public function feeback_profile(Request $request, $id)
     {
-        $profile_open = DB::table('profile')
-            ->select('coin')
-            ->where('id', $this->company_id())
-            ->first();
         $valdator = Validator::make($request->all(), [
             'start' => 'required|',
+            'comment' => 'required|',
         ]);
         if ($valdator->fails()) {
             return response()->json([
@@ -238,7 +241,48 @@ class ProfileCandidate extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         }
-
+        $profile_open = ProfileOpen::where('company_id', $this->company_id())
+            ->where('candidate_id', $id)
+            ->first();
+        if ($profile_open->start != null) {
+            return response()->json([
+                'status' => 422,
+                'errors' => "Bạn đã đánh giá rồi",
+            ], 422);
+        }
+        if ($profile_open) {
+            $profile_open->start = $request->start;
+            $profile_open->comment = $request->comment;
+            $profile_open->update();
+            $profile = Profile::where('candidate_id', $id)->first();
+            $company  = Company::where('id', $this->company_id())->first();
+            $company->coin += 100;
+            $company->update();
+            switch ($request->start) {
+                case 1:
+                    $profile->coin -= 2;
+                    break;
+                case 2:
+                    $profile->coin -= 1;
+                    break;
+                case 4:
+                    $profile->coin += 1;
+                    break;
+                case 5:
+                    $profile->coin += 2;
+                    break;
+            }
+            // $profile->update();
+            return response()->json([
+                'status' => 422,
+                'errors' => "Đánh giá thành công",
+            ], 422);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Không tìm thấy'
+            ], 404);
+        }
     }
     public function cancel_save_profile($id)
     {

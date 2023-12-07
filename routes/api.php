@@ -194,6 +194,7 @@ Route::group([
         Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'save_profile']);
         //Hủy lưu ứng viên
         Route::post('cancel_save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'cancel_save_profile']);
+        Route::post('feeback_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'feeback_profile']);
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::resource('refreshPass', RefreshPasswordCompanyController::class);
         // Payment

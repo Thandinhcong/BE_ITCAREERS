@@ -10,5 +10,5 @@ class SaveProfile extends Model
 {
     use HasFactory;
     protected $table='save_profile';
-    protected $fillable=['company_id','candidate_id'];
+    protected $fillable=['company_id','profile_id'];
 }
