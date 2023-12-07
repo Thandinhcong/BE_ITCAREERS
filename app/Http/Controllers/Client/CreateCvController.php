@@ -272,7 +272,7 @@ class CreateCvController extends Controller
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'profile_id' => 'required',
-            'desc' => 'required'
+            'desc' => ''
         ], $messages);
 
         if ($validator_exp->fails()) {
@@ -330,7 +330,7 @@ class CreateCvController extends Controller
             'position' => 'required',
             'start_date' => 'required',
             'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
-            'desc' => 'required'
+            'desc' => ''
         ], $messages);
         if ($validator_exp->fails()) {
             return response()->json([
