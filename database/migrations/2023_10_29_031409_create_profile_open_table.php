@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('profile_open', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id');
-            $table->integer('candidate_id');
+            $table->integer('profile_id');
             $table->integer('coin');
             $table->string('start')->nullable();
             $table->string('comment')->nullable();
