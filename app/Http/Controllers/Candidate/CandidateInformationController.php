@@ -83,7 +83,6 @@ class CandidateInformationController extends Controller
     public function getDataInformationFindJob()
     {
         $this->v['experience'] = Experience::all();
-        $this->v['major'] = Major::all();
         $this->v['province'] = Province::all();
         $this->v['district'] = District::all();
         return response()->json([
@@ -95,12 +94,6 @@ class CandidateInformationController extends Controller
     {
         $candidate = Auth::user();
         $id = Auth::user()->id;
-        $major = DB::table('candidates')
-            ->where('candidates.id', '=', $id)
-            ->leftJoin('major', 'major.id', '=', 'candidates.major_id')
-            ->select('major.major')
-            ->first();
-
         $experience = DB::table('candidates')
             ->where('candidates.id', '=', $id)
             ->leftJoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
@@ -118,13 +111,12 @@ class CandidateInformationController extends Controller
             ->where('candidates.id', '=', $id)
             ->select(
                 'experience_id as experience',
-                'major_id as major',
+                'major',
                 'desired_salary',
                 'district_id as work_location'
             )
             ->first();
 
-        $info_find_job->major = $major ? $major->major : null;
         $info_find_job->work_location = $work_location ? $work_location->name . ', ' . $work_location->province : null;
         $info_find_job->experience = $experience ? $experience->experience : null;
 
@@ -142,7 +134,7 @@ class CandidateInformationController extends Controller
             'experience_id' => 'required',
             'district_id' => 'required',
             'desired_salary' => 'required',
-            'major_id' => 'required',
+            'major' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([

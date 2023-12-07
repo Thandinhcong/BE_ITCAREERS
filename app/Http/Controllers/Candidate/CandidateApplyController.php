@@ -57,10 +57,7 @@ class CandidateApplyController extends Controller
             ], 404);
         }
     }
-    public function candidate_id()
-    {
-        return Auth::user()->id;
-    }
+   
     public function candidate_apply(Request $request, string $id)
     {
         $candidate_id = Auth::user()->id;

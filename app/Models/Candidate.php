@@ -36,7 +36,7 @@ class Candidate extends Authenticatable
         'experience_id',
         'district_id',
         'desired_salary',
-        'major_id',
+        'major',
     ];
     /**
      * The attributes that should be hidden for serialization.
