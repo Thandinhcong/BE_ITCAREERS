@@ -18,14 +18,14 @@ class ProfileCandidate extends Controller
     public function company_id()
     {
         // return 1;
-        return auth('company')->user()->id;
+        return Auth::user()->id;
     }
     public function hide_info($data)
     {
         $check_open = DB::table('profile_open')
             ->join('profile', 'profile.id', '=', 'profile_open.profile_id')
             ->where('profile_open.company_id', $this->company_id())
-            ->where('profile_open.profile_id', $data->candidate_id)
+            ->where('profile_open.profile_id', $data->id)
             ->select(
                 'profile_open.profile_id',
                 'profile_open.start',
@@ -99,10 +99,9 @@ class ProfileCandidate extends Controller
     public function show_profile_open()
     {
         $data = DB::table('profile')
-        ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
-        ->join('profile_open', 'profile.id', '=', 'profile_open.profile_id')
-        ->where('candidates.find_job', 1)
-        ->where('profile_open.company_id', $this->company_id())
+            ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->join('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+            ->where('profile_open.company_id', $this->company_id())
             ->select(
                 'profile.name',
                 'profile.title',
@@ -130,15 +129,15 @@ class ProfileCandidate extends Controller
             ->where('candidates.find_job', 1)
             ->where('save_profile.company_id', $this->company_id())
             ->select(
-                    'profile.name',
-                    'profile.title',
-                    'profile.id',
-                    'profile.email',
-                    'profile.phone',
-                    'profile.address',
-                    'candidates.id as candidate_id',
-                    'profile.created_at',
-                    'candidates.image',
+                'profile.name',
+                'profile.title',
+                'profile.id',
+                'profile.email',
+                'profile.phone',
+                'profile.address',
+                'candidates.id as candidate_id',
+                'profile.created_at',
+                'candidates.image',
             )
             ->get();
         foreach ($data as $customer) {
@@ -245,8 +244,14 @@ class ProfileCandidate extends Controller
             ], 422);
         }
         $profile_open = ProfileOpen::where('company_id', $this->company_id())
-            ->where('candidate_id', $id)
+            ->where('profile_id', $id)
             ->first();
+        if ($profile_open) {
+            return response()->json([
+                'status' => 422,
+                'errors' => "Bạn chưa mua hồ sơ",
+            ], 422);
+        }
         if ($profile_open->start != null) {
             return response()->json([
                 'status' => 422,
@@ -257,24 +262,24 @@ class ProfileCandidate extends Controller
             $profile_open->start = $request->start;
             $profile_open->comment = $request->comment;
             $profile_open->update();
-            $profile = Profile::where('candidate_id', $id)->first();
+            // $profile = Profile::where('id', $id)->first();
             $company  = Company::where('id', $this->company_id())->first();
             $company->coin += 100;
             $company->update();
-            switch ($request->start) {
-                case 1:
-                    $profile->coin -= 2;
-                    break;
-                case 2:
-                    $profile->coin -= 1;
-                    break;
-                case 4:
-                    $profile->coin += 1;
-                    break;
-                case 5:
-                    $profile->coin += 2;
-                    break;
-            }
+            // switch ($request->start) {
+            //     case 1:
+            //         $profile->coin -= 2;
+            //         break;
+            //     case 2:
+            //         $profile->coin -= 1;
+            //         break;
+            //     case 4:
+            //         $profile->coin += 1;
+            //         break;
+            //     case 5:
+            //         $profile->coin += 2;
+            //         break;
+            // }
             // $profile->update();
             return response()->json([
                 'status' => 422,
