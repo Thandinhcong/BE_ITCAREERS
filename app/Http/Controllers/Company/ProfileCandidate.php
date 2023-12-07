@@ -187,12 +187,13 @@ class ProfileCandidate extends Controller
         $check_coin = DB::table('companies')
             ->select('coin')
             ->where('id', $this->company_id())->first();
-        $coin_profile = DB::table('profile')
-            ->where('id', $id)
-            ->select(
-                'profile.coin',
-            )
-            ->first();
+        $coin_profile = 11;
+        // DB::table('profile')
+        //     ->where('id', $id)
+        //     ->select(
+        //         'profile.coin',
+        //     )
+        //     ->first();
         if ($check_coin->coin > 20000) {
             if ($check) {
                 return response()->json([
@@ -204,10 +205,12 @@ class ProfileCandidate extends Controller
                     [
                         'company_id' => $this->company_id(),
                         'profile_id' => $id,
-                        'coin' =>  $coin_profile->coin
+                        //thêm ->coin
+                        'coin' =>  $coin_profile
                     ]
                 );
-                $coinCompanyAffter = ($check_coin->coin) - ($coin_profile->coin);
+                //thêm ->coin
+                $coinCompanyAffter = ($check_coin->coin) - ($coin_profile);
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
             if ($saveProfile) {
