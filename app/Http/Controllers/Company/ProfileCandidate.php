@@ -231,7 +231,7 @@ class ProfileCandidate extends Controller
         }
     }
 
-    public function feeback_profile(Request $request, $id)
+    public function feeback_profile($id)
     {
         $valdator = Validator::make($request->all(), [
             'start' => 'required|',
