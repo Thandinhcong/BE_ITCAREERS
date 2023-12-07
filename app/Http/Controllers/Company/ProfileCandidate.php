@@ -231,7 +231,7 @@ class ProfileCandidate extends Controller
         }
     }
 
-    public function feeback_profile($id)
+    public function feeback_profile(Request $request, string $id)
     {
         $valdator = Validator::make($request->all(), [
             'start' => 'required|',
@@ -246,7 +246,7 @@ class ProfileCandidate extends Controller
         $profile_open = ProfileOpen::where('company_id', $this->company_id())
             ->where('profile_id', $id)
             ->first();
-        if ($profile_open) {
+        if (!$profile_open) {
             return response()->json([
                 'status' => 422,
                 'errors' => "Bạn chưa mua hồ sơ",
@@ -282,9 +282,9 @@ class ProfileCandidate extends Controller
             // }
             // $profile->update();
             return response()->json([
-                'status' => 422,
+                'status' => 'success',
                 'errors' => "Đánh giá thành công",
-            ], 422);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 404,
