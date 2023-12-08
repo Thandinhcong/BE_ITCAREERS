@@ -20,7 +20,7 @@ class ProfileCandidate extends Controller
         // return 1;
         return Auth::user()->id;
     }
-    public function hide_info($data)
+    public function hide_info($data,)
     {
         $check_open = DB::table('profile_open')
             ->join('profile', 'profile.id', '=', 'profile_open.profile_id')
@@ -36,11 +36,12 @@ class ProfileCandidate extends Controller
             ->first();
         $check_save = DB::table('save_profile')
             ->where('company_id', $this->company_id())
-            ->where('profile_id', $data->candidate_id)
+            ->where('profile_id', $data->id)
             ->select(
                 'profile_id'
             )
             ->first();
+
         if ($check_open) {
             $data->path_cv = $check_open->path_cv;
             $data->start = $check_open->start;
@@ -61,15 +62,21 @@ class ProfileCandidate extends Controller
         }
         return $data;
     }
+    public function avgStart($data)
+    {
+       
+            return  $data->start = ProfileOpen::where('profile_id',$data->id)
+            ->avg('start');
+    }
     public function index()
     {
-        $data = DB::table('candidates')
-            ->join('profile', 'profile.id', '=', 'candidates.main_cv')
+        $data = DB::table('profile')
+            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             // ->leftJoin('project', 'profile.id', '=', 'project.profile_id')
             // ->leftJoin('edu', 'profile.id', '=', 'edu.profile_id')
-            // ->leftJoin('skill_profile', 'profile.id', '=', 'skill_profile.profile_id')
-            // ->groupBy('candidates.id')
-            // ->where('candidates.find_job', 1)
+            ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+            ->groupBy('candidates.id')
+            ->where('candidates.find_job', 1)
             ->select(
                 'profile.name',
                 'profile.title',
@@ -84,12 +91,12 @@ class ProfileCandidate extends Controller
                 'profile.created_at',
                 'candidates.id as candidate_id',
                 'candidates.image',
-                // DB::raw('GROUP_CONCAT(project.project_name SEPARATOR ",") as project_name'),
+                DB::raw('AVG(profile_open.start) as start'),
                 // DB::raw('GROUP_CONCAT(edu.name SEPARATOR ",") as edu_name'),
             )
             ->get();
         foreach ($data as $customer) {
-            $this->hide_info($customer);
+            $this->hide_info($customer, 1);
         }
         return response()->json([
             "status" => 'success',
@@ -100,7 +107,9 @@ class ProfileCandidate extends Controller
     {
         $data = DB::table('profile')
             ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
-            ->join('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+            ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+            ->groupBy('profile.id')
+
             ->where('profile_open.company_id', $this->company_id())
             ->select(
                 'profile.name',
@@ -113,9 +122,12 @@ class ProfileCandidate extends Controller
                 'candidates.id as candidate_id',
                 'profile.created_at',
                 'candidates.image',
-                'candidates.find_job'
+                'candidates.find_job',
             )
             ->get();
+        foreach ($data as $customer) {
+            $this->avgStart($customer);
+        }
         return response()->json([
             "status" => 'success',
             "data" => $data,
@@ -123,6 +135,7 @@ class ProfileCandidate extends Controller
     }
     public function show_save_profile()
     {
+
         $data = DB::table('profile')
             ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
             ->join('save_profile', 'profile.id', '=', 'save_profile.profile_id')
@@ -142,6 +155,9 @@ class ProfileCandidate extends Controller
             ->get();
         foreach ($data as $customer) {
             $this->hide_info($customer);
+        }
+        foreach ($data as $customer) {
+            $this->avgStart($customer);
         }
         return response()->json([
             "status" => 'success',
@@ -231,7 +247,7 @@ class ProfileCandidate extends Controller
         }
     }
 
-    public function feeback_profile(Request $request, $id)
+    public function feeback_profile(Request $request, string $id)
     {
         $valdator = Validator::make($request->all(), [
             'start' => 'required|',
@@ -241,16 +257,16 @@ class ProfileCandidate extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $valdator->messages(),
-            ], 422);
+            ], 400);
         }
         $profile_open = ProfileOpen::where('company_id', $this->company_id())
             ->where('profile_id', $id)
             ->first();
-        if ($profile_open) {
+        if (!$profile_open) {
             return response()->json([
-                'status' => 422,
-                'errors' => "Bạn chưa mua hồ sơ",
-            ], 422);
+                'status' => 400,
+                'mesage' => "Bạn chưa mua hồ sơ",
+            ], 400);
         }
         if ($profile_open->start != null) {
             return response()->json([
@@ -262,25 +278,9 @@ class ProfileCandidate extends Controller
             $profile_open->start = $request->start;
             $profile_open->comment = $request->comment;
             $profile_open->update();
-            // $profile = Profile::where('id', $id)->first();
             $company  = Company::where('id', $this->company_id())->first();
             $company->coin += 100;
             $company->update();
-            // switch ($request->start) {
-            //     case 1:
-            //         $profile->coin -= 2;
-            //         break;
-            //     case 2:
-            //         $profile->coin -= 1;
-            //         break;
-            //     case 4:
-            //         $profile->coin += 1;
-            //         break;
-            //     case 5:
-            //         $profile->coin += 2;
-            //         break;
-            // }
-            // $profile->update();
             return response()->json([
                 'status' => 422,
                 'errors' => "Đánh giá thành công",

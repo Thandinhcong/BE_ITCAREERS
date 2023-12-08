@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
+use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,6 +21,7 @@ class ListCompanyController extends Controller
 
         if ($request->company_name) {
             $list_company = DB::table('companies')
+
                 ->where('company_name', 'LIKE', '%' . $request->company_name . '%')
                 ->whereNull('deleted_at')
                 ->get();
@@ -47,10 +49,13 @@ class ListCompanyController extends Controller
     public function show(string $id)
     {
         $company = Company::find($id);
+        $number_jobs = JobPost::where('company_id', $id)
+            ->count();
         if ($company) {
             return response()->json([
                 'status' => 'success',
-                'company' =>  $company
+                'company' =>  $company,
+                'number_jobs'=>$number_jobs
             ], 200);
         } else {
             return response()->json([
