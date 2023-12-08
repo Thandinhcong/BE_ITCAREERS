@@ -7,6 +7,7 @@ use App\Models\JobPost;
 use App\Models\JobPostType;
 use App\Models\ManagementWeb;
 use Illuminate\Database\Seeder;
+use App\Models\Packages;
 
 class DatabaseSeeder extends Seeder
 {
@@ -67,5 +68,24 @@ class DatabaseSeeder extends Seeder
             'phone' => '09842751073',
             'sdt_lienhe' => '09842751073',
         ]);
+        Packages::create(
+            [
+                'title' => 'Gói nạp công ty',
+                'coin' => 100000,
+                'price' => 100000,
+                'reduced_price' => 1,
+                'status' => 1,
+                'type_account'=>0,
+            ]);
+        Packages::create(
+            [
+                'title' => 'Gói nạp ứng viên',
+                'coin' => 100000,
+                'price' => 100000,
+                'reduced_price' => 1,
+                'status' => 1,
+                'type_account'=>1,
+            ]
+        );
     }
 }

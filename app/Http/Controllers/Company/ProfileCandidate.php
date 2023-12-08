@@ -282,9 +282,9 @@ class ProfileCandidate extends Controller
             $company->coin += 100;
             $company->update();
             return response()->json([
-                'status' => 422,
+                'status' => 'success',
                 'errors' => "Đánh giá thành công",
-            ], 422);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 404,

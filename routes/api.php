@@ -36,11 +36,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/login', function () {
-    return response()->json([
-        'message' => 'Cần đăng nhập',
-    ], 200);
-})->name('login');
+// Route::get('/login', function () {
+//     return response()->json([
+//         'message' => 'Cần đăng nhập',
+//     ], 200);
+// })->name('login');
 
 
 
@@ -136,6 +136,8 @@ Route::group([
         Route::post('update_cv/save_skill', [\App\Http\Controllers\Client\CreateCvController::class, 'saveSkill']);
         Route::post('update_cv/update_skill/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'updateSkill']);
         Route::get('update_cv/delete_skill/{id}', [\App\Http\Controllers\Client\CreateCvController::class, 'deleteSkill']);
+        // percent CV
+        Route::get('update_cv/percent_cv/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'percentCV']);
         //save cv
         Route::post('update_cv/saveCV/{profile_id}', [\App\Http\Controllers\Client\CreateCvController::class, 'saveCV']);
         //Việc làm đã ứng tuyển
@@ -146,7 +148,7 @@ Route::group([
         Route::post('save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'save_job_post']);
         //Hủy lưu việc làm
         Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
-        //Payment 
+        //Payment
         Route::get('get_list_package', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'getListPackage']);
         Route::post('insert_invoice', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'insertInvoice']);
         Route::post('payment', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'payment'])->name('payment');
@@ -201,7 +203,8 @@ Route::group([
         Route::post('save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'save_profile']);
         //Hủy lưu ứng viên
         Route::post('cancel_save_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'cancel_save_profile']);
-        Route::get('feeback_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'feeback_profile']);
+        Route::post('feeback_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'feeback_profile']);
+        //đánh giá ứng viên
         Route::get('user', [\App\Http\Controllers\Company\Auth\LoginController::class, 'user']);
         Route::resource('refreshPass', RefreshPasswordCompanyController::class);
         // Payment

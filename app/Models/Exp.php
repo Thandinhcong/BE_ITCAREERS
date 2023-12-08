@@ -10,5 +10,5 @@ class Exp extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = "exp";
-    protected $fillable = ['id', 'company_name', 'position', 'start_date', 'end_date', 'profile_id'];
+    protected $fillable = ['id', 'company_name', 'position', 'start_date', 'end_date', 'profile_id', 'desc'];
 }

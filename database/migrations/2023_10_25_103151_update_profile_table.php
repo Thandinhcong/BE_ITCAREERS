@@ -15,6 +15,9 @@ return new class extends Migration
             $table->softDeletes();
             $table->longText('careers_goal')->nullable();
             $table->integer('type')->nullable()->comment('0: cv upload, 1: cv create');
+            $table->json('coin_status')->nullable();
+            $table->integer('percent_cv')->nullable();
+            $table->integer('coin_exp')->default(0);
         });
     }
 

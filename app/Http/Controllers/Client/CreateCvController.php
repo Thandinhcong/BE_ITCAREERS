@@ -272,7 +272,7 @@ class CreateCvController extends Controller
             'start_date' => 'required|date_format:Y-m-d',
             'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
             'profile_id' => 'required',
-            'desc' => 'required'
+            'desc' => ''
         ], $messages);
 
         if ($validator_exp->fails()) {
@@ -296,26 +296,34 @@ class CreateCvController extends Controller
                 'message' => 'Tạo mới thất bại!'
             ]);
         }
+        //update tổng năm kinh nghiệm và coin
         $exp_id = $exp->profile_id;
         $expRecords = Exp::where('profile_id', $exp_id)
-            ->orderBy('start_date', 'asc')
-            ->orderBy('end_date', 'desc')
             ->whereNull('deleted_at')
+            ->select('start_date', 'end_date')
             ->get();
-
         if ($expRecords->count() > 0) {
-
-            $start_date = Carbon::parse($expRecords->first()->start_date);
-            $end_date = Carbon::parse($expRecords->last()->end_date);
-
-            $total_months = $start_date->diffInMonths($end_date);
-            $total_years = floor($total_months / 12);
-            Profile::where('id', $exp_id)->update([
-                'total_exp' => $total_years,
+            $coinIncrementPerYear = 500;
+            $maxCoinWithoutIncrement = 10 * $coinIncrementPerYear;
+            $totalExperienceYears = 0;
+            $totalCoin = 0;
+            foreach ($expRecords as $expRecord) {
+                $startDate = Carbon::parse($expRecord->start_date);
+                $endDate = Carbon::parse($expRecord->end_date);
+                $experienceYears = $endDate->diffInYears($startDate);
+                $totalExperienceYears += $experienceYears;
+            }
+            if ($totalExperienceYears < 10) {
+                $totalCoin += $totalExperienceYears * $coinIncrementPerYear;
+            } else {
+                $totalCoin += $maxCoinWithoutIncrement;
+            }
+            $profile = Profile::where('id', $profile_id)->first();
+            $profile->update([
+                'total_exp' => $totalExperienceYears,
+                'coin_exp' => $totalCoin,
             ]);
         }
-
-
         return response()->json([
             'status' => true,
             'success' => 'Tạo mới thành công!',
@@ -330,7 +338,7 @@ class CreateCvController extends Controller
             'position' => 'required',
             'start_date' => 'required',
             'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
-            'desc' => 'required'
+            'desc' => ''
         ], $messages);
         if ($validator_exp->fails()) {
             return response()->json([
@@ -340,6 +348,7 @@ class CreateCvController extends Controller
 
         $exp_id = $request->id;
         $exp = Exp::find($exp_id);
+        $profile_id_exp = $exp->profile_id;
         $exp->fill([
             'company_name' => $request->company_name,
             'position' => $request->position,
@@ -356,20 +365,29 @@ class CreateCvController extends Controller
         }
         $exp_id = $exp->profile_id;
         $expRecords = Exp::where('profile_id', $exp_id)
-            ->orderBy('start_date', 'asc')
-            ->orderBy('end_date', 'desc')
             ->whereNull('deleted_at')
+            ->select('start_date', 'end_date')
             ->get();
-
         if ($expRecords->count() > 0) {
-
-            $start_date = Carbon::parse($expRecords->first()->start_date);
-            $end_date = Carbon::parse($expRecords->last()->end_date);
-
-            $total_months = $start_date->diffInMonths($end_date);
-            $total_years = floor($total_months / 12);
-            Profile::where('id', $exp_id)->update([
-                'total_exp' => $total_years,
+            $coinIncrementPerYear = 500;
+            $maxCoinWithoutIncrement = 10 * $coinIncrementPerYear;
+            $totalExperienceYears = 0;
+            $totalCoin = 0;
+            foreach ($expRecords as $expRecord) {
+                $startDate = Carbon::parse($expRecord->start_date);
+                $endDate = Carbon::parse($expRecord->end_date);
+                $experienceYears = $endDate->diffInYears($startDate);
+                $totalExperienceYears += $experienceYears;
+            }
+            if ($totalExperienceYears < 10) {
+                $totalCoin += $totalExperienceYears * $coinIncrementPerYear;
+            } else {
+                $totalCoin += $maxCoinWithoutIncrement;
+            }
+            $profile = Profile::where('id', $profile_id_exp)->first();
+            $profile->update([
+                'total_exp' => $totalExperienceYears,
+                'coin_exp' => $totalCoin,
             ]);
         }
 
@@ -383,37 +401,56 @@ class CreateCvController extends Controller
     {
         $exp_id = $request->id;
         $exp = Exp::find($exp_id);
+        if (!$exp) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy bản ghi để xóa!'
+            ], 404);
+        }
+
         $profile_id_exp = $exp->profile_id;
-        $expRecords = Exp::where('profile_id', $profile_id_exp)
-            ->orderBy('start_date', 'asc')
-            ->orderBy('end_date', 'desc')
+        $exp->delete();
+        $exp_id = $exp->profile_id;
+        $expRecords = Exp::where('profile_id', $exp_id)
             ->whereNull('deleted_at')
+            ->select('start_date', 'end_date')
             ->get();
-
         if ($expRecords->count() > 0) {
-
-            $start_date = Carbon::parse($expRecords->first()->start_date);
-            $end_date = Carbon::parse($expRecords->last()->end_date);
-
-            $total_months = $start_date->diffInMonths($end_date);
-            $total_years = floor($total_months / 12);
-            Profile::where('id', $exp_id)->update([
-                'total_exp' => $total_years,
+            $coinIncrementPerYear = 500;
+            $maxCoinWithoutIncrement = 10 * $coinIncrementPerYear;
+            $totalExperienceYears = 0;
+            $totalCoin = 0;
+            foreach ($expRecords as $expRecord) {
+                $startDate = Carbon::parse($expRecord->start_date);
+                $endDate = Carbon::parse($expRecord->end_date);
+                $experienceYears = $endDate->diffInYears($startDate);
+                $totalExperienceYears += $experienceYears;
+            }
+            if ($totalExperienceYears < 10) {
+                $totalCoin += $totalExperienceYears * $coinIncrementPerYear;
+            } else {
+                $totalCoin += $maxCoinWithoutIncrement;
+            }
+            $profile = Profile::where('id', $profile_id_exp)->first();
+            $profile->update([
+                'total_exp' => $totalExperienceYears,
+                'coin_exp' => $totalCoin,
+            ]);
+        } else {
+            $profile = Profile::where('id', $profile_id_exp)->first();
+            $profile->update([
+                'total_exp' => 0,
+                'coin_exp' => 0,
             ]);
         }
-        if (isset($exp_id)) {
-            $exp = Exp::find($exp_id);
-            $exp->delete();
-            return response()->json([
-                'is_check' => true,
-                'success' => 'Xóa thành công!',
-            ], 201);
-        }
+
+
         return response()->json([
-            'status' => false,
-            'message' => 'Xóa thất bại!'
-        ], 400);
+            'is_check' => true,
+            'success' => 'Xóa thành công!',
+        ], 201);
     }
+
 
     public function saveEdu(Request $request)
     {
@@ -695,6 +732,66 @@ class CreateCvController extends Controller
             'message' => 'Xóa thất bại!'
         ], 400);
     }
+    public function percentCV(Request $request)
+    {
+        $profile_id = $request->profile_id;
+        $profile = Profile::find($profile_id);
+        $totalPossiblePoints = 100;
+        $totalPointsEarned = 0;
+        $completionPercentage = 0;
+        $cvData = [
+            'personal_info' => Profile::where('id', $profile_id)->count(),
+            'work_experience' => Exp::where('profile_id', $profile_id)->count(),
+            'education' => Edu::where('profile_id', $profile_id)->count(),
+            'project' => Project::where('profile_id', $profile_id)->count(),
+            'skills' => SkillProfile::where('profile_id', $profile_id)->count(),
+        ];
+        $fieldWeights = [
+            'personal_info' => 20,
+            'work_experience' => 30,
+            'education' => 20,
+            'project' => 15,
+            'skills' => 15,
+        ];
+
+        foreach ($fieldWeights as $field => $weight) {
+            if (isset($cvData[$field]) && is_numeric($cvData[$field]) && $cvData[$field] > 0) {
+                $totalPointsEarned += $weight;
+            }
+        }
+
+        $completionPercentage = ($totalPointsEarned / $totalPossiblePoints) * 100;
+        $profile->update(['percent_cv' => ($totalPointsEarned / $totalPossiblePoints) * 100]);
+        if ($completionPercentage >= 88) {
+            if ($profile->coin_status) {
+                $coinStatus = json_decode($profile->coin_status, true);
+            } else {
+                $coinStatus = ['2000' => false, '3000' => false];
+            }
+            if (!$coinStatus['3000']) {
+                $profile->update(['coin' => $profile->coin + 3000]);
+                $coinStatus['3000'] = true;
+                $profile->update(['coin_status' => json_encode($coinStatus)]);
+            }
+        } else if ($completionPercentage < 88) {
+            if ($profile->coin_status) {
+                $coinStatus = json_decode($profile->coin_status, true);
+            } else {
+                $coinStatus = ['2000' => false, '3000' => false];
+            }
+
+            if ($coinStatus['3000']) {
+                $profile->update(['coin' => $profile->coin - 3000]);
+                $coinStatus['3000'] = false;
+                $profile->update(['coin_status' => json_encode($coinStatus)]);
+            }
+        }
+        return response()->json([
+            'completion_percentage' => $profile->percent_cv,
+        ], 200);
+    }
+
+
     public function saveCV(Request $request)
     {
         $profile_id = $request->profile_id;
