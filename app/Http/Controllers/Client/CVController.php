@@ -29,11 +29,11 @@ class CVController extends Controller
     public function store(Request $request)
     {
         $candidate = Auth::user();
-            $candidate_id = $candidate->id;
+        $candidate_id = $candidate->id;
         $validator = Validator::make($request->all(), [
             'path_cv' => 'required',
             'title' => 'required',
-          
+
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -41,48 +41,48 @@ class CVController extends Controller
             ], 404);
         };
         $check_count = Profile::where('candidate_id', $candidate_id)
-                ->where('type', 0)
-                ->count();
-            if ($check_count >= 3) {
+            ->where('type', 0)
+            ->count();
+        if ($check_count >= 3) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn đã upload tối đa 3 CV !!!'
+            ], 400);
+        } else {
+
+            $path_cv = $request->path_cv;
+            $title = $request->title;
+            $pathInfo = pathinfo($path_cv);
+            $fileExtension = strtolower($pathInfo['extension']);
+            if ($fileExtension === 'pdf') {
+                $candidate = Auth::user();
+                $candidate_id = $candidate->id;
+                $cv = new Profile();
+                $path_cv = $request->path_cv;
+                if ($candidate) {
+                    $cv->title = $title;
+                    $cv->candidate_id = $candidate_id;
+                    $cv->name = $candidate->name;
+                    $cv->email = $candidate->email;
+                    $cv->phone = $candidate->phone;
+                    $cv->image = $request->image;
+                    $cv->path_cv = $path_cv;
+                    $cv->type = 0;
+                    $cv->coin = 1000;
+                    $cv->save();
+                    $profile_id = $cv->id;
+                    return response()->json([
+                        'profile_id' => $profile_id,
+                        'message' => 'Tạo thành công'
+                    ], 201);
+                }
+            } else {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Bạn đã upload tối đa 3 CV !!!'
+                    'message' => 'Vui lòng chọn file pdf'
                 ], 400);
-            } else {
-
-                $path_cv = $request->path_cv;
-                $title = $request->title;
-                $pathInfo = pathinfo($path_cv);
-                $fileExtension = strtolower($pathInfo['extension']);
-                if ($fileExtension === 'pdf') {
-                    $candidate = Auth::user();
-                    $candidate_id = $candidate->id;
-                    $cv = new Profile();
-                    $path_cv = $request->path_cv;
-                    if ($candidate) {
-                        $cv->title = $title;
-                        $cv->candidate_id = $candidate_id;
-                        $cv->name = $candidate->name;
-                        $cv->email = $candidate->email;
-                        $cv->phone = $candidate->phone;
-                        $cv->image = $request->image;
-                        $cv->path_cv = $path_cv;
-                        $cv->type = 0;
-                        $cv->save();
-                        $profile_id = $cv->id;
-                        return response()->json([
-                            'profile_id' => $profile_id,
-                            'message' => 'Tạo thành công'
-                        ], 201);
-                    }
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Vui lòng chọn file pdf'
-                    ], 400);
-                }
             }
-
+        }
     }
     public function activeCV(Request $request)
     {
@@ -102,6 +102,19 @@ class CVController extends Controller
             $main_cv->update(
                 ['main_cv' => $id]
             );
+            $profile = Profile::find($main_cv->main_cv);
+            if ($profile && $main_cv->major && $main_cv->desired_salary && $main_cv->experience_id && $main_cv->district_id) {
+                if ($profile->coin_status) {
+                    $coinStatus = json_decode($profile->coin_status, true);
+                } else {
+                    $coinStatus = ['2000' => false, '3000' => false];
+                }
+                if (!$coinStatus['2000']) {
+                    $profile->update(['coin' => $profile->coin + 2000]);
+                    $coinStatus['2000'] = true;
+                    $profile->update(['coin_status' => json_encode($coinStatus)]);
+                }
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Cập nhật thành công'
