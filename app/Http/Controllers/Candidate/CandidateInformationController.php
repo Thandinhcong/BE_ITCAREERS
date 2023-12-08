@@ -8,6 +8,7 @@ use App\Models\Candidate;
 use App\Models\District;
 use App\Models\Experience;
 use App\Models\Major;
+use App\Models\Profile;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -141,6 +142,20 @@ class CandidateInformationController extends Controller
                 'status' => 'fail',
                 'errors' => $validator->messages()
             ], 400);
+        }
+        //update coin
+        $profile = Profile::find($candidate->main_cv);
+        if ($profile) {
+            if ($profile->coin_status) {
+                $coinStatus = json_decode($profile->coin_status, true);
+            } else {
+                $coinStatus = ['2000' => false, '3000' => false];
+            }
+            if (!$coinStatus['2000']) {
+                $profile->update(['coin' => $profile->coin + 2000]);
+                $coinStatus['2000'] = true;
+                $profile->update(['coin_status' => json_encode($coinStatus)]);
+            }
         }
         if ($candidate) {
             $candidate->update($request->all());

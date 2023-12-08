@@ -23,8 +23,12 @@ class Profile extends Model
         'total_exp',
         'is_active',
         'image',
+        'coin',
         'path_cv',
         'careers_goal',
+        'coin_status',
+        'percent_cv',
+        'coin_exp',
     ];
 
     public function candidate()
