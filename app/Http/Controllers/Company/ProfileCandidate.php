@@ -72,10 +72,10 @@ class ProfileCandidate extends Controller
     {
         $data = DB::table('profile')
             ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
-            // ->leftJoin('project', 'profile.id', '=', 'project.profile_id')
-            // ->leftJoin('edu', 'profile.id', '=', 'edu.profile_id')
+            ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
-            ->groupBy('candidates.id')
             ->where('candidates.find_job', 1)
             ->select(
                 'profile.name',
@@ -91,9 +91,14 @@ class ProfileCandidate extends Controller
                 'profile.created_at',
                 'candidates.id as candidate_id',
                 'candidates.image',
+                'candidates.desired_salary',
+                'experiences.experience',
+                'district.name as district',
+                'province.province as province',
                 DB::raw('AVG(profile_open.start) as start'),
-                // DB::raw('GROUP_CONCAT(edu.name SEPARATOR ",") as edu_name'),
             )
+            ->groupBy('candidates.id')
+
             ->get();
         foreach ($data as $customer) {
             $this->hide_info($customer, 1);
@@ -107,6 +112,9 @@ class ProfileCandidate extends Controller
     {
         $data = DB::table('profile')
             ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
             ->groupBy('profile.id')
 
@@ -123,6 +131,10 @@ class ProfileCandidate extends Controller
                 'profile.created_at',
                 'candidates.image',
                 'candidates.find_job',
+                'candidates.desired_salary',
+                'experiences.experience',
+                'district.name as district',
+                'province.province as province',
             )
             ->get();
         foreach ($data as $customer) {
@@ -138,6 +150,9 @@ class ProfileCandidate extends Controller
 
         $data = DB::table('profile')
             ->join('candidates', 'candidates.id', '=', 'profile.candidate_id')
+            ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->join('save_profile', 'profile.id', '=', 'save_profile.profile_id')
             ->where('candidates.find_job', 1)
             ->where('save_profile.company_id', $this->company_id())
@@ -151,6 +166,10 @@ class ProfileCandidate extends Controller
                 'candidates.id as candidate_id',
                 'profile.created_at',
                 'candidates.image',
+                'candidates.desired_salary',
+                'experiences.experience',
+                'district.name as district',
+                'province.province as province',
             )
             ->get();
         foreach ($data as $customer) {
