@@ -31,7 +31,7 @@ class DashBoardController extends Controller
         $this->v['countNotSuitable'] = JobPostApply::where('qualifying_round_id', 0)->get()->toArray();
         $this->v['countSuitable'] = JobPostApply::where('qualifying_round_id', 1)->get()->toArray();
         $this->v['countView'] = JobPost::where('id', "=", $company_id)->select('view')->first();
-        $this->v['countAddCoin'] = Company::where('id', "=", $company_id)->select('coin')->first();
+        $this->v['countAddCoin'] = Vnpay_payment::where('id', "=", $company_id)->select('vnp_Amount')->first();
         $this->v['countSpendCoin'] = ProfileOpen::where('id', "=", $company_id)->select('coin')->first();
         $getModel = JobPostApply::getCadidate($request, $company_id);
         $this->v['totalApplied'] = array_column($getModel, 'total');
