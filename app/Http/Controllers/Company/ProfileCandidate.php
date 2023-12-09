@@ -92,7 +92,7 @@ class ProfileCandidate extends Controller
                 'candidates.id as candidate_id',
                 'candidates.image',
                 'candidates.desired_salary',
-                'candidates.major_id',
+                'candidates.major',
                 'experiences.experience',
                 'district.name as district',
                 'province.province as province',
@@ -135,7 +135,7 @@ class ProfileCandidate extends Controller
                 'candidates.desired_salary',
                 'experiences.experience',
                 'district.name as district',
-                'candidates.major_id',
+                'candidates.major',
 
                 'province.province as province',
             )
@@ -171,7 +171,7 @@ class ProfileCandidate extends Controller
                 'candidates.image',
                 'candidates.desired_salary',
                 'experiences.experience',
-                'candidates.major_id',
+                'candidates.major',
 
                 'district.name as district',
                 'province.province as province',
