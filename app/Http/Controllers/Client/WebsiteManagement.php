@@ -15,7 +15,8 @@ class WebsiteManagement extends Controller
     public function index()
     {
         $man_web = ManagementWeb::all();
-        return ManagementWebResource::collection($man_web);
+        return view('welcome');
+        // return ManagementWebResource::collection($man_web);
     }
 
     /**
