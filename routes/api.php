@@ -68,6 +68,7 @@ Route::group([
         Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
         Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
+        Route::resource('type-job-post', \App\Http\Controllers\Admin\TypeJobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
@@ -155,6 +156,7 @@ Route::group([
         Route::get('vnpay_return', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'vnpay_return'])->name('vnpay_return');
         Route::get('vnpay_ipn', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'vnpay_ipn'])->name('vnpay_ipn');
         Route::get('history_payment', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'historyPayment'])->name('historyPayment');
+        Route::get('type-job-post', [\App\Http\Controllers\Candidate\TypeJobPostController::class, 'index']);
     });
 });
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);

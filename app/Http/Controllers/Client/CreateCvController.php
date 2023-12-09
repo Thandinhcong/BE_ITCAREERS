@@ -808,6 +808,57 @@ class CreateCvController extends Controller
                 $cv->update([
                     'path_cv' => $path_cv,
                 ]);
+                $profile = Profile::find($profile_id);
+                $totalPossiblePoints = 100;
+                $totalPointsEarned = 0;
+                $completionPercentage = 0;
+                $cvData = [
+                    'personal_info' => Profile::where('id', $profile_id)->count(),
+                    'work_experience' => Exp::where('profile_id', $profile_id)->count(),
+                    'education' => Edu::where('profile_id', $profile_id)->count(),
+                    'project' => Project::where('profile_id', $profile_id)->count(),
+                    'skills' => SkillProfile::where('profile_id', $profile_id)->count(),
+                ];
+                $fieldWeights = [
+                    'personal_info' => 20,
+                    'work_experience' => 30,
+                    'education' => 20,
+                    'project' => 15,
+                    'skills' => 15,
+                ];
+        
+                foreach ($fieldWeights as $field => $weight) {
+                    if (isset($cvData[$field]) && is_numeric($cvData[$field]) && $cvData[$field] > 0) {
+                        $totalPointsEarned += $weight;
+                    }
+                }
+        
+                $completionPercentage = ($totalPointsEarned / $totalPossiblePoints) * 100;
+                $profile->update(['percent_cv' => ($totalPointsEarned / $totalPossiblePoints) * 100]);
+                if ($completionPercentage >= 88) {
+                    if ($profile->coin_status) {
+                        $coinStatus = json_decode($profile->coin_status, true);
+                    } else {
+                        $coinStatus = ['2000' => false, '3000' => false];
+                    }
+                    if (!$coinStatus['3000']) {
+                        $profile->update(['coin' => $profile->coin + 3000]);
+                        $coinStatus['3000'] = true;
+                        $profile->update(['coin_status' => json_encode($coinStatus)]);
+                    }
+                } else if ($completionPercentage < 88) {
+                    if ($profile->coin_status) {
+                        $coinStatus = json_decode($profile->coin_status, true);
+                    } else {
+                        $coinStatus = ['2000' => false, '3000' => false];
+                    }
+        
+                    if ($coinStatus['3000']) {
+                        $profile->update(['coin' => $profile->coin - 3000]);
+                        $coinStatus['3000'] = false;
+                        $profile->update(['coin_status' => json_encode($coinStatus)]);
+                    }
+                }
                 return response()->json([
                     'status' => true,
                     'message' => 'Lưu thành công CV',
