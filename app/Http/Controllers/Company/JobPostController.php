@@ -232,7 +232,7 @@ class JobPostController extends Controller
             ], 422);
         }
         $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
-        if ($interval<10) {
+        if ($interval < 10) {
             return response()->json([
                 'status' => 422,
                 'errors' => "Tối thiểu 10 ngày",
@@ -244,7 +244,7 @@ class JobPostController extends Controller
                 break;
             default:
                 $jobPostType = JobPostType::find($request['type_job_post_id']);
-                $coinForJob_post=($jobPostType->salary) * $interval;
+                $coinForJob_post = ($jobPostType->salary) * $interval;
                 $coinCompanyAffter = $company_coin->coin -  $coinForJob_post;
                 if ($coinCompanyAffter < 0) {
                     return response()->json([
@@ -257,9 +257,14 @@ class JobPostController extends Controller
                 break;
         }
         if ($job_post) {
-            $company_info=Auth::user();
+            $company_info = Auth::user();
             $manage_web = ManagementWeb::find(1);
-            Mail::send('emails.job_post_store', compact('job_post', 'manage_web','company_info',), function ($email) use ( $manage_web,$company_info) {
+            // dd($job_post);
+            $string = "tôi tên là nguyễn mạnh Huy";
+            $href = preg_replace("/ /", "%20", $job_post->title);
+
+
+            Mail::send('emails.job_post_store', compact('job_post', 'manage_web', 'company_info','href'), function ($email) use ($manage_web, $company_info) {
                 $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được đăng thành công');
                 $email->to($company_info->email);
             });
@@ -356,12 +361,12 @@ class JobPostController extends Controller
                 'error' => 'Bài đăng đã được hiển thị không thể sửa '
             ], 200);
         }
-        if ($job_post->status !=1) {
+        if ($job_post->status != 1) {
             $job_post->update($request->all());
             $job_post->update(['status' => 0]);
-            $company_info=Auth::user();
+            $company_info = Auth::user();
             $manage_web = ManagementWeb::find(1);
-            Mail::send('emails.job_post_update', compact('job_post', 'manage_web','company_info',), function ($email) use ( $manage_web,$company_info) {
+            Mail::send('emails.job_post_update', compact('job_post', 'manage_web', 'company_info',), function ($email) use ($manage_web, $company_info) {
                 $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
                 $email->to($company_info->email);
             });
@@ -369,7 +374,6 @@ class JobPostController extends Controller
                 'status' => 'success',
                 'message' => 'Update Success'
             ], 200);
-         
         } else {
             return response()->json([
                 'status' => 'fail',
@@ -397,7 +401,7 @@ class JobPostController extends Controller
         if ($request['type_job_post_id']) {
             $interval = (strtotime($request['end_date']) -  strtotime($request['start_date'])) / 86400 + 1;
             $jobPostType = JobPostType::find($request['type_job_post_id']);
-            $coinCompanyAffter = $company_coin->coin -($jobPostType->salary) * $interval ;
+            $coinCompanyAffter = $company_coin->coin - ($jobPostType->salary) * $interval;
             if ($coinCompanyAffter < 0) {
                 return response()->json([
                     'status' => 422,

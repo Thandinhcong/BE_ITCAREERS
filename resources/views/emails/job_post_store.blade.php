@@ -517,7 +517,7 @@
                                         <p>Cảm ơn nhà tuyển dụng
                                             <b>{{$company_info->company_name}}</b>
                                             đã sử dụng dịch vụ đăng bài tuyển dụng của chúng tôi với tiêu đề là
-                                            <a href="#"><b>{{$job_post->title}}</b></a> trên nền tảng tuyển dụng 
+                                            <a href="http://localhost:5173/job-detail/{{$href}}/{{$job_post->id}}"><b>{{$job_post->title}}</b></a> trên nền tảng tuyển dụng 
                                             {{$manage_web->name_web}}
                                         </p>
                                         </p>
