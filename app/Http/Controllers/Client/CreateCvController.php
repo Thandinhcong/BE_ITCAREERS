@@ -44,11 +44,14 @@ class CreateCvController extends Controller
             'company_name.required' => 'Vui lòng nhập tên công ty!',
             'position.required' => 'Vui lòng nhập vị trí làm việc!',
             'start_date.required' => 'Vui lòng nhập ngày bắt đầu!',
+            'start_date.date_format' => 'Vui lòng nhập đúng định dạng!',
+            'end_date.required' => 'Vui lòng nhập ngày ngày kết thúc!',
+            'end_date.date_format' => 'Vui lòng nhập đúng định dạng!',
             'end_date.after' => 'Ngày kết thúc không nhỏ hơn ngày bắt đầu!',
             'end_date.before' => 'Ngày kết thúc không lớn hơn ngày hiện tại!',
-            'gpa.required' => 'Vui lòng nhập GPA!',
-            'gpa.min' => 'Điểm GPA không nhỏ hơn 0!',
-            'gpa.max' => 'Điệm GPA không quá 10!',
+            'gpa.required' => 'Vui lòng nhập điểm GPA!',
+            'gpa.numeric' => 'Điểm GPA phải là một số!',
+            'gpa.between' => 'Điểm GPA phải nằm trong khoảng từ 0 đến 10!',
             'type_degree.required' => 'Vui lòng chọn Trình độ học vấn!',
             'project_name.required' => 'Vui lòng nhập tên dự án!',
             'desc.required' => 'Vui lòng nhập mô tả!',
@@ -270,7 +273,7 @@ class CreateCvController extends Controller
             'company_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date|before:now',
             'profile_id' => 'required',
             'desc' => ''
         ], $messages);
@@ -336,8 +339,8 @@ class CreateCvController extends Controller
         $validator_exp = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'position' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date|before:now',
             'desc' => ''
         ], $messages);
         if ($validator_exp->fails()) {
@@ -457,10 +460,10 @@ class CreateCvController extends Controller
         $messages =  $this->message_val;
         $validator_edu = Validator::make($request->all(), [
             'name' => 'required|string',
-            'gpa' => 'required|min:0|max:10',
+            'gpa' => 'required|numeric|between:0,10',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date|before:now',
             'major' => 'required',
             'profile_id' => 'required',
         ], $messages);
@@ -500,10 +503,10 @@ class CreateCvController extends Controller
         $messages =  $this->message_val;
         $validator_edu = Validator::make($request->all(), [
             'name' => 'required|string',
-            'gpa' => 'required',
+            'gpa' => 'required|numeric|between:0,10',
             'type_degree' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date|before:now',
             'major' => 'required',
         ], $messages);
 
@@ -559,7 +562,7 @@ class CreateCvController extends Controller
             'project_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date|before:now',
             'desc' => 'required',
             'link_project' => 'required',
             'profile_id' => 'required',
@@ -602,7 +605,7 @@ class CreateCvController extends Controller
             'project_name' => 'required|string',
             'position' => 'required',
             'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'date_format:Y-m-d|after:start_date|before:now',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date|before:now',
             'desc' => 'required',
             'link_project' => 'required',
         ], $messages);
@@ -826,13 +829,13 @@ class CreateCvController extends Controller
                     'project' => 15,
                     'skills' => 15,
                 ];
-        
+
                 foreach ($fieldWeights as $field => $weight) {
                     if (isset($cvData[$field]) && is_numeric($cvData[$field]) && $cvData[$field] > 0) {
                         $totalPointsEarned += $weight;
                     }
                 }
-        
+
                 $completionPercentage = ($totalPointsEarned / $totalPossiblePoints) * 100;
                 $profile->update(['percent_cv' => ($totalPointsEarned / $totalPossiblePoints) * 100]);
                 if ($completionPercentage >= 88) {
@@ -852,7 +855,7 @@ class CreateCvController extends Controller
                     } else {
                         $coinStatus = ['2000' => false, '3000' => false];
                     }
-        
+
                     if ($coinStatus['3000']) {
                         $profile->update(['coin' => $profile->coin - 3000]);
                         $coinStatus['3000'] = false;
