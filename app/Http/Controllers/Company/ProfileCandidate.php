@@ -92,7 +92,7 @@ class ProfileCandidate extends Controller
                 'candidates.id as candidate_id',
                 'candidates.image',
                 'candidates.desired_salary',
-                'candidates.major',
+                'candidates.major_id',
                 'experiences.experience',
                 'district.name as district',
                 'province.province as province',
@@ -135,7 +135,7 @@ class ProfileCandidate extends Controller
                 'candidates.desired_salary',
                 'experiences.experience',
                 'district.name as district',
-                'candidates.major',
+                'candidates.major_id',
 
                 'province.province as province',
             )
@@ -171,7 +171,7 @@ class ProfileCandidate extends Controller
                 'candidates.image',
                 'candidates.desired_salary',
                 'experiences.experience',
-                'candidates.major',
+                'candidates.major_id',
 
                 'district.name as district',
                 'province.province as province',
@@ -226,14 +226,15 @@ class ProfileCandidate extends Controller
         $check_coin = DB::table('companies')
             ->select('coin')
             ->where('id', $this->company_id())->first();
-        $coin_profile = 11;
-        // DB::table('profile')
-        //     ->where('id', $id)
-        //     ->select(
-        //         'profile.coin',
-        //     )
-        //     ->first();
-        if ($check_coin->coin > 20000) {
+        $coin_profile = DB::table('profile')
+            ->where('id', $id)
+            ->select(
+                'profile.coin',
+                'profile.coin_exp',
+            )
+            ->first();
+            $finalCoinProfile=$coin_profile->coin+$coin_profile->coin_exp;
+        if ($check_coin->coin > $finalCoinProfile) {
             if ($check) {
                 return response()->json([
                     'status' => 'fail',
@@ -244,12 +245,10 @@ class ProfileCandidate extends Controller
                     [
                         'company_id' => $this->company_id(),
                         'profile_id' => $id,
-                        //thêm ->coin
-                        'coin' =>  $coin_profile
+                        'coin' => $finalCoinProfile
                     ]
                 );
-                //thêm ->coin
-                $coinCompanyAffter = ($check_coin->coin) - ($coin_profile);
+                $coinCompanyAffter = ($check_coin->coin) - (  $finalCoinProfile);
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
             if ($saveProfile) {
