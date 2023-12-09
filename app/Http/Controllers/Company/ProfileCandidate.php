@@ -64,7 +64,7 @@ class ProfileCandidate extends Controller
     }
     public function avgStart($data)
     {
-       
+
             return  $data->start = ProfileOpen::where('profile_id',$data->id)
             ->avg('start');
     }
@@ -89,6 +89,7 @@ class ProfileCandidate extends Controller
                 'profile.careers_goal',
                 'profile.total_exp',
                 'profile.created_at',
+                'profile.coin',
                 'candidates.id as candidate_id',
                 'candidates.image',
                 'candidates.desired_salary',
