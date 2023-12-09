@@ -61,7 +61,7 @@ Route::group([
         Route::resource('salary_type', \App\Http\Controllers\Admin\SalaryTypeController::class);
         Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
         Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
-        // Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
+        Route::resource('type-job-post', \App\Http\Controllers\Admin\TypeJobPostController::class);
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
         Route::resource('level', LevelController::class);
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
@@ -136,6 +136,7 @@ Route::group([
         Route::post('save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'save_job_post']);
         //Hủy lưu việc làm
         Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
+        Route::get('type-job-post', [\App\Http\Controllers\Candidate\TypeJobPostController::class, 'index']);
     });
 });
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);
