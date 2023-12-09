@@ -45,26 +45,6 @@ class RegisterCompanyController extends Controller
         ], 200);
     }
 
-    public function activeCompany(Company $candidate, $token)
-    {
-        if ($candidate->token === $token) {
-            $candidate->update([
-                'status' => 3,
-                'verify_time' => Carbon::now(),
-                'token' => null
-            ]);
-            return redirect()->route('login')->with('success', 'Kích Hoạt Tài Khoản Thành Công');
-        } elseif ($candidate->token == null && $candidate->staus != 0) {
-            return view('email.404');
-        } else {
-            return view('email.404');
-        }
-    }
-    public function PassCompany()
-    {
-        return view('emails.refresh-pass');
-    }
-
     public function PassCompanies(Request $request)
     {
         $request->validate([
@@ -83,26 +63,5 @@ class RegisterCompanyController extends Controller
             $email->to($candidate->email, $candidate->name);
         });
         return redirect()->back()->with('success', 'Vui Lòng Kiểm Tra Mail Để Thực Hiện Thay Đổi Mật Khẩu');
-    }
-    public function getPassCompany()
-    {
-        return view('getPass');
-    }
-    public function postPassCompany(Company $candidate, Request $request)
-    {
-        if ($candidate->token === $request->token) {
-            if ($request->password === $request->password2) {
-                $candidate->update([
-                    'token' => null,
-                    'password' => bcrypt($request->password)
-
-                ]);
-                return redirect()->route('login')->with('success', 'Đổi mật khẩu thành công');
-            } else {
-                return back()->with('error', 'Mật khẩu không trùng khớp');
-            }
-        } else {
-            return view('email.404');
-        }
     }
 }

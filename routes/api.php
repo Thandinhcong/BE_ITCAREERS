@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Login google candidate
 Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
+Route::post('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'postPassCompany']);
+
 
 
 
@@ -149,6 +151,7 @@ Route::group([
     'prefix' => 'company'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'register']);
+    Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
     Route::group([
         'middleware' => 'auth:company-api'
@@ -193,11 +196,11 @@ Route::group([
         Route::get('history_payment', [App\Http\Controllers\Company\PaymentController::class, 'historyPayment'])->name('historyPayment');
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
     });
-    Route::get('/actived-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'activeCompany']);
-    Route::get('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompany']);
-    Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
-    Route::get('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'getPassCompany']);
-    Route::post('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'postPassCompany']);
+    // Route::get('/actived-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'activeCompany']);
+    // Route::get('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompany']);
+    // Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
+    // Route::get('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'getPassCompany']);
+    // Route::post('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'postPassCompany']);
 });
 Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);
 //List ứng viên gửi ứng tuyển vào công ty
