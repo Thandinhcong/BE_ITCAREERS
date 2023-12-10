@@ -34,7 +34,7 @@ class SalaryTypeController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $valdator->messages(),
-                'salaty_type'=>$request->all()
+                'salaty_type' => $request->all()
             ], 422);
         } else {
             $salaryType = SalaryType::create($request->all());
@@ -75,7 +75,7 @@ class SalaryTypeController extends Controller
             return response()->json([
                 'status' => 422,
                 'errors' => $valdator->messages(),
-                'salaty_type'=>$request->all()
+                'salaty_type' => $request->all()
             ], 422);
         } else {
             $salaryType = SalaryType::find($id);
@@ -93,7 +93,7 @@ class SalaryTypeController extends Controller
             ], 404);
         }
     }
-public function destroy($id)
+    public function destroy($id)
     {
         $salaryType = SalaryType::find($id);
         if (!$salaryType) {
