@@ -318,7 +318,7 @@ class ProfileCandidate extends Controller
     }
     public function cancel_save_profile($id)
     {
-        $saveProfile = SaveProfile::where('candidate_id', $id)
+        $saveProfile = SaveProfile::where('profile_id', $id)
             ->where('company_id', $this->company_id())
             ->first();
         if (!$saveProfile) {
