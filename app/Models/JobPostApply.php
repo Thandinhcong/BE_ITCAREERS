@@ -14,9 +14,8 @@ class JobPostApply extends Model
 {
     use HasFactory;
     protected $table = 'job_post_apply';
-
-    protected $fillable = ['curriculum_vitae_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce'];
-    public static function getCadidate($request, $job_post_id)
+    protected $fillable = ['curriculum_vitae_id', 'company_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce'];
+    public static function getCandidate($request, $company_id)
     {
         if (!empty($request->time_filter)) {
             if ($request->time_filter == 28) {
@@ -29,11 +28,12 @@ class JobPostApply extends Model
         }
         $to =  date_format(now(), "Y-m-d");
         $totalApplied = DB::table('job_post_apply')
-            ->where('job_post_id', $job_post_id)->whereBetween('created_at', [$from, $to])
+            ->where('company_id', $company_id)->whereBetween('created_at', [$from, $to])
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as applied'))
             ->groupBy('date')
             ->get()
             ->toArray();
+        // dd($totalApplied);
         $model = new ModelsJobPostApply();
         $dateArray = $model->getDatesFromRange($from, $to);
         $arrayShow = [];
@@ -47,9 +47,6 @@ class JobPostApply extends Model
                 } else {
                     $data['total'] = 0;
                 }
-                // if($data['total']!=0){
-                //     dd([$val->date, $data['total']]);
-                // }
             }
             array_push($arrayShow, $data);
         }
