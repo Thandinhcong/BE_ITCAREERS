@@ -127,7 +127,7 @@ class CandidateApplyController extends Controller
             if ($candidate_apply) {
                 $manage_web = ManagementWeb::find(1);
                 $data=[];
-                $data['email'] = 'huynmph26141@fpt.edu.vn';
+                $data['email'] = $candidate_apply->email; ;
                 $data['subject'] = $manage_web->name_web.' - Bạn đã ứng tuyển thành công';
                 $data['view'] = 'emails.candidate_apply';
                 $data['title'] = $job_apply->title;
