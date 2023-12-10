@@ -9,6 +9,8 @@ use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function Laravel\Prompts\select;
+
 class ListCompanyController extends Controller
 {
     /**
@@ -21,13 +23,71 @@ class ListCompanyController extends Controller
 
         if ($request->company_name) {
             $list_company = DB::table('companies')
-
+                ->join('job_post', 'job_post.company_id', '=', 'companies.id')
+                ->groupBy('job_post.company_id')
+                ->select(
+                    'companies.id',
+                    'companies.company_name',
+                    'companies.address',
+                    'companies.founded_in',
+                    'companies.name',
+                    'companies.office',
+                    'companies.email',
+                    'companies.password',
+                    'companies.phone',
+                    'companies.map',
+                    'companies.logo',
+                    'companies.link_web',
+                    'companies.image_paper',
+                    'companies.description',
+                    'companies.coin',
+                    'companies.email_verified_at',
+                    'companies.remember_token',
+                    'companies.tax_code',
+                    'companies.status',
+                    'companies.company_size_max',
+                    'companies.company_size_min',
+                    'companies.created_at',
+                    'companies.updated_at',
+                    'companies.deleted_at',
+                    DB::raw('count(*) as job_post_company'),
+                )
                 ->where('company_name', 'LIKE', '%' . $request->company_name . '%')
                 ->whereNull('deleted_at')
                 ->get();
             $count_company = $list_company->count();
         } else {
-            $list_company = Company::all();
+            $list_company = DB::table('companies')
+                ->join('job_post', 'job_post.company_id', '=', 'companies.id')
+                ->groupBy('job_post.company_id')
+                ->select(
+                    'companies.id',
+                    'companies.company_name',
+                    'companies.address',
+                    'companies.founded_in',
+                    'companies.name',
+                    'companies.office',
+                    'companies.email',
+                    'companies.password',
+                    'companies.phone',
+                    'companies.map',
+                    'companies.logo',
+                    'companies.link_web',
+                    'companies.image_paper',
+                    'companies.description',
+                    'companies.coin',
+                    'companies.email_verified_at',
+                    'companies.remember_token',
+                    'companies.tax_code',
+                    'companies.status',
+                    'companies.company_size_max',
+                    'companies.company_size_min',
+                    'companies.created_at',
+                    'companies.updated_at',
+                    'companies.deleted_at',
+                    DB::raw('count(*) as job_post_company'),
+
+                )->get();
             $count_company = $list_company->count();
         }
 
@@ -55,7 +115,7 @@ class ListCompanyController extends Controller
             return response()->json([
                 'status' => 'success',
                 'company' =>  $company,
-                'number_jobs'=>$number_jobs
+                'number_jobs' => $number_jobs
             ], 200);
         } else {
             return response()->json([

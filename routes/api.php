@@ -176,6 +176,8 @@ Route::group([
 ], function () {
     Route::post('register', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
+    Route::post('forget_password', [\App\Http\Controllers\Company\Auth\LoginController::class, 'forget_password']);
+
     Route::group([
         'middleware' => 'auth:company-api'
     ], function () {

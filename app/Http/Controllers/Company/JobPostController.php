@@ -362,12 +362,12 @@ class JobPostController extends Controller
         if ($job_post->status != 1) {
             $job_post->update($request->all());
             $job_post->update(['status' => 0]);
-            $company_info = Auth::user();
-            $manage_web = ManagementWeb::find(1);
-            Mail::send('emails.job_post_update', compact('job_post', 'manage_web', 'company_info',), function ($email) use ($manage_web, $company_info) {
-                $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
-                $email->to($company_info->email);
-            });
+            // $company_info = Auth::user();
+            // $manage_web = ManagementWeb::find(1);
+            // Mail::send('emails.job_post_update', compact('job_post', 'manage_web', 'company_info',), function ($email) use ($manage_web, $company_info) {
+            //     $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
+            //     $email->to($company_info->email);
+            // });
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success'

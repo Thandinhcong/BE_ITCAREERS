@@ -515,8 +515,9 @@
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
                                         <h2 style="color: black;">Xin chào {{$data['name']}}</h2>
-                                        <p>Hiện tại nhà tuyển dụng đã xem và đang đánh giá hồ sơ mà <b>{{$data['name']}}</b>
-                                            đã ứng tuyển vào vị trí <a href="#"><b>{{$data['job_post_title']}}</b></a> </p>
+                                        <p>Hiện tại nhà tuyển dụng đang đánh giá hồ sơ mà <b>{{$data['name']}}</b>
+                                            đã ứng tuyển vào vị trí <a href="#"><b>{{$data['job_post_title']}}</b></a> 
+                                        và đang tổng hợp lại kết quả vui lòng để ý mail kết quả bên phía công ty</p>
                                         </p>
                                     </div>
 

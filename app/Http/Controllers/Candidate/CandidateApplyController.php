@@ -85,7 +85,7 @@ class CandidateApplyController extends Controller
             ], 400);
         }
         $company_apply = Company::find($job_apply->company_id);
-        if ($data_check->count() < 0) {
+        if ($data_check->count() > 0) {
             return response()->json([
                 'error' => 'Bạn đã ứng tuyển',
             ], 400);
@@ -126,27 +126,25 @@ class CandidateApplyController extends Controller
             }
             if ($candidate_apply) {
                 $manage_web = ManagementWeb::find(1);
-                $data=[];
+                $data = [];
                 $data['email'] = 'huynmph26141@fpt.edu.vn';
-                $data['subject'] = $manage_web->name_web.' - Bạn đã ứng tuyển thành công';
-                $data['view'] = 'emails.candidate_apply';
                 $data['title'] = $job_apply->title;
                 $data['name'] = $candidate_apply->name;
                 $data['logo'] = $manage_web->logo;
                 $data['name_web'] = $manage_web->name_web;
                 $data['company_name'] = $company_apply->company_name;
 
-                dispatch(new SendEmailJob($data,$manage_web->name_web.' - Bạn đã ứng tuyển thành công','emails.candidate_apply'));
-                dispatch(new SendEmailJob($data,$manage_web->name_web.' - Ứng viên ứng tuyển','emails.notification_company_candidate_apply'));
+                dispatch(new SendEmailJob(
+                    $data,
+                    $manage_web->name_web . ' - Bạn đã ứng tuyển thành công',
+                    'emails.candidate_apply'
+                ));
+                dispatch(new SendEmailJob(
+                    $data,
+                    $manage_web->name_web . ' - Ứng viên ứng tuyển',
+                    'emails.notification_company_candidate_apply'
+                ));
 
-                // Mail::send('emails.candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ($candidate_apply, $manage_web) {
-                //     $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
-                //     $email->to($candidate_apply->email);
-                // });
-                // Mail::send('emails.notification_company_candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ( $manage_web,$company_apply) {
-                //     $email->subject($manage_web->name_web . ' - Ứng viên ứng tuyển');
-                //     $email->to($company_apply->email);
-                // });
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Bạn đã ứng tuyển thành công ',
@@ -224,7 +222,6 @@ class CandidateApplyController extends Controller
     {
         $candidate_id = Auth::user()->id;
         $cancel_save_profile = SaveJobPost::where('candidate_id', $candidate_id)->where('job_post_id', $id)->first();
-        // dd($cancel_save_profile);
         if (!$cancel_save_profile) {
             return response()->json(['error' => 'SaveJobPost not found'], 404);
         }
