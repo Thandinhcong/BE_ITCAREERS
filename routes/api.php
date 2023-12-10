@@ -151,7 +151,10 @@ Route::group([
     'prefix' => 'company'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'register']);
-    Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
+    Route::get('refresh_pass_company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'refreshGetCompany']);
+    Route::post('refresh_pass_company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies'])->name('refresh_pass_company');
+    // Route::get('get_pass_company/{candidate}/{remember_token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'getPassCompany']);
+    // Route::post('get_pass_company/{candidate}/{remember_token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PostPassCompanies'])->name('forget_pass_company');
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
     Route::group([
         'middleware' => 'auth:company-api'

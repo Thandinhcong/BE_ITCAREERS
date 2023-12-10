@@ -44,24 +44,51 @@ class RegisterCompanyController extends Controller
             'status' => 'success',
         ], 200);
     }
+    // public function refreshGetCompany()
+    // {
+    //     return view('emails.refresh-pass-company');
+    // }
 
     public function PassCompanies(Request $request)
     {
-        $request->validate([
-            'email' => 'required|exists:candidates',
-        ], [
-            'email.required' => 'Email không được để trống',
-            'email.exists' => 'Email không tồn tại trên hệ thống'
-        ]);
+        // dd(211);
+        // $request->validate([
+        //     'email' => 'required|exists:candidates',
+        // ], [
+        //     'email.required' => 'Email không được để trống',
+        //     'email.exists' => 'Email không tồn tại trên hệ thống'
+        // ]);
+        // dd($request->email);
         $candidate = Company::where('email', $request->email)->first();
         $token = strtoupper(Str::random(10));
         $candidate->update([
-            'token' => $token,
+            'remember_token' => $token,
         ]);
-        Mail::send('forget-pass', compact('candidate'), function ($email) use ($candidate) {
+        Mail::send('emails.refresh-pass-company', compact('candidate'), function ($email) use ($candidate) {
             $email->subject(' Lấy Lại Mật Khẩu');
             $email->to($candidate->email, $candidate->name);
         });
-        return redirect()->back()->with('success', 'Vui Lòng Kiểm Tra Mail Để Thực Hiện Thay Đổi Mật Khẩu');
+        // return redirect()->back()->with('success', 'Vui Lòng Kiểm Tra Mail Để Thực Hiện Thay Đổi Mật Khẩu');
+        return response()->json('success');
     }
+
+    // public function getPassCompany()
+    // {
+    //     return view('emails.get-pass-company');
+    // }
+
+    // public function PostPassCompanies(Company $candidate, Request $request)
+    // {
+    //     if ($candidate->token === $request->token) {
+    //         if ($request->password === $request->password2) {
+    //             $candidate->update([
+    //                 'remember_token' => null,
+    //                 'password' => bcrypt($request->password)
+    //             ]);
+    //             return  response()->json('success', 'Đổi mật khẩu thành công');
+    //         } else {
+    //             return back()->with('error', 'Mật khẩu không trùng khớp');
+    //         }
+    //     }
+    // }
 }
