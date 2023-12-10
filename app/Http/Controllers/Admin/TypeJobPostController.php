@@ -26,7 +26,7 @@ class TypeJobPostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:55',
-            'salary' => 'required|number',
+            'salary' => 'required|string|max:55',
             'desc' => 'required|string|max:55',
         ]);
         if ($validator->fails()) {
@@ -73,7 +73,7 @@ class TypeJobPostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:55',
-            'salary' => 'required|number',
+            'salary' => 'required|string|max:55',
             'desc' => 'required|string|max:55',
         ]);
         if ($validator->fails()) {
