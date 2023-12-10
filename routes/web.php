@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Packages\AuthController;
 use App\Http\Controllers\Skill\AuthController as SkillAuthController;
+use App\Jobs\SendEmailJob;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,5 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layout.main');
+
+    $data['email'] = 'huynmph26141@fpt.edu.vn';
+
+    dispatch(new SendEmailJob($data));
+
+    dd('Email Send Successfully.');
 });

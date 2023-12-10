@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Candidate;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CandidateApplyResource;
+use App\Jobs\SendEmailJob;
 use App\Models\CandidateApply;
 use App\Models\Company;
 use App\Models\CurriculumVitae;
@@ -57,7 +58,7 @@ class CandidateApplyController extends Controller
             ], 404);
         }
     }
-   
+
     public function candidate_apply(Request $request, string $id)
     {
         $candidate_id = Auth::user()->id;
@@ -76,14 +77,15 @@ class CandidateApplyController extends Controller
                 'error' => 'Bài đăng đã bị khóa do vi phạm các nguyên tắc của nền tảng
                  hoặc đã hết thời gian tuyển dụng'
             ], 400);
-        }  if ( $job_apply->start_date > $now) {
+        }
+        if ($job_apply->start_date > $now) {
             return response()->json([
                 'status' => 'fail',
                 'error' => 'Bài đăng chưa đến thời gian tuyển dụng'
             ], 400);
         }
         $company_apply = Company::find($job_apply->company_id);
-        if ($data_check->count() > 0) {
+        if ($data_check->count() < 0) {
             return response()->json([
                 'error' => 'Bạn đã ứng tuyển',
             ], 400);
@@ -124,14 +126,27 @@ class CandidateApplyController extends Controller
             }
             if ($candidate_apply) {
                 $manage_web = ManagementWeb::find(1);
-                Mail::send('emails.candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ($candidate_apply, $manage_web) {
-                    $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
-                    $email->to($candidate_apply->email);
-                });
-                Mail::send('emails.notification_company_candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ( $manage_web,$company_apply) {
-                    $email->subject($manage_web->name_web . ' - Ứng viên ứng tuyển');
-                    $email->to($company_apply->email);
-                });
+                $data=[];
+                $data['email'] = 'huynmph26141@fpt.edu.vn';
+                $data['subject'] = $manage_web->name_web.' - Bạn đã ứng tuyển thành công';
+                $data['view'] = 'emails.candidate_apply';
+                $data['title'] = $job_apply->title;
+                $data['name'] = $candidate_apply->name;
+                $data['logo'] = $manage_web->logo;
+                $data['name_web'] = $manage_web->name_web;
+                $data['company_name'] = $company_apply->company_name;
+
+                dispatch(new SendEmailJob($data,$manage_web->name_web.' - Bạn đã ứng tuyển thành công','emails.candidate_apply'));
+                dispatch(new SendEmailJob($data,$manage_web->name_web.' - Ứng viên ứng tuyển','emails.notification_company_candidate_apply'));
+
+                // Mail::send('emails.candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ($candidate_apply, $manage_web) {
+                //     $email->subject($manage_web->name_web . ' - Bạn đã ứng tuyển thành công');
+                //     $email->to($candidate_apply->email);
+                // });
+                // Mail::send('emails.notification_company_candidate_apply', compact('candidate_apply', 'manage_web', 'job_apply', 'company_apply'), function ($email) use ( $manage_web,$company_apply) {
+                //     $email->subject($manage_web->name_web . ' - Ứng viên ứng tuyển');
+                //     $email->to($company_apply->email);
+                // });
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Bạn đã ứng tuyển thành công ',
