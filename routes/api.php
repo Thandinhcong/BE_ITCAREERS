@@ -89,6 +89,7 @@ Route::group([
 ], function () {
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
+    Route::post('forget_password', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'forget_password']);
 
     Route::group([
         'middleware' => 'auth:candidate-api'
@@ -172,6 +173,7 @@ Route::group([
     'prefix' => 'company'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'register']);
+    Route::post('forget_password', [\App\Http\Controllers\Company\Auth\LoginController::class, 'forget_password']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
     Route::group([
         'middleware' => 'auth:company-api'
@@ -256,3 +258,5 @@ Route::get('get_data', [\App\Http\Controllers\Client\CreateCvController::class, 
 
 // Hiển thị thông tin website bên phía người dùng
 Route::get('web_tt', [\App\Http\Controllers\Client\WebsiteManagement::class, 'index']);
+
+

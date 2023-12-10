@@ -262,8 +262,6 @@ class JobPostController extends Controller
             // dd($job_post);
             $string = "tôi tên là nguyễn mạnh Huy";
             $href = preg_replace("/ /", "%20", $job_post->title);
-
-
             Mail::send('emails.job_post_store', compact('job_post', 'manage_web', 'company_info','href'), function ($email) use ($manage_web, $company_info) {
                 $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được đăng thành công');
                 $email->to($company_info->email);

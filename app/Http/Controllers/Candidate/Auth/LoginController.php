@@ -69,4 +69,20 @@ class LoginController extends Controller
     {
         return response()->json(Auth::guard('candidate')->user());
     }
+    public function forget_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|exists:candidates',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages()
+            ], 400);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Một mật khẩu mới đã được gửi đến email của bạn vui lòng kiểm tra nó'
+        ], 200);
+    }
 }
