@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
-use App\Models\Company;
 use App\Models\JobPost;
 use App\Models\JobPostApply;
 use App\Models\ProfileOpen;
 use App\Models\Vnpay_payment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashBoardController extends Controller
 {
@@ -33,7 +31,7 @@ class DashBoardController extends Controller
         $this->v['countView'] = JobPost::where('id', "=", $company_id)->select('view')->first();
         $this->v['countAddCoin'] = Vnpay_payment::where('id', "=", $company_id)->select('vnp_Amount')->first();
         $this->v['countSpendCoin'] = ProfileOpen::where('id', "=", $company_id)->select('coin')->first();
-        $getModel = JobPostApply::getCadidate($request, $company_id);
+        $getModel = JobPostApply::getCandidate($request, $company_id);
         $this->v['totalApplied'] = array_column($getModel, 'total');
         $this->v['arrayDate'] = array_column($getModel, 'date');
         if ($request->ajax()) {
