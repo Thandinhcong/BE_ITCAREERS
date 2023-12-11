@@ -19,21 +19,22 @@ class JobPostApply extends Model
     {
         if (!empty($request->time_filter)) {
             if ($request->time_filter == 28) {
-                $from =  date_format(date_modify(now(), "-28 days"), "Y-m-d");
+                $from =  date_format(date_modify(now(), "-28 days"), "Y-m-d H:i:s");
             } else {
-                $from =  date_format(date_modify(now(), "-7 days"), "Y-m-d");
+                $from =  date_format(date_modify(now(), "-7 days"), "Y-m-d H:i:s");
             }
         } else {
-            $from =  date_format(date_modify(now(), "-7 days"), "Y-m-d");
+            $from =  date_format(date_modify(now(), "-7 days"), "Y-m-d H:i:s");
         }
-        $to =  date_format(now(), "Y-m-d");
+        $to =  date_format(now(), "Y-m-d H:i:s");
         $totalApplied = DB::table('job_post_apply')
-            ->where('company_id', $company_id)->whereBetween('created_at', [$from, $to])
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as applied'))
+        ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->where('job_post.company_id', $company_id)
+            ->whereBetween('job_post_apply.created_at', [$from, $to])
+            ->select(DB::raw('DATE(job_post_apply.created_at) as date'), DB::raw('count(*) as applied'))
             ->groupBy('date')
             ->get()
             ->toArray();
-        // dd($totalApplied);
         $model = new ModelsJobPostApply();
         $dateArray = $model->getDatesFromRange($from, $to);
         $arrayShow = [];

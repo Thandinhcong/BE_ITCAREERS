@@ -85,13 +85,16 @@ Route::group([
 Route::resource('experience', ExperienceController::class);
 Route::resource('major  ', \App\Http\Controllers\Admin\MajorController::class);
 
+
+
+
 //Candidates
 Route::group([
     'prefix' => 'candidate'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
-
+    Route::post('forget_password', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'forget_password']);
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
