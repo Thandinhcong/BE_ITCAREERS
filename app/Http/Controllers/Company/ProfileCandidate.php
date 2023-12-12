@@ -169,7 +169,7 @@ class ProfileCandidate extends Controller
                 DB::raw('AVG(profile_open.start) as start'),
                 DB::raw('count(profile_open.start) as count'),
                 'candidates.updated_at as created_at',
-                // 'profile.coin',
+                'profile.coin',
                 'profile.careers_goal',
                 'profile.total_exp',
                 'profile.title',
