@@ -47,6 +47,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Login google candidate
 Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
+Route::post('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'postPassCompany']);
+
 
 
 
@@ -83,13 +85,16 @@ Route::group([
 Route::resource('experience', ExperienceController::class);
 Route::resource('major  ', \App\Http\Controllers\Admin\MajorController::class);
 
+
+
+
 //Candidates
 Route::group([
     'prefix' => 'candidate'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
-
+    Route::post('forget_password', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'forget_password']);
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {
@@ -174,7 +179,10 @@ Route::group([
     'prefix' => 'company'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'register']);
+    Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
+    Route::post('forget_password', [\App\Http\Controllers\Company\Auth\LoginController::class, 'forget_password']);
+
     Route::group([
         'middleware' => 'auth:company-api'
     ], function () {
@@ -197,6 +205,8 @@ Route::group([
         Route::get('list_candidate_applied', [\App\Http\Controllers\Company\ManageCandidateApply::class, 'list_candidate_applied']);
         //hiển thị ứng viên mở tìm kiếm việc
         Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+        //chi tiết ứng viên tìm việc
+        Route::get('find_candidate_detail/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'candidate_detail']);
         // Mở khóa ứng viên
         Route::post('open_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
         //hiển thị ứng viên đã mở khóa
@@ -221,6 +231,11 @@ Route::group([
         Route::delete('logout', [\App\Http\Controllers\Company\Auth\LoginController::class, 'logout']);
         Route::resource('dashboard', \App\Http\Controllers\Company\DashBoardController::class);
     });
+    // Route::get('/actived-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'activeCompany']);
+    // Route::get('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompany']);
+    // Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
+    // Route::get('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'getPassCompany']);
+    // Route::post('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'postPassCompany']);
 });
 Route::post('job_post_type/{id}', [\App\Http\Controllers\Company\JobPostController::class, 'job_post_type']);
 //List ứng viên gửi ứng tuyển vào công ty

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Candidate\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
+use App\Models\Candidate;
 use App\Models\Candidates;
+use App\Models\ManagementWeb;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -68,5 +72,41 @@ class LoginController extends Controller
     public function user(Request $request)
     {
         return response()->json(Auth::guard('candidate')->user());
+    }
+    public function forget_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|exists:candidates',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'errors' => $validator->messages()
+            ], 400);
+        }
+        $candidate = Candidate::
+        where('email', $request->email)
+        ->first();
+    $new_pass = strtoupper(Str::random(8));
+    $candidate->update([
+        'token' => null,
+        'password' => bcrypt($new_pass)
+    ]);
+    $manage_web = ManagementWeb::find(1);
+    $data = [];
+    $data['email'] = $candidate->email;
+    $data['name'] = $candidate->name;
+    $data['new_pass'] = $new_pass;
+    $data['name_web'] = $manage_web->name_web;
+    $data['logo'] =  $manage_web->logo;
+    dispatch(new SendEmailJob(
+        $data,
+        $manage_web->name_web . ' - Mật khẩu mới',
+        'emails.forgetpass_candidate'
+    ));
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Một mật khẩu mới đã được gửi đến email của bạn vui lòng kiểm tra nó'
+        ], 200);
     }
 }

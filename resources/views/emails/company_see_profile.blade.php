@@ -501,7 +501,7 @@
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
-                                    <h1><a href="#"><img src="{{$manage_web->logo}}" width="40%"></a></h1>
+                                    <h1><a href="#"><img src="{{$data['logo']}}" width="40%"></a></h1>
                                 </td>
                             </tr>
                         </table>
@@ -514,9 +514,9 @@
                             <tr>
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
-                                        <h2 style="color: black;">Xin chào {{$profile->name}}</h2>
-                                        <p>Hiện tại nhà tuyển dụng đã xem và đang đánh giá hồ sơ mà <b>{{$profile->name}}</b>
-                                            đã ứng tuyển vào vị trí <a href="#"><b>{{$profile->job_post_title}}</b></a> </p>
+                                        <h2 style="color: black;">Xin chào {{$data['name']}}</h2>
+                                        <p>Hiện tại nhà tuyển dụng đã xem và đang đánh giá hồ sơ mà <b>{{$data['name']}}</b>
+                                            đã ứng tuyển vào vị trí <a href="#"><b>{{$data['job_post_title']}}</b></a> </p>
                                         </p>
                                     </div>
 

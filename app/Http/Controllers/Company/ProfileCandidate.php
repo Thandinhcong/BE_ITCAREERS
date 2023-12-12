@@ -20,7 +20,7 @@ class ProfileCandidate extends Controller
         // return 1;
         return Auth::user()->id;
     }
-    public function hide_info($data,)
+    public function hide_info($data)
     {
         $check_open = DB::table('profile_open')
             ->join('profile', 'profile.id', '=', 'profile_open.profile_id')
@@ -28,24 +28,12 @@ class ProfileCandidate extends Controller
             ->where('profile_open.profile_id', $data->id)
             ->select(
                 'profile_open.profile_id',
-                'profile_open.start',
-                'profile_open.comment',
                 'profile.path_cv',
-                // 'profile.id'
-            )
-            ->first();
-        $check_save = DB::table('save_profile')
-            ->where('company_id', $this->company_id())
-            ->where('profile_id', $data->id)
-            ->select(
-                'profile_id'
             )
             ->first();
 
         if ($check_open) {
             $data->path_cv = $check_open->path_cv;
-            $data->start = $check_open->start;
-            $data->comment = $check_open->comment;
             $data->open_profile = 'đã mua';
         } else {
             $data->path_cv = null;
@@ -53,8 +41,21 @@ class ProfileCandidate extends Controller
             $extractedPhoneNumber = substr($data->phone, 0, 6);
             $data->phone = str_pad($extractedPhoneNumber, 10, '*****', STR_PAD_RIGHT);
             $index = strpos($data->email, '@');
-            $data->email = substr($data->email, 0, $index - 3) . str_repeat('*', 3) . substr($data->email, $index);
+            $data->email = substr($data->email, 0, $index - 3)
+                . str_repeat('*', 3)
+                . substr($data->email, $index);
         }
+        return $data;
+    }
+    public function check_save($data)
+    {
+        $check_save = DB::table('save_profile')
+            ->where('company_id', $this->company_id())
+            ->where('profile_id', $data->id)
+            ->select(
+                'profile_id'
+            )
+            ->first();
         if ($check_save) {
             $data->save_profile = 'đã lưu';
         } else {
@@ -65,8 +66,39 @@ class ProfileCandidate extends Controller
     public function avgStart($data)
     {
 
-            return  $data->start = ProfileOpen::where('profile_id',$data->id)
-            ->avg('start');
+        $check = ProfileOpen::where('profile_id', $data->id)
+            ->select(
+                DB::raw('AVG(profile_open.start) as start'),
+                DB::raw('count(profile_open.start) as count'),
+            )->groupBY('profile_id')
+            ->get();
+        // dd($check);
+        if ($check) {
+            $data->start = $check[0]->start;
+            $data->count = $check[0]->count;
+        } else {
+            $data->start = 0;
+            $data->count = 0;
+        }
+
+        return $data;
+    }
+    public function check_info($data)
+    {
+        $profile = DB::table('profile')
+            ->where('id', $data->id)
+            ->select(
+                'profile.name',
+                'profile.email',
+                'profile.phone',
+                'profile.path_cv',
+                'profile.type',
+            )
+            ->first();
+        $data->name = $profile->name;
+        $data->email = $profile->email;
+        $data->phone = $profile->phone;
+        return $data;
     }
     public function index()
     {
@@ -76,38 +108,92 @@ class ProfileCandidate extends Controller
             ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
-            ->where('candidates.find_job', 1)
+            // ->where('candidates.find_job', 1)
             ->select(
-                'profile.name',
-                'profile.title',
                 'profile.id',
-                'profile.email',
-                'profile.phone',
-                'profile.address',
-                'profile.image',
-                'profile.birth',
-                'profile.careers_goal',
-                'profile.total_exp',
-                'profile.created_at',
-                'profile.coin',
                 'candidates.id as candidate_id',
                 'candidates.image',
+                'candidates.phone',
+                'candidates.email',
+                'candidates.name',
+                'profile.type',
+                'profile.birth',
+                'candidates.desired_salary',
+                'candidates.major',
+                'experiences.experience',
+                'district.name as district',
+                'province.province as province',
+                'candidates.updated_at as created_at',
+                DB::raw('AVG(profile_open.start) as start'),
+                DB::raw('count(profile_open.start) as count'),
+
+            )
+            ->groupBy('candidates.id')
+            ->get();
+        foreach ($data as $customer) {
+            $this->hide_info($customer);
+            $this->check_save($customer);
+            if ($customer->type === 1) {
+                $this->check_info($customer);
+            }
+        }
+        return response()->json([
+            "status" => 'success',
+            "data" => $data,
+        ], 200);
+    }
+    public function candidate_detail($id)
+    {
+        $profile = db::table('profile')
+            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+            ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
+            ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+            ->where('profile.id', $id)
+            ->select(
+                'profile.id',
+                'candidates.id as candidate_id',
+                'candidates.image',
+                'candidates.phone',
+                'candidates.email',
+                'candidates.name',
+                'profile.type',
+                'profile.birth',
                 'candidates.desired_salary',
                 'candidates.major',
                 'experiences.experience',
                 'district.name as district',
                 'province.province as province',
                 DB::raw('AVG(profile_open.start) as start'),
+                DB::raw('count(profile_open.start) as count'),
+                'candidates.updated_at as created_at',
+                // DB::raw('profile.coin + profile.coin_exp as coin'),
+                'profile.careers_goal',
+                'profile.total_exp',
+                'profile.title',
             )
             ->groupBy('candidates.id')
-
-            ->get();
-        foreach ($data as $customer) {
-            $this->hide_info($customer, 1);
+            ->first();
+        $this->hide_info($profile);
+        $this->check_save($profile);
+        if ($profile->type === 1) {
+            $this->check_info($profile);
         }
+        $comment = DB::table('profile_open')
+            ->where('company_id', $this->company_id())
+            ->where('profile_id', $id)
+            ->select(
+                'comment',
+                'start',
+                'updated_at'
+            )->first();
+            $comment->start= (float)$comment->start;
+var_dump($comment);
         return response()->json([
             "status" => 'success',
-            "data" => $data,
+            "data" => $profile,
+            "comment" => $comment,
         ], 200);
     }
     public function show_profile_open()
@@ -119,30 +205,29 @@ class ProfileCandidate extends Controller
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
             ->groupBy('profile.id')
-
             ->where('profile_open.company_id', $this->company_id())
             ->select(
-                'profile.name',
-                'profile.title',
                 'profile.id',
-                'profile.email',
-                'profile.phone',
-                'profile.path_cv',
-                'profile.address',
                 'candidates.id as candidate_id',
-                'profile.created_at',
                 'candidates.image',
-                'candidates.find_job',
+                'candidates.phone',
+                'candidates.email',
+                'candidates.name',
+                'profile.type',
+                'profile.birth',
                 'candidates.desired_salary',
+                'candidates.major',
                 'experiences.experience',
                 'district.name as district',
-                'candidates.major',
-
                 'province.province as province',
+                'candidates.updated_at as created_at',
             )
             ->get();
         foreach ($data as $customer) {
             $this->avgStart($customer);
+            if ($customer->type === 1) {
+                $this->check_info($customer);
+            }
         }
         return response()->json([
             "status" => 'success',
@@ -161,32 +246,38 @@ class ProfileCandidate extends Controller
             ->where('candidates.find_job', 1)
             ->where('save_profile.company_id', $this->company_id())
             ->select(
-                'profile.name',
-                'profile.title',
                 'profile.id',
-                'profile.email',
-                'profile.phone',
-                'profile.address',
                 'candidates.id as candidate_id',
-                'profile.created_at',
                 'candidates.image',
+                'candidates.phone',
+                'candidates.email',
+                'candidates.name',
+                'profile.type',
+                'profile.birth',
                 'candidates.desired_salary',
-                'experiences.experience',
                 'candidates.major',
-
+                'experiences.experience',
                 'district.name as district',
                 'province.province as province',
+                'candidates.updated_at as created_at',
+
             )
             ->get();
-        foreach ($data as $customer) {
-            $this->hide_info($customer);
-        }
+
         foreach ($data as $customer) {
             $this->avgStart($customer);
+        }
+        foreach ($data as $customer) {
+            $this->hide_info($customer);
+            $this->check_save($customer);
+            if ($customer->type === 1) {
+                $this->check_info($customer);
+            }
         }
         return response()->json([
             "status" => 'success',
             "data" => $data,
+
         ], 200);
     }
     public function save_profile($id)
@@ -234,7 +325,7 @@ class ProfileCandidate extends Controller
                 'profile.coin_exp',
             )
             ->first();
-            $finalCoinProfile=$coin_profile->coin+$coin_profile->coin_exp;
+        $finalCoinProfile = $coin_profile->coin + $coin_profile->coin_exp;
         if ($check_coin->coin > $finalCoinProfile) {
             if ($check) {
                 return response()->json([
@@ -249,7 +340,7 @@ class ProfileCandidate extends Controller
                         'coin' => $finalCoinProfile
                     ]
                 );
-                $coinCompanyAffter = ($check_coin->coin) - (  $finalCoinProfile);
+                $coinCompanyAffter = ($check_coin->coin) - ($finalCoinProfile);
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
             }
             if ($saveProfile) {
@@ -318,7 +409,7 @@ class ProfileCandidate extends Controller
     }
     public function cancel_save_profile($id)
     {
-        $saveProfile = SaveProfile::where('candidate_id', $id)
+        $saveProfile = SaveProfile::where('profile_id', $id)
             ->where('company_id', $this->company_id())
             ->first();
         if (!$saveProfile) {

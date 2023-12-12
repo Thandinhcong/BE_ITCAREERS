@@ -50,7 +50,7 @@ class Vnpay_payment extends Model
             $total = 0;
             foreach ($totalMoney as $key => $value) {
                 if ($value['month'] == $month['month']) {
-                    $total = $value['totalMoney'];
+                    $total = $value['totalMoney']/100;
                     break;
                 }
             }

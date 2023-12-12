@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use App\Models\JobPostApply;
 use App\Models\ManagementWeb;
 use Illuminate\Http\Request;
@@ -75,13 +76,29 @@ class ManageCandidateApply extends Controller
                     'job_post_apply.status',
                     'job_post_apply.evaluate',
                     'job_post_apply.email',
+                    'job_post_apply.name',
                 )
                 ->first();
-            $manage_web = ManagementWeb::all();
-            Mail::send('emails.demo', compact('candidate', 'manage_web'), function ($email) use ($candidate) {
-                $email->subject('CV bạn gửi đã được đánh giá bới nhà tuyển dụng');
-                $email->to($candidate->email);
-            });
+                $manage_web = ManagementWeb::find(1);
+                $data = [];
+                $data['email'] = $candidate->email;
+                $data['name'] = $candidate->name;
+                $data['job_post_title'] = $candidate->job_post_title;
+                $data['logo'] =  $manage_web->logo;
+
+                dispatch(new SendEmailJob(
+                    $data,
+                    $manage_web->name_web . ' - Nhà tuyển dụng đã đánh giá xong hồ sơ của bạn',
+                    'emails.assses_candidate'
+                ));
+            // Mail::send('emails.candidate', compact('candidate', 'manage_web'), function ($email) use ($candidate) {
+            //     $email->subject('CV bạn gửi đã được đánh giá bới nhà tuyển dụng');
+            //     $email->to($candidate->email);
+            // });
+            return response()->json([
+                'status' => 200,
+                'mess' => "Đánh giá thành công"
+            ], 200);
         } else {
             return response()->json([
                 'status' => 404,
@@ -106,6 +123,8 @@ class ManageCandidateApply extends Controller
                 'candidates.id as candidate_id',
                 'candidates.image',
                 'job_post_apply.introduce',
+                'job_post_apply.email as job_post_apply_email',
+                'job_post_apply.name as job_post_apply_name',
                 'job_post_apply.qualifying_round_id',
                 'job_post_apply.id as candidate_code',
                 'profile.path_cv',
@@ -120,10 +139,18 @@ class ManageCandidateApply extends Controller
             if ( $jobPostApply->status==0) {
                 $jobPostApply->update(['status' => 1]);
                 $manage_web = ManagementWeb::find(1);
-                Mail::send('emails.company_see_profile', compact('profile', 'manage_web'), function ($email) use ($profile, $manage_web) {
-                    $email->subject($manage_web->name_web . ' - Nhà tuyển dụng đã xem hồ sơ của bạn');
-                    $email->to($profile->email);
-                });
+                $data = [];
+                $data['email'] = $profile->job_post_apply_email;
+                $data['name'] = $profile->job_post_apply_name;
+                $data['job_post_title'] = $profile->job_post_title;
+                $data['logo'] =  $manage_web->logo;
+
+                dispatch(new SendEmailJob(
+                    $data,
+                    $manage_web->name_web . ' - Nhà tuyển dụng đã xem hồ sơ của bạn',
+                    'emails.company_see_profile'
+                ));
+              
             }
             return response()->json([
                 'status' => 200,

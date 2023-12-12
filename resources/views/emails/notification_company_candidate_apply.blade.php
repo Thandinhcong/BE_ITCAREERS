@@ -496,9 +496,10 @@
                     <td valign="top" class="bg_white" style="padding: 1em 2.5em;">
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
-                                    <h1><a href="#"><img src="{{$manage_web->logo}}" width="40%"></a></h1>
+                            <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
+                                    <h1><a href="#"><img src="{{$data['logo']}}" width="40%"></a></h1>
                                 </td>
+                            </tr>
                             </tr>
                         </table>
                     </td>
@@ -510,8 +511,8 @@
                             <tr>
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
-                                        <h2 style="color: black;">{{$manage_web->name_web}} Xin chào nhà tuyển dụng {{$company_apply->company_name}}</h2>
-                                        <p>Hiện Tai {{$candidate_apply->name}} đã ứng tuyển vào bài tuyển dụng <a href=""><b>{{$job_apply->title}}</b></a>
+                                        <h2 style="color: black;">{{$data['name_web']}} Xin chào nhà tuyển dụng {{$data['company_name']}}</h2>
+                                        <p>Hiện tai ứng viên {{$data['name']}} đã ứng tuyển vào bài tuyển dụng <a href=""><b>{{$data['title']}}</b></a>
                                             của bạn</p>
                                         </p>
                                     </div>

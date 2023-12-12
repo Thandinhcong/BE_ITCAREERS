@@ -25,9 +25,9 @@ class TypeJobPostController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:55',
-            'salary' => 'required|string|max:55',
-            'desc' => 'required|string|max:55',
+            'name' => 'required|string|',
+            'salary' => 'required',
+            'desc' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -72,9 +72,9 @@ class TypeJobPostController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:55',
-            'salary' => 'required|string|max:55',
-            'desc' => 'required|string|max:55',
+            'name' => 'required|string',
+            'salary' => 'required',
+            'desc' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
