@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\HistoryPayment;
 use App\Models\Invoice;
 use App\Models\Packages;
+use App\Models\ProfileOpen;
 use App\Models\Vnpay_payment;
 use Exception;
 use Illuminate\Http\Request;
@@ -300,19 +301,31 @@ class PaymentController extends Controller
             ->where('type_account', '=', 0)
             ->orderBy('created_at', 'DESC')
             ->get();
-        $this->data['history'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])->take(5)->orderby('created_at', 'DESC')->get();
-        $this->data['history_all'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])->orderby('created_at', 'DESC')->get();
-        if ($this->data['history']->count() == 0) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Bạn chưa thực hiện giao dịch nào',
-            ], 400);
-        }
+        $this->data['history'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])
+            ->take(5)->orderby('created_at', 'DESC')->get();
+        $this->data['history_all'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])
+            ->orderby('created_at', 'DESC')->get();
+        $this->data['history_profile'] = ProfileOpen::where([['company_id', Auth::user()->id]])            
+        ->leftJoin('profile', 'profile.id', '=', 'profile_open.profile_id')
+        ->select(
+            'profile_open.coin',
+            'profile_open.created_at',
+            'profile.title',
+            'profile.name',
+            'profile.id',
+        )
+            ->orderby('profile_open.created_at', 'DESC')->get();
+        // if ($this->data['history']->count() == 0) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Bạn chưa thực hiện giao dịch nào',
+        //     ], 400);
+        // }
         return response()->json([
             'status' => true,
             'message' => 'Giao dịch đã thực hiện: ',
-            'History Payment' => $this->data['history'],
-            'History Payment All' => $this->data['history_all']
+            'data' => $this->data,
+          
         ], 200);
     }
     public function refund()
@@ -363,32 +376,33 @@ class PaymentController extends Controller
         curl_close($ch);
         echo $data;
     }
-    public function statistics() {
+    public function statistics()
+    {
         $job_list = DB::table('job_post')
-        ->where('start_date', '<=', now()->format('Y-m-d'))
-        ->where('end_date', '>=', now()->format('Y-m-d'))
-        ->whereIn('job_post.status', [1, 0])
-        ->join('district', 'job_post.area_id', '=', 'district.id')
-        ->join('province', 'district.province_id', '=', 'province.id')
-        ->groupBy('province.id')
-        ->orderByDesc('job_count')
-        ->select(
-            'province.id',
-            'province.province',
-            DB::raw('count(*) as  job_count'),
-        )->limit(3)->get();
+            ->where('start_date', '<=', now()->format('Y-m-d'))
+            ->where('end_date', '>=', now()->format('Y-m-d'))
+            ->whereIn('job_post.status', [1, 0])
+            ->join('district', 'job_post.area_id', '=', 'district.id')
+            ->join('province', 'district.province_id', '=', 'province.id')
+            ->groupBy('province.id')
+            ->orderByDesc('job_count')
+            ->select(
+                'province.id',
+                'province.province',
+                DB::raw('count(*) as  job_count'),
+            )->limit(3)->get();
 
-    if ($job_list != []) {
-        return response()->json([
-            'status' => 200,
-            'job_list' => $job_list
-        ], 200);
-    } else {
-        return response()->json([
-            'status' => 404,
-            'mesage' => 'không có bản ghi nào',
-            'job_list' => []
-        ], 404);
-    }
+        if ($job_list != []) {
+            return response()->json([
+                'status' => 200,
+                'job_list' => $job_list
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'mesage' => 'không có bản ghi nào',
+                'job_list' => []
+            ], 404);
+        }
     }
 }
