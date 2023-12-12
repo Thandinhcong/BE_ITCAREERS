@@ -32,3 +32,4 @@ http code
     //Nếu chạy dòng 25 lỗi: 
     php artisan passport:install --uuids
  chay mail: php artisan queue:work
+ chạy task schedule: php artisan schedule:work

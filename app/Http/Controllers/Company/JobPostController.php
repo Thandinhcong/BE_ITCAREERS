@@ -252,20 +252,21 @@ class JobPostController extends Controller
                         'errors' => 'Bạn không đủ tiền'
                     ], 422);
                 }
+                //Thanh toán  $coinForJob_post xu cho bài đăng loại $jobPostType->name  $request->title trong $interval ngày
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+                updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề la {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
                 $job_post = JobPost::create($request->all());
                 break;
         }
         if ($job_post) {
             $company_info = Auth::user();
             $manage_web = ManagementWeb::find(1);
-            // dd($job_post);
             $string = "tôi tên là nguyễn mạnh Huy";
             $href = preg_replace("/ /", "%20", $job_post->title);
-            Mail::send('emails.job_post_store', compact('job_post', 'manage_web', 'company_info','href'), function ($email) use ($manage_web, $company_info) {
-                $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được đăng thành công');
-                $email->to($company_info->email);
-            });
+            // Mail::send('emails.job_post_store', compact('job_post', 'manage_web', 'company_info','href'), function ($email) use ($manage_web, $company_info) {
+            //     $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được đăng thành công');
+            //     $email->to($company_info->email);
+            // });
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
@@ -407,6 +408,8 @@ class JobPostController extends Controller
                 ], 422);
             } else {
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+                updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name}
+                với tiêu đề la {$request->title} trong {$interval} ngày", ($jobPostType->salary) * $interval, 1, 0);
             }
         }
         if ($job_post_date) {
