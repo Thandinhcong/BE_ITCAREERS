@@ -15,7 +15,7 @@ class JobPostApply extends Model
     use HasFactory;
     protected $table = 'job_post_apply';
 
-    protected $fillable = ['curriculum_vitae_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce'];
+    protected $fillable = ['curriculum_vitae_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce', 'type'];
     public static function getCadidate($request, $job_post_id)
     {
         if (!empty($request->time_filter)) {
