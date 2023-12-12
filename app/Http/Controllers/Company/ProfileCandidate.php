@@ -145,7 +145,7 @@ class ProfileCandidate extends Controller
     public function candidate_detail($id)
     {
         $profile = db::table('profile')
-            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+           ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
             ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
@@ -168,17 +168,17 @@ class ProfileCandidate extends Controller
                 DB::raw('AVG(profile_open.start) as start'),
                 DB::raw('count(profile_open.start) as count'),
                 'candidates.updated_at as created_at',
-                // DB::raw('profile.coin + profile.coin_exp as coin'),
+                DB::raw('profile.coin + profile.coin_exp as coin'),
                 'profile.careers_goal',
                 'profile.total_exp',
                 'profile.title',
             )
-            ->groupBy('candidates.id')
-            ->first();
-        $this->hide_info($profile);
-        $this->check_save($profile);
-        if ($profile->type === 1) {
-            $this->check_info($profile);
+           ->groupBy('candidates.id')
+            ->get();
+        $this->hide_info($profile[0]);
+        $this->check_save($profile[0]);
+        if ($profile[0]->type === 1) {
+            $this->check_info($profile[0]);
         }
         $comment = DB::table('profile_open')
             ->where('company_id', $this->company_id())
@@ -188,11 +188,10 @@ class ProfileCandidate extends Controller
                 'start',
                 'updated_at'
             )->first();
-            $comment->start= (float)$comment->start;
 var_dump($comment);
         return response()->json([
             "status" => 'success',
-            "data" => $profile,
+            "data" => $profile[0],
             "comment" => $comment,
         ], 200);
     }
