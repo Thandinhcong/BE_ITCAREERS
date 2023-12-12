@@ -80,7 +80,7 @@ class CandidateApplyController extends Controller
         }
         if ($job_apply->start_date > $now) {
             return response()->json([
-                'status' => 'fail',
+                'status' => 'fall',
                 'error' => 'Bài đăng chưa đến thời gian tuyển dụng'
             ], 400);
         }
@@ -99,13 +99,13 @@ class CandidateApplyController extends Controller
             ]);
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'fail',
+                    'status' => 'error validate',
                     'errors' => $validator->messages()
                 ], 400);
             }
             if ($request['path_cv'] && $request['curriculum_vitae_id']) {
                 return response()->json([
-                    'status' => 'fail',
+                    'status' => 'error validate',
                     'errors' => 'Bạn chỉ được chọn 1 hồ sơ chính để ứng tuyển'
                 ], 400);
             } else {
