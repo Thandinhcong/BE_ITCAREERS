@@ -199,7 +199,9 @@ Route::group([
         //List ứng viên gửi ứng tuyển vào công ty
         Route::get('list_candidate_applied', [\App\Http\Controllers\Company\ManageCandidateApply::class, 'list_candidate_applied']);
         //hiển thị ứng viên mở tìm kiếm việc
-        Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);
+        Route::get('find_candidate', [\App\Http\Controllers\Company\ProfileCandidate::class, 'index']);   
+        //chi tiết ứng viên tìm việc
+        Route::get('candidate_detail/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'candidate_detail']);
         // Mở khóa ứng viên
         Route::post('open_profile/{id}', [\App\Http\Controllers\Company\ProfileCandidate::class, 'open_profile']);
         //hiển thị ứng viên đã mở khóa
