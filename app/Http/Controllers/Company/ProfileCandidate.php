@@ -173,12 +173,12 @@ class ProfileCandidate extends Controller
                 'profile.total_exp',
                 'profile.title',
             )
-           ->groupBy('candidates.id')
-            ->get();
-        $this->hide_info($profile[0]);
-        $this->check_save($profile[0]);
-        if ($profile[0]->type === 1) {
-            $this->check_info($profile[0]);
+            ->groupBy('candidates.id')
+            ->first();
+        $this->hide_info($profile);
+        $this->check_save($profile);
+        if ($profile->type === 1) {
+            $this->check_info($profile);
         }
         $comment = DB::table('profile_open')
             ->where('company_id', $this->company_id())
@@ -188,10 +188,11 @@ class ProfileCandidate extends Controller
                 'start',
                 'updated_at'
             )->first();
-var_dump($comment);
+            $comment->start= (float)$comment->start;
+// var_dump($comment);
         return response()->json([
             "status" => 'success',
-            "data" => $profile[0],
+            "data" => $profile,
             "comment" => $comment,
         ], 200);
     }
