@@ -72,12 +72,11 @@ class ProfileCandidate extends Controller
                 DB::raw('count(profile_open.start) as count'),
             )->groupBY('profile_id')
             ->get();
-            // dd($check);
+        // dd($check);
         if ($check) {
             $data->start = $check[0]->start;
             $data->count = $check[0]->count;
-        }
-        else{
+        } else {
             $data->start = 0;
             $data->count = 0;
         }
@@ -109,7 +108,7 @@ class ProfileCandidate extends Controller
             ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
-            ->where('candidates.find_job', 1)
+            // ->where('candidates.find_job', 1)
             ->select(
                 'profile.id',
                 'candidates.id as candidate_id',
@@ -146,7 +145,7 @@ class ProfileCandidate extends Controller
     public function candidate_detail($id)
     {
         $profile = db::table('profile')
-            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+           ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
             ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
@@ -169,7 +168,7 @@ class ProfileCandidate extends Controller
                 DB::raw('AVG(profile_open.start) as start'),
                 DB::raw('count(profile_open.start) as count'),
                 'candidates.updated_at as created_at',
-                'profile.coin',
+                DB::raw('profile.coin + profile.coin_exp as coin'),
                 'profile.careers_goal',
                 'profile.total_exp',
                 'profile.title',
@@ -181,15 +180,16 @@ class ProfileCandidate extends Controller
         if ($profile->type === 1) {
             $this->check_info($profile);
         }
-        $comment=DB::table('profile_open')
-        ->where('company_id',$this->company_id()) 
-        ->where('profile_id',$id)
-        ->select(
-            'comment',
-            'start',
-            'updated_at'
-        )->first();
-       
+        $comment = DB::table('profile_open')
+            ->where('company_id', $this->company_id())
+            ->where('profile_id', $id)
+            ->select(
+                'comment',
+                'start',
+                'updated_at'
+            )->first();
+            $comment->start= (float)$comment->start;
+// var_dump($comment);
         return response()->json([
             "status" => 'success',
             "data" => $profile,
@@ -263,7 +263,7 @@ class ProfileCandidate extends Controller
 
             )
             ->get();
-          
+
         foreach ($data as $customer) {
             $this->avgStart($customer);
         }
@@ -277,7 +277,7 @@ class ProfileCandidate extends Controller
         return response()->json([
             "status" => 'success',
             "data" => $data,
-            
+
         ], 200);
     }
     public function save_profile($id)

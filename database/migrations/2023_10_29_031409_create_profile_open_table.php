@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('company_id');
             $table->integer('profile_id');
             $table->integer('coin');
-            $table->string('start')->nullable();
+            $table->float('start')->nullable();
             $table->string('comment')->nullable();
             $table->timestamps();
         });

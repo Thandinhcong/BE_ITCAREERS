@@ -31,6 +31,9 @@ return new class extends Migration
             $table->integer('type')->default(0);
           
             $table->double('coin')->default(0);
+            $table->date('date_to_top')->default( date(' 2000-1-1'));
+            $table->boolean('status_to_top')->default(0)->comment('1:đẩy lên top,0:bình thường');
+            
             $table->timestamps();
             $table->softDeletes();
         });
