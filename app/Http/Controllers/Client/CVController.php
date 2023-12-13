@@ -19,7 +19,10 @@ class CVController extends Controller
             // $data = DB::table('profile')
             //     ->where('candidate_id', '=', $id_candidate)
             //     ->get();
-            $data =  Profile::where('candidate_id', $id_candidate)->get();
+            $data =  Profile::where('candidate_id', $id_candidate)
+            ->whereNotNull('type')
+            ->get();
+            
             return response()->json([
                 'status' => true,
                 'data' => $data

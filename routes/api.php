@@ -164,6 +164,8 @@ Route::group([
         Route::get('vnpay_ipn', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'vnpay_ipn'])->name('vnpay_ipn');
         Route::get('history_payment', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'historyPayment'])->name('historyPayment');
         Route::get('type-job-post', [\App\Http\Controllers\Candidate\TypeJobPostController::class, 'index']);
+        Route::get('data_fast_job', [\App\Http\Controllers\Candidate\FindJobFast::class, 'getDataJobFast']);
+        Route::post('find_job_fast', [\App\Http\Controllers\Candidate\FindJobFast::class, 'jobFast'])->name('job_fast');
     });
 });
 Route::get('job_list', [\App\Http\Controllers\Client\JobListController::class, 'job_list']);

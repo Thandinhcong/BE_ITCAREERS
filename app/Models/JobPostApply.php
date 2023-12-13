@@ -14,7 +14,7 @@ class JobPostApply extends Model
 {
     use HasFactory;
     protected $table = 'job_post_apply';
-    protected $fillable = ['curriculum_vitae_id', 'company_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce'];
+    protected $fillable = ['curriculum_vitae_id', 'company_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce', 'type_apply'];
     public static function getCandidate($request, $company_id)
     {
         if (!empty($request->time_filter)) {
@@ -28,7 +28,7 @@ class JobPostApply extends Model
         }
         $to =  date_format(now(), "Y-m-d H:i:s");
         $totalApplied = DB::table('job_post_apply')
-        ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->where('job_post.company_id', $company_id)
             ->whereBetween('job_post_apply.created_at', [$from, $to])
             ->select(DB::raw('DATE(job_post_apply.created_at) as date'), DB::raw('count(*) as applied'))

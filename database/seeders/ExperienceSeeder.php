@@ -10,18 +10,30 @@ class ExperienceSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     */protected $experience = [
+     */ protected $experience = [
         [
-            'experience' => '1 năm',
+            'experience' => 'Chưa có kinh nghiệm',
             'description' => 'test',
         ], [
-            'experience' => '2 năm',
+            'experience' => 'Dưới 1 năm kinh nghiệm',
             'description' => 'test',
         ], [
-            'experience' => '3 năm',
+            'experience' => '1 năm kinh nghiệm',
             'description' => 'test',
         ], [
-            'experience' => '5 năm',
+            'experience' => '2 năm kinh nghiệm',
+            'description' => 'test',
+        ], [
+            'experience' => '3 năm kinh nghiệm',
+            'description' => 'test',
+        ], [
+            'experience' => '4 năm kinh nghiệm',
+            'description' => 'test',
+        ], [
+            'experience' => '5 năm kinh nghiệm',
+            'description' => 'test',
+        ], [
+            'experience' => 'Trên 5 năm kinh nghiệm',
             'description' => 'test',
         ]
     ];
