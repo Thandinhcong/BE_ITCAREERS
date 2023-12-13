@@ -108,7 +108,8 @@ class ProfileCandidate extends Controller
             ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
             ->leftJoin('profile_open', 'profile.id', '=', 'profile_open.profile_id')
-            // ->where('candidates.find_job', 1)
+            ->where('candidates.find_job', 1)
+            ->orderByDesc('candidates.status_to_top')
             ->select(
                 'profile.id',
                 'candidates.id as candidate_id',

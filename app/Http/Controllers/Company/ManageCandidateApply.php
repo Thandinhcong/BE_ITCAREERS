@@ -91,10 +91,7 @@ class ManageCandidateApply extends Controller
                     $manage_web->name_web . ' - Nhà tuyển dụng đã đánh giá xong hồ sơ của bạn',
                     'emails.assses_candidate'
                 ));
-            // Mail::send('emails.candidate', compact('candidate', 'manage_web'), function ($email) use ($candidate) {
-            //     $email->subject('CV bạn gửi đã được đánh giá bới nhà tuyển dụng');
-            //     $email->to($candidate->email);
-            // });
+          
             return response()->json([
                 'status' => 200,
                 'mess' => "Đánh giá thành công"

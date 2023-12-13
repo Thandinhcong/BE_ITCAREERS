@@ -122,7 +122,12 @@ class CandidateInformationController extends Controller
         $info_find_job->experience = $experience ? $experience->experience : null;
 
         $this->v['info_find_job'] = $info_find_job;
-
+        $this->v['count_open_profile'] = DB::table('profile')
+            ->join('profile_open', 'profile.id', '=', 'profile_open.profile_id')
+            ->where('profile.candidate_id',$id)
+            // ->where('profile.deleted_at',null)
+            ->select('profile.candidate_id')
+            ->count();
         return response()->json([
             'status' => true,
             'info_find_job' => $this->v,

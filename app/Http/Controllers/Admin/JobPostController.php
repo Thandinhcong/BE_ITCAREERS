@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use App\Models\JobPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,7 +74,8 @@ class JobPostController extends Controller
     public function update(Request $request, $id)
     {
         $valdator = Validator::make($request->all(), [
-            'status' => 'required|in:1,2'
+            'status' => 'required|in:1,2',
+            // 'assess_admin' => 'required|'
         ]);
         if ($valdator->fails()) {
             return response()->json([
@@ -84,14 +86,30 @@ class JobPostController extends Controller
             $job_post = jobPost::find($id);
         }
         if ($job_post) {
+            // dd($job_post);
             $company_info=Company::find($job_post->company_id);
-
             $job_post->update(['status' => $request->status]);
             $manage_web = ManagementWeb::find(1);
-            // Mail::send('emails.job_post_update', compact('job_post', 'manage_web'), function ($email) use ( $manage_web,$company_info) {
-            //     $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
-            //     $email->to($company_info->email);
-            // });
+                $data = [];
+                $data['email'] =$company_info->email;
+                $data['title'] = $job_post->title;
+                $data['id'] = $job_post->id;
+                $data['logo'] =  $manage_web->logo;
+                $data['href'] = preg_replace("/ /", "%20", $job_post->title);
+                $data['name_web'] =  $manage_web->name_web;
+                $data['company_name']=$company_info->company_name;
+                $data['assess_admin']="nội dung";
+                $data['status']=(int)$job_post->status;
+                // dd($data);
+                // Mail::send('emails.notification_job_post_status', compact('data',), function ($email) use ($data,$manage_web) {
+                //         $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
+                //         $email->to($data['email']);
+                //     });
+                dispatch(new SendEmailJob(
+                    $data,
+                    $manage_web->name_web . ' - Đánh giá bài đăng',
+                    'emails.notification_job_post_status'
+                ));
             return response()->json([
                 'status' => 201,
                 'message' => 'Sửa thành công',

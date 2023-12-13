@@ -33,6 +33,8 @@ return new class extends Migration
             $table->integer('view')->default(0);
             $table->integer('type_job_post_id')->default(0);
             $table->integer('status')->default(0)->comment('0:pending, 1:active, 2:block, 3:stop');
+            $table->integer('admin_id')->nullable()->comment('id admin duyệt bài');
+            $table->string('assess_admin')->nullable();
             $table->timestamps();
             $table->fullText(['title', 'desc']);
             $table->softDeletes();

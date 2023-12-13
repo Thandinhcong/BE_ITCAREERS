@@ -500,8 +500,8 @@
                     <td valign="top" class="bg_white" style="padding: 1em 2.5em;">
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
-                                    <h1><a href="#"><img src="{{$manage_web->logo}}" width="40%"></a></h1>
+                            <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
+                                    <h1><a href="#"><img src="{{$data['logo']}}" width="40%"></a></h1>
                                 </td>
                             </tr>
                         </table>
@@ -513,17 +513,19 @@
                         <table>
                             <tr>
                                 <td>
-                                    <div class="text" style="padding: 0 3em; text-align: center;color: black;">
-                                    @if ($major == null && $skill_seeker == null)
+                                    @if ( $data['status']==2)
 
                                         <p>Bài đăng của bạn với tiêu đề là
-                                            <a href="#"><b>{{$job_post->title}}</b></a> đã cập nhật thành công trên nền tảng tuyển dụng 
-                                            {{$manage_web->name_web}}
+                                            <a href="#"><b>{{$data['title']}}</b></a> có vấn đề như sau: $data['assess_admin']
+                                            vui lòng sửa lại theo đúng quy định của web
+                                        </p>
+                                        </p>
+                                      @else
+                                        <p>Bài đăng của bạn với tiêu đề là
+                                            <a href="http://localhost:5173/job-detail/{{$data['href']}}/{{$data['id']}}"><b>{{$data['title']}}</b></a> đã được duyệt thành công 
                                         </p>
                                         </p>
                                         @endif
-                                    </div>
-
                                 </td>
                             </tr>
                         </table>
@@ -533,3 +535,5 @@
         </div>
     </center>
 </body>
+
+</html>
