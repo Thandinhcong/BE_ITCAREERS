@@ -14,7 +14,7 @@ class JobPostApply extends Model
 {
     use HasFactory;
     protected $table = 'job_post_apply';
-    protected $fillable = ['curriculum_vitae_id', 'company_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce'];
+    protected $fillable = ['curriculum_vitae_id', 'company_id', 'job_post_id', 'evaluate', 'name', 'email', 'phone', 'status', 'candidate_id', 'qualifying_round_id', 'introduce', 'type_apply'];
     public static function getCandidate($request, $company_id)
     {
         if (!empty($request->time_filter)) {
