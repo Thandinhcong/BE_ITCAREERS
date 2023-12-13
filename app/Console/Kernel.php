@@ -18,7 +18,9 @@ class Kernel extends ConsoleKernel
             ->where('date_to_top','<', now()->format('Y-m-d'))
             ->where('status',1)
             ->update(['status_to_top'=>0]);
-        })->dailyAt('1:00');
+        })
+        ->everyTwoSeconds();
+        // ->dailyAt('1:00');
       
     }
 

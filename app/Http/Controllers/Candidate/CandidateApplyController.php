@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Candidate;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CandidateApplyResource;
 use App\Jobs\SendEmailJob;
+use App\Models\Candidate;
 use App\Models\CandidateApply;
 use App\Models\Company;
 use App\Models\CurriculumVitae;
@@ -126,9 +127,9 @@ class CandidateApplyController extends Controller
             }
             if ($candidate_apply) {
                 $manage_web = ManagementWeb::find(1);
-                $data=[];
-                $data['email'] = $candidate_apply->email; ;
-                $data['subject'] = $manage_web->name_web.' - Bạn đã ứng tuyển thành công';
+                $data = [];
+                $data['email'] = $candidate_apply->email;;
+                $data['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
                 $data['view'] = 'emails.candidate_apply';
                 $data['title'] = $job_apply->title;
                 $data['name'] = $candidate_apply->name;
@@ -231,5 +232,55 @@ class CandidateApplyController extends Controller
         return response()->json([
             'message' => 'Xóa thành công'
         ], 200);
+    }
+    public function profile_to_top()
+    {
+        $candidate = Candidate::find($this->candidate_id());
+        if ($candidate->status_to_top === 1) {
+            return response()->json([
+                'status' => 422,
+                'errors' => 'Chức năng của bạn vẫn chưa hết hạn'
+            ], 422);
+        }
+        if ($candidate->coin < 10000) {
+            return response()->json([
+                'status' => 422,
+                'errors' => 'Bạn không đủ tiền'
+            ], 422);
+        }
+        $coin = $candidate->coin - 10000;
+        $dateToTop = date_format(date_modify(now(), "+10 days"), "Y-m-d");
+        if ($candidate) {
+            $candidate->update([
+                'coin' => $coin,
+                'date_to_top' => $dateToTop,
+                'status_to_top' => 1
+            ]);
+            $manage_web = ManagementWeb::find(1);
+            $data = [];
+            $data['email'] = $candidate->email;;
+            $data['subject'] = $manage_web->name_web . ' - Bạn đã đăng kí thành công chức năng đẩy hồ sơ';
+            $data['view'] = 'emails.candidate_to_top';
+            $data['name'] = $candidate->name;
+            $data['logo'] = $manage_web->logo;
+            $data['name_web'] = $manage_web->name_web;
+            $data['date_to_top'] = date("d-m-Y", strtotime($candidate->date_to_top));
+            updateProcess($candidate->id, "Chức năng đẩy hồ sơ", 10000, 1, 1);
+            dispatch(new SendEmailJob(
+                $data,
+                $manage_web->name_web . ' - Bạn đã đăng kí thành công chức năng đẩy hồ sơ',
+                'emails.candidate_to_top'
+            ));
+            return response()->json([
+                'status' => 201,
+                'message' => 'Tạo thành công',
+                'job_post_id' => $candidate
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Lỗi'
+            ], 500);
+        }
     }
 }

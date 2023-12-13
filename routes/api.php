@@ -154,6 +154,8 @@ Route::group([
         Route::post('save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'save_job_post']);
         //Hủy lưu việc làm
         Route::post('cancel_save_job_post/{id}', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'cancel_save_job_post']);
+        //Đẩy hồ sơ
+        Route::get('profile_to_top', [\App\Http\Controllers\Candidate\CandidateApplyController::class, 'profile_to_top']);
         //Payment
         Route::get('get_list_package', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'getListPackage']);
         Route::post('insert_invoice', [\App\Http\Controllers\Candidate\PaymentCandidateController::class, 'insertInvoice']);
