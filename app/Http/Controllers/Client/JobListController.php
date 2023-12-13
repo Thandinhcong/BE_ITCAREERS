@@ -78,9 +78,10 @@ class JobListController extends Controller
             ->where('end_date', '>=', now()->format('Y-m-d'))
             //Trạng thái của bài đăng 0:đang mở 1:đã được active
             ->where('job_post.status', 1)
-            ->join('companies', 'companies.id', '=', 'job_post.company_id')
-            ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->leftjoin('companies', 'companies.id', '=', 'job_post.company_id')
+            ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
+            ->leftjoin('experiences', 'experiences.id', '=', 'job_post.exp_id')
+            ->leftjoin('province', 'district.province_id', '=', 'province.id',)
             ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id',)
             ->orderByDesc('type_job_post_id')
             ->select(
@@ -95,6 +96,7 @@ class JobListController extends Controller
                 'job_post.created_at',
                 'job_post.start_date',
                 'job_post.desc',
+                'experiences.experience',
                 'companies.company_name as company_name',
                 'companies.logo',
             )->get();
