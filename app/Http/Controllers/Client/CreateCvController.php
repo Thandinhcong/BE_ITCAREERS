@@ -154,6 +154,7 @@ class CreateCvController extends Controller
                     'start_date',
                     'end_date',
                     'profile_id',
+                    'desc',
                     'created_at',
                     'updated_at',
                     'deleted_at'
