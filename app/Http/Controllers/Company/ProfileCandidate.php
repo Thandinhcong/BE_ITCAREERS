@@ -175,6 +175,7 @@ class ProfileCandidate extends Controller
             )
             ->groupBy('candidates.id')
             ->first();
+            $profile->start=  round($profile->start,1);
         $this->hide_info($profile);
         $this->check_save($profile);
         if ($profile->type === 1) {
