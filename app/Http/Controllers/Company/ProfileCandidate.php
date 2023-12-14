@@ -146,7 +146,7 @@ class ProfileCandidate extends Controller
     public function candidate_detail($id)
     {
         $profile = db::table('profile')
-           ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
+            ->join('candidates', 'candidates.main_cv', '=', 'profile.id')
             ->leftjoin('district', 'district.id', '=', 'candidates.district_id')
             ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('experiences', 'experiences.id', '=', 'candidates.experience_id')
@@ -176,7 +176,7 @@ class ProfileCandidate extends Controller
             )
             ->groupBy('candidates.id')
             ->first();
-            $profile->start=  round($profile->start,1);
+        $profile->start =  round($profile->start, 1);
         $this->hide_info($profile);
         $this->check_save($profile);
         if ($profile->type === 1) {
@@ -190,7 +190,7 @@ class ProfileCandidate extends Controller
                 'start',
                 'updated_at'
             )->first();
-            $comment->start= (float)$comment->start;
+        $comment->start = (float)$comment->start;
         return response()->json([
             "status" => 'success',
             "data" => $profile,
@@ -397,6 +397,7 @@ class ProfileCandidate extends Controller
             $company  = Company::where('id', $this->company_id())->first();
             $company->coin += 100;
             $company->update();
+            updateProcess($this->company_id(), 'Thực hiện Feedback ứng viên + 100 coin', 100, 0, 0);
             return response()->json([
                 'status' => 'success',
                 'errors' => "Đánh giá thành công",
