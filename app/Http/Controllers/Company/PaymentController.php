@@ -347,7 +347,7 @@ class PaymentController extends Controller
 
         $mergedHistory = $profileHistory->union($postHistory)->union($feedbackHistory)->get();
 
-        $this->data['filteredHistory'] = $mergedHistory
+        $this->data['history_payment'] = $mergedHistory
             ->map(function ($item) {
                 return collect($item)
                     ->reject(function ($value) {
@@ -358,15 +358,12 @@ class PaymentController extends Controller
             ->sortByDesc('created_at')
             ->values()
             ->all();
-
-
-
-        if ($this->data['history_deposit']->count() == 0 && $this->data['filteredHistory']->count() == 0) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Bạn chưa thực hiện giao dịch nào',
-            ], 400);
-        }
+        // if ($this->data['history_deposit']->count() == 0 && $this->data['history_payment']->count() == 0) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Bạn chưa thực hiện giao dịch nào',
+        //     ], 400);
+        // }
         return response()->json([
             'status' => true,
             'message' => 'Giao dịch đã thực hiện: ',
