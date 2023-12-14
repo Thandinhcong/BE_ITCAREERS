@@ -296,20 +296,20 @@ class PaymentController extends Controller
             ->where('type_coin', '=', 0)
             ->orderBy('created_at', 'DESC')
             ->get();
-        $profileHistory = DB::table('profile_open')
+        $this->data['profileHistory'] = DB::table('profile_open')
             ->where('company_id', Auth::user()->id)
             ->leftJoin('profile', 'profile.id', '=', 'profile_open.profile_id')
             ->select(
-                'profile.id',
-                DB::raw('null as note'),
-                'profile_open.coin',
-                DB::raw('null as type_coin'),
-                DB::raw('null as type_account'),
-                'profile.title',
-                'profile.name',
+                'profile_open.id as user_id',
+                DB::raw('CONCAT("Mở khóa liên hệ ứng viên ", profile.name, " với phí liên hệ ", profile_open.coin, " coin") as note'),
+                DB::raw('1 as type_coin'),
+                DB::raw('0 as type_account'),
                 'profile_open.created_at',
+                'profile_open.coin'
             )
-            ->orderBy('profile_open.created_at', 'DESC');
+            ->orderBy('profile_open.created_at', 'DESC')
+            ->get();
+
 
         $postHistory = DB::table('history_payments')
             ->where('user_id', '=', Auth::user()->id)
@@ -345,7 +345,7 @@ class PaymentController extends Controller
             )
             ->orderBy('created_at', 'DESC');
 
-        $mergedHistory = $profileHistory->union($postHistory)->union($feedbackHistory)->get();
+        $mergedHistory = $postHistory->union($feedbackHistory)->get();
 
         $this->data['history_payment'] = $mergedHistory
             ->map(function ($item) {
@@ -366,7 +366,7 @@ class PaymentController extends Controller
         // }
         return response()->json([
             'status' => true,
-            'message' => 'Giao dịch đã thực hiện: ',
+'message' => 'Giao dịch đã thực hiện: ',
             'data' => $this->data,
 
         ], 200);

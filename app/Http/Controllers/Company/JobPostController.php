@@ -402,7 +402,7 @@ class JobPostController extends Controller
             } else {
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
                 updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name}
-                với tiêu đề la {$request->title} trong {$interval} ngày", ($jobPostType->salary) * $interval, 1, 0);
+                với tiêu đề là {$request->title} trong {$interval} ngày", ($jobPostType->salary) * $interval, 1, 0);
             }
         }
         if ($job_post_date) {
