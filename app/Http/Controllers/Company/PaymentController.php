@@ -289,43 +289,89 @@ class PaymentController extends Controller
     }
     public function historyPayment()
     {
-        $this->data['history'] = DB::table('history_payments')
+        $this->data['history_deposit'] = DB::table('history_payments')
             ->where('user_id', '=', Auth::user()->id)
+            ->where('note', 'like', '%' . 'coin vào tài khoản' . '%')
             ->where('type_account', '=', 0)
-            ->orderBy('created_at', 'DESC')
-            ->limit(5)
-            ->offset(0)
-            ->get();
-        $this->data['history_all'] = DB::table('history_payments')
-            ->where('user_id', '=', Auth::user()->id)
-            ->where('type_account', '=', 0)
+            ->where('type_coin', '=', 0)
             ->orderBy('created_at', 'DESC')
             ->get();
-        $this->data['history'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])
-            ->take(5)->orderby('created_at', 'DESC')->get();
-        $this->data['history_all'] = HistoryPayment::where([['user_id', Auth::user()->id], ['type_account', 0]])
-            ->orderby('created_at', 'DESC')->get();
-        $this->data['history_profile'] = ProfileOpen::where([['company_id', Auth::user()->id]])            
-        ->leftJoin('profile', 'profile.id', '=', 'profile_open.profile_id')
-        ->select(
-            'profile_open.coin',
-            'profile_open.created_at',
-            'profile.title',
-            'profile.name',
-            'profile.id',
-        )
-            ->orderby('profile_open.created_at', 'DESC')->get();
-        // if ($this->data['history']->count() == 0) {
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => 'Bạn chưa thực hiện giao dịch nào',
-        //     ], 400);
-        // }
+        $profileHistory = DB::table('profile_open')
+            ->where('company_id', Auth::user()->id)
+            ->leftJoin('profile', 'profile.id', '=', 'profile_open.profile_id')
+            ->select(
+                'profile.id',
+                DB::raw('null as note'),
+                'profile_open.coin',
+                DB::raw('null as type_coin'),
+                DB::raw('null as type_account'),
+                'profile.title',
+                'profile.name',
+                'profile_open.created_at',
+            )
+            ->orderBy('profile_open.created_at', 'DESC');
+
+        $postHistory = DB::table('history_payments')
+            ->where('user_id', '=', Auth::user()->id)
+            ->where('type_account', '=', 0)
+            ->where('type_coin', '=', 1)
+            ->select(
+                DB::raw('null as id'),
+                'note',
+                'coin',
+                'type_coin',
+                'type_account',
+                DB::raw('null as title'),
+                DB::raw('null as name'),
+                'created_at',
+            )
+            ->orderBy('created_at', 'DESC');
+
+
+        $feedbackHistory = DB::table('history_payments')
+            ->where('user_id', '=', Auth::user()->id)
+            ->where('note', 'like', '%' . 'Feedback' . '%')
+            ->where('type_account', '=', 0)
+            ->where('type_coin', '=', 0)
+            ->select(
+                DB::raw('null as id'),
+                'note',
+                'coin',
+                'type_coin',
+                'type_account',
+                DB::raw('null as title'),
+                DB::raw('null as name'),
+                'created_at',
+            )
+            ->orderBy('created_at', 'DESC');
+
+        $mergedHistory = $profileHistory->union($postHistory)->union($feedbackHistory)->get();
+
+        $this->data['filteredHistory'] = $mergedHistory
+            ->map(function ($item) {
+                return collect($item)
+                    ->reject(function ($value) {
+                        return $value === null;
+                    })
+                    ->toArray();
+            })
+            ->sortByDesc('created_at')
+            ->values()
+            ->all();
+
+
+
+        if ($this->data['history_deposit']->count() == 0 && $this->data['filteredHistory']->count() == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa thực hiện giao dịch nào',
+            ], 400);
+        }
         return response()->json([
             'status' => true,
             'message' => 'Giao dịch đã thực hiện: ',
             'data' => $this->data,
-          
+
         ], 200);
     }
     public function refund()
