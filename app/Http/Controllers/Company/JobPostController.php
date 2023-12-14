@@ -48,7 +48,7 @@ class JobPostController extends Controller
     }
     public function index()
     {
-        $job_post = DB::table('job_post')->where('company_id',  $this->company_id())
+        $job_post = DB::table('job_post')->where('job_post.company_id',  $this->company_id())
             ->leftjoin('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->leftjoin('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->leftjoin('experiences', 'experiences.id', '=', 'job_post.exp_id')
@@ -231,6 +231,14 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         }
+        if ($request->area_job.lenght=) {
+           return response()->json([
+            'status'=>422,
+            'errors'=>'Vui lòng chọn địa điểm',
+            'data'=>$request->area_job
+           ],422);
+        }
+        dd($request->all());
         $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
         if ($interval < 10) {
             return response()->json([

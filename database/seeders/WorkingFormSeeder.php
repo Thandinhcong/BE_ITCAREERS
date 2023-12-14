@@ -20,6 +20,9 @@ class WorkingFormSeeder extends Seeder
         ], [
             'working_form' => 'Bán thời gian',
             'description' => 'test',
+        ], [
+            'working_form' => 'Tất cả hình thức',
+            'description' => 'test',
         ]
     ];
     public function run(): void

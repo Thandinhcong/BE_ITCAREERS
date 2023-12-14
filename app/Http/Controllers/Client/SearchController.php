@@ -32,7 +32,7 @@ class SearchController extends Controller
                 'job_post.created_at',
                 'job_post.start_date',
                 'job_post.desc',
-                'companies.company_name as company_name',
+                                'companies.company_name as company_name',
                 'companies.logo',
             )
             ->leftJoin('companies', 'job_post.company_id', '=', 'companies.id')
