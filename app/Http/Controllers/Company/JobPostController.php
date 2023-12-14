@@ -259,7 +259,7 @@ class JobPostController extends Controller
                 break;
         }
         if ($job_post) {
-          
+
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',

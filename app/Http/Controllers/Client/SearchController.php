@@ -29,11 +29,14 @@ class SearchController extends Controller
                 'job_post.created_at',
                 'job_post.start_date',
                 'job_post.desc',
+                'experiences.experience',
+
                 'companies.company_name as company_name',
                 'companies.logo',
             )
             ->leftJoin('companies', 'job_post.company_id', '=', 'companies.id')
             ->leftJoin('district', 'job_post.area_id', '=', 'district.id')
+            ->leftJoin('experiences', 'job_post.exp_id', '=', 'experiences.id')
             ->leftJoin('province', 'district.province_id', '=', 'province.id')
             ->where(function ($q) use ($request) {
                 if (!empty($request->search)) {
