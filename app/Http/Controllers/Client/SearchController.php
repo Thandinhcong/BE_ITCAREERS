@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\SelectSalaryResult;
+use App\Models\Experience;
+use Database\Seeders\ExperienceSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +16,7 @@ class SearchController extends Controller
         return response()->json([
             'status' => 200,
             'data' => SelectSalaryResult::all(),
+            'exp'=> Experience::all(),
         ], 200);
     }
     public function search(Request $request)
@@ -44,6 +47,11 @@ class SearchController extends Controller
                 }
                 if (!empty($request->min_salary) && !empty($request->max_salary)) {
                     $q->whereNot('job_post.max_salary', '<=', $request->min_salary);
+                }if (!empty($request->min_salary) && !empty($request->max_salary)) {
+                    $q->whereNot('job_post.max_salary', '<=', $request->min_salary);
+                }if (!empty($request->min_salary) && !empty($request->max_salary)) {
+                    //truyền id của bảng Experience
+                    $q->where('job_post.exp_id', $request->exp_id);
                 }
             })
             //Ngày đăng phỉa trùng hoặc sau thời điểm hiện tại

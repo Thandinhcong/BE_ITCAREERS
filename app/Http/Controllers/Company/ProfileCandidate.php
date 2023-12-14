@@ -190,7 +190,6 @@ class ProfileCandidate extends Controller
                 'start',
                 'updated_at'
             )->first();
-            $comment->start= (float)$comment->start;
         return response()->json([
             "status" => 'success',
             "data" => $profile,
