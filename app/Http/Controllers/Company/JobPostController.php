@@ -48,7 +48,7 @@ class JobPostController extends Controller
     }
     public function index()
     {
-        $job_post = DB::table('job_post')->where('company_id',  $this->company_id())
+        $job_post = DB::table('job_post')->where('job_post.company_id',  $this->company_id())
             ->leftjoin('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->leftjoin('job_position', 'job_position.id', '=', 'job_post.job_position_id')
             ->leftjoin('experiences', 'experiences.id', '=', 'job_post.exp_id')

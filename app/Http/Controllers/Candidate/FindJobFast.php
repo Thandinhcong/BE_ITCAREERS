@@ -69,6 +69,7 @@ class FindJobFast extends Controller
                     'job_post.desc',
                     'companies.company_name as company_name',
                     'companies.logo',
+                    'job_post.company_id'
                 )
                 ->leftJoin('companies', 'job_post.company_id', '=', 'companies.id')
                 ->join('district', 'district.id', '=', 'job_post.area_id')
@@ -145,6 +146,7 @@ class FindJobFast extends Controller
                 foreach ($jobs as $item) {
                     $candidate_apply = JobPostApply::create([
                         'job_post_id' => $item->id,
+                        'company_id' => $item->company_id,
                         'curriculum_vitae_id' => $candidate->main_cv,
                         'name' => $candidate->name,
                         'phone' => $candidate->phone,
