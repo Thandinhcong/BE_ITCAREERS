@@ -12,5 +12,6 @@ class AreaJob extends Model
     protected $fillable=[
         'job_post_id',
         'province_id',
+        'detail',
     ];
 }

@@ -18,6 +18,7 @@ use App\Models\ManagementWeb;
 use App\Models\Province;
 use App\Models\WorkingForm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -58,8 +59,10 @@ class JobPostController extends Controller
             ->leftjoin('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->leftjoin('major', 'major.id', '=', 'job_post.major_id')
             ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
-            ->leftjoin('province', 'district.province_id', '=', 'province.id')
             ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id')
+            ->leftjoin('area_job', 'area_job.job_post_id', '=', 'job_post.id',)
+            ->leftjoin('province', 'area_job.province_id', '=', 'province.id')
+
             ->groupBy('job_post.id')
             ->select(
                 'job_post.id',
@@ -76,8 +79,8 @@ class JobPostController extends Controller
                 'working_form.working_form',
                 'academic_level.academic_level',
                 'major.major',
-                'district.name as district',
-                'province.province',
+                // 'district.name as district',
+                // 'province.province',
                 'type_job_post.name',
                 'job_post.start_date',
                 'job_post.end_date',
@@ -88,7 +91,8 @@ class JobPostController extends Controller
                 'job_post.status',
                 'type_job_post.name as type_job_post_name',
                 'type_job_post.id as type_job_post_id',
-                DB::raw('count(job_post_id) as  quantity_apply'),
+                DB::raw('count(job_post_apply.job_post_id) as  quantity_apply'),
+                DB::raw('GROUP_CONCAT(province.province SEPARATOR " -") as province'),
             )->get();
         if ($job_post->count() === 0) {
             return response()->json([
@@ -149,19 +153,19 @@ class JobPostController extends Controller
                 'type_job_post.id as type_job_post_id',
             )
             ->first();
-            $area_job=AreaJob::where('job_post_id',$id)->get();
+        $area_job = AreaJob::where('job_post_id', $id)->get();
         if ($job_post) {
             return response()->json([
                 'status' => 200,
                 'level' => $job_post,
-                "area_job"=> $area_job
+                "area_job" => $area_job
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
                 'level' => 'job post Not Found',
                 'job_post' => $job_post,
-                "area_job"=> $area_job
+                "area_job" => $area_job
 
             ], 404);
         }
@@ -234,10 +238,26 @@ class JobPostController extends Controller
             'type_job_post_id' => 'required',
             'area_job' => 'required',
         ]);
+        $newJobArea=[];
+        foreach ($request->area_job as $key => $value) {
+            $newJobArea[$key]=$value['province_id'];
+        };
+        if (count(array_unique($newJobArea)) != count($request->area_job)) {
+            return response()->json([
+                'status' => 422,
+                'errors' =>"Bạn đang nhập trùng thanh phố",
+            ], 422);
+        }
         if ($valdator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $valdator->messages(),
+            ], 422);
+        }
+        if (count(array_unique($newJobArea)) != count($request->area_job)) {
+            return response()->json([
+                'status' => 422,
+                'errors' =>"Bạn đang nhập trùng thành phố",
             ], 422);
         }
         // if (!$request->area_job) {
@@ -257,20 +277,23 @@ class JobPostController extends Controller
         $jobPostType = JobPostType::find($request['type_job_post_id']);
         $coinForJob_post = ($jobPostType->salary) * $interval;
         $coinCompanyAffter = $company_coin->coin -  $coinForJob_post;
-        // if ($coinCompanyAffter < 0) {
-        //     return response()->json([
-        //         'status' => 422,
-        //         'errors' => 'Bạn không đủ tiền'
-        //     ], 422);
-        // }
+        if ($coinCompanyAffter < 0) {
+            return response()->json([
+                'status' => 422,
+                'errors' => 'Bạn không đủ tiền'
+            ], 422);
+        }
         //Thanh toán  $coinForJob_post xu cho bài đăng loại $jobPostType->name  $request->title trong $interval ngày
         Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
         updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề la {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
         $job_post = JobPost::create($request->all());
         foreach ($request->area_job as $key => $value) {
-            $area_job=AreaJob::create(
-                ['job_post_id'=>$job_post->id,
-                'province_id'=>$value]
+            $area_job = AreaJob::create(
+                [
+                    'job_post_id' => $job_post->id,
+                    'province_id' => $value['province_id'],
+                    'detail'=>$value['detail']
+                ]
             );
         }
 
@@ -278,7 +301,8 @@ class JobPostController extends Controller
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
-                'job_post_id' => $job_post
+                'job_post_id' => $job_post,
+                'area_job' => $area_job
             ], 200);
         } else {
             return response()->json([
@@ -319,7 +343,7 @@ class JobPostController extends Controller
         }
 
         $job_post = JobPost::find($id);
-       
+
         if ($job_post->status == 1) {
             return response()->json([
                 'status' => 'fail',
