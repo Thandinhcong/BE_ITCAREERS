@@ -146,7 +146,6 @@ class FindJobFast extends Controller
                 foreach ($jobs as $item) {
                     $candidate_apply = JobPostApply::create([
                         'job_post_id' => $item->id,
-                        'company_id' => $item->company_id,
                         'curriculum_vitae_id' => $candidate->main_cv,
                         'name' => $candidate->name,
                         'phone' => $candidate->phone,

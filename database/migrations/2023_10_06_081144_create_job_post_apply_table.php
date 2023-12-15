@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('job_post_apply', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('job_post_id');
-            $table->integer('company_id');
             $table->bigInteger('curriculum_vitae_id');
             $table->string('evaluate')->nullable()->comment('đánh giá');
             $table->string('introduce')->nullable()->comment('giới thiệu');

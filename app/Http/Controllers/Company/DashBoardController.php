@@ -30,12 +30,13 @@ class DashBoardController extends Controller
         }
         $this->v['countNotSuitable'] = JobPostApply::where('qualifying_round_id', 0)->get()->toArray();
         $this->v['countSuitable'] = JobPostApply::where('qualifying_round_id', 1)->get()->toArray();
-        $this->v['countView'] = JobPost::where('id', "=", $company_id)->select('view')->get();
         $this->v['countAddCoin'] = HistoryPayment::
         where('user_id', "=", $company_id)
        -> where('type_coin', "=", 0)
+       ->where('type_account', '=',0)
         ->select('coin')
         ->get();
+        $this->v['totalView'] = JobPost::where('company_id', '=', $company_id)->sum('view');
         $this->v['finalAddCoin']=0;
         foreach ($this->v['countAddCoin'] as $key => $value) {
             $this->v['finalAddCoin']+=$value->coin;
@@ -48,6 +49,16 @@ class DashBoardController extends Controller
         foreach ($this->v['countSpendCoin'] as $key => $value) {
             $this->v['finalSpendCoin']+=$value->coin;
         }
+        $countExceptCoin = HistoryPayment::where('user_id', "=", $company_id)
+            ->where('type_coin', "=", 1)
+            ->where('type_account', '=',0)
+            ->select('coin')
+            ->get();
+        $this->v['finalExceptCoin'] = 0;
+        foreach ($countExceptCoin as $key => $value) {
+            $this->v['finalExceptCoin'] += $value->coin;
+        }
+        $this->v['total'] =  $this->v['finalSpendCoin'] +  $this->v['finalExceptCoin'];
         $getModel = JobPostApply::getCandidate($request, $company_id);
         $this->v['totalApplied'] = array_column($getModel, 'total');
         $this->v['arrayDate'] = array_column($getModel, 'date');
