@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('phone', 12);
             $table->string('avatar', 255)->nullable();
             $table->integer('status')->default(1)->comment('0:block, 1:active');
+            $table->integer('role')->default(1)->comment('0: admin, 1: nhân viên');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

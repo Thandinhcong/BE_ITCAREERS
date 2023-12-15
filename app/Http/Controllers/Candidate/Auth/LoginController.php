@@ -36,6 +36,12 @@ class LoginController extends Controller
                 'message' => 'Tài khoản hoặc mật khẩu không đúng'
             ], 400);
         }
+        if (Auth::guard('candidate')->user()->status == 2) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản của bạn đã bị khóa!!!'
+            ], 400);
+        }
         $user = Auth::guard('candidate')->user();
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
@@ -84,26 +90,25 @@ class LoginController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $candidate = Candidate::
-        where('email', $request->email)
-        ->first();
-    $new_pass = strtoupper(Str::random(8));
-    $candidate->update([
-        'token' => null,
-        'password' => bcrypt($new_pass)
-    ]);
-    $manage_web = ManagementWeb::find(1);
-    $data = [];
-    $data['email'] = $candidate->email;
-    $data['name'] = $candidate->name;
-    $data['new_pass'] = $new_pass;
-    $data['name_web'] = $manage_web->name_web;
-    $data['logo'] =  $manage_web->logo;
-    dispatch(new SendEmailJob(
-        $data,
-        $manage_web->name_web . ' - Mật khẩu mới',
-        'emails.forgetpass_candidate'
-    ));
+        $candidate = Candidate::where('email', $request->email)
+            ->first();
+        $new_pass = strtoupper(Str::random(8));
+        $candidate->update([
+            'token' => null,
+            'password' => bcrypt($new_pass)
+        ]);
+        $manage_web = ManagementWeb::find(1);
+        $data = [];
+        $data['email'] = $candidate->email;
+        $data['name'] = $candidate->name;
+        $data['new_pass'] = $new_pass;
+        $data['name_web'] = $manage_web->name_web;
+        $data['logo'] =  $manage_web->logo;
+        dispatch(new SendEmailJob(
+            $data,
+            $manage_web->name_web . ' - Mật khẩu mới',
+            'emails.forgetpass_candidate'
+        ));
         return response()->json([
             'status' => 'success',
             'message' => 'Một mật khẩu mới đã được gửi đến email của bạn vui lòng kiểm tra nó'

@@ -61,24 +61,24 @@ Route::group([
     Route::group([
         'middleware' => 'auth:api'
     ], function () {
-        Route::resource('package', PackageController::class);
-        Route::resource('skill', SkillController::class);
-        Route::resource('exp', ExpController::class);
-        Route::resource('experience', ExperienceController::class);
-        Route::resource('major', \App\Http\Controllers\Admin\MajorController::class);
-        Route::resource('salary_type', \App\Http\Controllers\Admin\SalaryTypeController::class);
-        Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class);
-        Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class);
+        Route::resource('package', PackageController::class)->middleware('check.role');
+        Route::resource('skill', SkillController::class)->middleware('check.role');
+        Route::resource('exp', ExpController::class)->middleware('check.role');
+        Route::resource('experience', ExperienceController::class)->middleware('check.role');
+        Route::resource('major', \App\Http\Controllers\Admin\MajorController::class)->middleware('check.role');
+        Route::resource('salary_type', \App\Http\Controllers\Admin\SalaryTypeController::class)->middleware('check.role');
+        Route::resource('working-form', \App\Http\Controllers\Admin\WorkingFormController::class)->middleware('check.role');
+        Route::resource('job_position', \App\Http\Controllers\Admin\JobPositionController::class)->middleware('check.role');
         Route::resource('job-post', \App\Http\Controllers\Admin\JobPostController::class);
-        Route::resource('type-job-post', \App\Http\Controllers\Admin\TypeJobPostController::class);
+        Route::resource('type-job-post', \App\Http\Controllers\Admin\TypeJobPostController::class)->middleware('check.role');
         Route::delete('logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
-        Route::resource('level', LevelController::class);
+        Route::resource('level', LevelController::class)->middleware('check.role');
         Route::get('user', [\App\Http\Controllers\Admin\LoginController::class, 'user']);
         Route::resource('candidates', CandidatesController::class);
         Route::resource('company-management', CompanyManagementController::class);
-        Route::resource('candidate', CandidatesController::class);
-        Route::resource('company', CompanyController::class);
-        Route::resource('man-web', ManagementWebController::class);
+        Route::resource('candidate', CandidatesController::class)->middleware('check.role');
+        Route::resource('company', CompanyController::class)->middleware('check.role');
+        Route::resource('man-web', ManagementWebController::class)->middleware('check.role');
         Route::resource('rev-sta', \App\Http\Controllers\Admin\RevenueStatisticsController::class);
     });
 });
@@ -93,7 +93,7 @@ Route::group([
     'prefix' => 'candidate'
 ], function () {
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
-    Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login']);
+    Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login'])->name('login');
     Route::post('forget_password', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'forget_password']);
     Route::group([
         'middleware' => 'auth:candidate-api'

@@ -36,6 +36,12 @@ class LoginController extends Controller
                 'message' => 'Tài khoản hoặc mật khẩu không đúng'
             ], 400);
         }
+        if (Auth::guard('company')->user()->status == 2) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản của bạn đã bị khóa!!!'
+            ], 400);
+        }
         $user = Auth::guard('company')->user();
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
@@ -83,8 +89,7 @@ class LoginController extends Controller
                 'errors' => $validator->messages()
             ], 400);
         }
-        $company = Company::
-            where('email', $request->email)
+        $company = Company::where('email', $request->email)
             ->first();
         $new_pass = strtoupper(Str::random(8));
         $company->update([
