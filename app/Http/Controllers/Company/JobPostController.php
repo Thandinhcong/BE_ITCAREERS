@@ -110,9 +110,10 @@ class JobPostController extends Controller
             ->leftjoin('working_form', 'working_form.id', '=', 'job_post.working_form_id')
             ->leftjoin('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->leftjoin('major', 'major.id', '=', 'job_post.major_id')
-            ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
-            ->leftjoin('province', 'district.province_id', '=', 'province.id',)
+            // ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
+            // ->leftjoin('province', 'district.province_id', '=', 'province.id',)
             ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id',)
+            // ->leftjoin('area_job', 'area_job.job_post_id', '=', 'job_post.id',)
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -127,8 +128,8 @@ class JobPostController extends Controller
                 'working_form.working_form',
                 'academic_level.academic_level',
                 'major.major',
-                'province.province',
-                'district.name',
+                // 'province.province',
+                // 'district.name',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
@@ -142,8 +143,8 @@ class JobPostController extends Controller
                 'job_post.academic_level_id',
                 'job_post.major_id',
                 'job_post.gender',
-                'district.province_id',
-                'district.id as district_id',
+                // 'district.province_id',
+                // 'district.id as district_id',
                 'type_job_post.name as type_job_post_name',
                 'type_job_post.id as type_job_post_id',
             )
@@ -318,49 +319,7 @@ class JobPostController extends Controller
         }
 
         $job_post = JobPost::find($id);
-        // $check_day_update = ((strtotime($request->end_date) - strtotime($job_post->end_date)) / 86400);
-        // $dayPostBeforeEdit = ((strtotime($job_post->end_date) - strtotime($job_post->start_date)) / 86400) + 1;
-        // $jobPostTypeBefore = JobPostType::find($job_post->type_job_post_id);
-        // $jobPostTypeAfter = JobPostType::find($request['type_job_post_id']);
-        // $jobPostDifferencePrice = $jobPostTypeAfter->salary - $jobPostTypeBefore->salary;
-        // return ($check_day_update);
-        // if ($job_post) {
-        //     if ($job_post->type_job_post_id != 0) {
-        //         //Trường hợp thêm ngày đăng
-        //         if ($job_post->end_date < $request->end_date) {
-        //             //trường hợp vẫn giữ gói đăng cũ
-        //             if ($request->type_job_post_id == $job_post->type_job_post_id) {
-        //                 $coinCompanyAffter = $company_coin->coin - $jobPostTypeBefore->salary * $check_day_update;
-        //                 if ($coinCompanyAffter < 0) {
-        //                     return response()->json([
-        //                         'status' => 422,
-        //                         'errors' => 'Bạn không đủ tiền'
-        //                     ], 422);
-        //                 }
-        //             }
-        //             //Trường hợp chọn gói đăng mới với mệnh giá cao hơn
-        //             else {
-        //                 $coinCompanyAffter = $company_coin->coin - $jobPostDifferencePrice * $dayPostBeforeEdit - $check_day_update * $jobPostTypeAfter->salary;
-        //                 if ($coinCompanyAffter < 0) {
-        //                     return response()->json([
-        //                         'status' => 422,
-        //                         'errors' => 'Bạn không đủ tiền'
-        //                     ], 422);
-        //                 }
-        //             }
-        //             Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
-        //         } else {
-        //             if ($request->type_job_post_id == $job_post->type_job_post_id) {
-        //                 $coinCompanyAffter = $company_coin->coin - $jobPostTypeBefore->salary * $check_day_update;
-        //                 if ($coinCompanyAffter < 0) {
-        //                     return response()->json([
-        //                         'status' => 422,
-        //                         'errors' => 'Bạn không đủ tiền'
-        //                     ], 422);
-        //                 }
-        //             }
-        //         }
-        //     }
+       
         if ($job_post->status == 1) {
             return response()->json([
                 'status' => 'fail',
@@ -370,12 +329,6 @@ class JobPostController extends Controller
         if ($job_post->status != 1) {
             $job_post->update($request->all());
             $job_post->update(['status' => 0]);
-            // $company_info = Auth::user();
-            // $manage_web = ManagementWeb::find(1);
-            // Mail::send('emails.job_post_update', compact('job_post', 'manage_web', 'company_info',), function ($email) use ($manage_web, $company_info) {
-            //     $email->subject($manage_web->name_web . ' - Bài đăng tuyển của bạn đã được cập nhật thành công');
-            //     $email->to($company_info->email);
-            // });
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update Success'
