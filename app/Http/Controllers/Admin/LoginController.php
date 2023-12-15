@@ -29,7 +29,13 @@ class LoginController extends Controller
         if (!Auth::attempt($credentials, $remember = true)) {
             return response()->json([
                 'status' => false,
-                'message' => 'incorrect account and password'
+                'message' => 'Tài khoản hoặc mật khẩu không chính xác'
+            ], 400);
+        }
+        if (Auth::user()->status == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản của bạn đã bị khóa!!!'
             ], 400);
         }
         $user = $request->user();

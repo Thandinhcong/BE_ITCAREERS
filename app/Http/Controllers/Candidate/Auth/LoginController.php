@@ -33,7 +33,7 @@ class LoginController extends Controller
         if (!Auth::guard('candidate')->attempt($credentials, $remember = true)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Tài khoản hoặc mật khẩu không đúng'
+                'message' => 'Tài khoản hoặc mật khẩu không chính xác'
             ], 400);
         }
         if (Auth::guard('candidate')->user()->status == 2) {
