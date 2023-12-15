@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicLevel;
+use App\Models\AreaJob;
 use App\Models\Company;
 use App\Models\Experience;
 use App\Models\JobPosition;
@@ -147,16 +148,20 @@ class JobPostController extends Controller
                 'type_job_post.id as type_job_post_id',
             )
             ->first();
+            $area_job=AreaJob::where('job_post_id',$id)->get();
         if ($job_post) {
             return response()->json([
                 'status' => 200,
-                'level' => $job_post
+                'level' => $job_post,
+                "area_job"=> $area_job
             ], 200);
         } else {
             return response()->json([
                 'status' => 'fail',
                 'level' => 'job post Not Found',
-                'job_post' => $job_post
+                'job_post' => $job_post,
+                "area_job"=> $area_job
+
             ], 404);
         }
     }
@@ -221,9 +226,12 @@ class JobPostController extends Controller
             'gender' => 'in:0,1,2',
             'area_id' => 'required|',
             'desc' => 'required|',
+            'desc' => 'required|',
             'major_id' => 'required|',
             'start_date' => 'required|after:yesterday',
             'end_date' => 'required|after:start_date',
+            'type_job_post_id' => 'required',
+            'area_job' => 'required',
         ]);
         if ($valdator->fails()) {
             return response()->json([
@@ -231,14 +239,13 @@ class JobPostController extends Controller
                 'errors' => $valdator->messages(),
             ], 422);
         }
-        if ($request->area_job.lenght=) {
-           return response()->json([
-            'status'=>422,
-            'errors'=>'Vui lòng chọn địa điểm',
-            'data'=>$request->area_job
-           ],422);
-        }
-        dd($request->all());
+        // if (!$request->area_job) {
+        //    return response()->json([
+        //     'status'=>422,
+        //     'errors'=>'Vui lòng chọn địa điểm',
+        //     'data'=>$request->area_job
+        //    ],422);
+        // }
         $interval = ((strtotime($request['end_date']) - strtotime($request['start_date'])) / 86400) + 1;
         if ($interval < 10) {
             return response()->json([
@@ -246,28 +253,27 @@ class JobPostController extends Controller
                 'errors' => "Tối thiểu 10 ngày",
             ], 422);
         }
-        switch ($request->type_job_post_id) {
-            case '0':
-                $job_post = JobPost::create($request->all());
-                break;
-            default:
-                $jobPostType = JobPostType::find($request['type_job_post_id']);
-                $coinForJob_post = ($jobPostType->salary) * $interval;
-                $coinCompanyAffter = $company_coin->coin -  $coinForJob_post;
-                if ($coinCompanyAffter < 0) {
-                    return response()->json([
-                        'status' => 422,
-                        'errors' => 'Bạn không đủ tiền'
-                    ], 422);
-                }
-                //Thanh toán  $coinForJob_post xu cho bài đăng loại $jobPostType->name  $request->title trong $interval ngày
-                Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
-                updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề la {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
-                $job_post = JobPost::create($request->all());
-                break;
+        $jobPostType = JobPostType::find($request['type_job_post_id']);
+        $coinForJob_post = ($jobPostType->salary) * $interval;
+        $coinCompanyAffter = $company_coin->coin -  $coinForJob_post;
+        // if ($coinCompanyAffter < 0) {
+        //     return response()->json([
+        //         'status' => 422,
+        //         'errors' => 'Bạn không đủ tiền'
+        //     ], 422);
+        // }
+        //Thanh toán  $coinForJob_post xu cho bài đăng loại $jobPostType->name  $request->title trong $interval ngày
+        Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
+        updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề la {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
+        $job_post = JobPost::create($request->all());
+        foreach ($request->area_job as $key => $value) {
+            $area_job=AreaJob::create(
+                ['job_post_id'=>$job_post->id,
+                'province_id'=>$value]
+            );
         }
+
         if ($job_post) {
-          
             return response()->json([
                 'status' => 201,
                 'message' => 'Tạo thành công',
