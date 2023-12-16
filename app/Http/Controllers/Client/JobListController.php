@@ -76,12 +76,12 @@ class JobListController extends Controller
     public function job_list()
     {
         $job_list = DB::table('job_post')
-            // // Ngày đăng phỉa trùng hoặc sau thời điểm hiện tại
-            // ->where('start_date', '<=', now()->format('Y-m-d'))
-            // //Ngày kết thúc phải trc howcj tại thời điểm hiện tại
-            // ->where('end_date', '>=', now()->format('Y-m-d'))
-            // //Trạng thái của bài đăng 0:đang mở 1:đã được active
-            // ->where('job_post.status', 1)
+            // Ngày đăng phỉa trùng hoặc sau thời điểm hiện tại
+            ->where('start_date', '<=', now()->format('Y-m-d'))
+            //Ngày kết thúc phải trc howcj tại thời điểm hiện tại
+            ->where('end_date', '>=', now()->format('Y-m-d'))
+            //Trạng thái của bài đăng 0:đang mở 1:đã được active
+            ->where('job_post.status', 1)
           
             // ->leftjoin('experiences', 'experiences.id', '=', 'job_post.exp_id')
             // ->leftjoin('companies', 'companies.id', '=', 'job_post.company_id')
