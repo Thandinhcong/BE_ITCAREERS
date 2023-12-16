@@ -22,7 +22,7 @@ class RevenueStatisticsController extends Controller
     {
         $this->v = [];
     }
-    public function index($id)
+    public function index()
     {
         $this->v['countCandidate'] = Candidate::all();
         $this->v['countCompany'] = Company::all();
@@ -34,7 +34,7 @@ class RevenueStatisticsController extends Controller
         $this->v['countPendingImagePaper'] = Company::where('status', 0)->get()->toArray();
         $this->v['countActiveImagePaper'] = Company::where('status', 1)->get()->toArray();
         $this->v['countBlockImagePaper'] = Company::where('status', 2)->get()->toArray();
-        $totalMoney = HistoryPayment::getMoneyMonthly($id);
+        $totalMoney = HistoryPayment::getMoneyMonthly();
         $this->v['months'] = $totalMoney['time'];
         $this->v['totalMoneyMonth'] =  $totalMoney['money'];
         $this->v['data'] = $totalMoney;
