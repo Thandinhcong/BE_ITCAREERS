@@ -26,8 +26,10 @@ class JobPostController extends Controller
             ->join('academic_level', 'academic_level.id', '=', 'job_post.academic_level_id')
             ->join('major', 'major.id', '=', 'job_post.major_id')
             ->join('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id')
-            ->join('district', 'district.id', '=', 'job_post.area_id')
-            ->join('province', 'district.province_id', '=', 'province.id',)
+            ->leftjoin('area_job', 'area_job.job_post_id', '=', 'job_post.id',)
+            ->leftjoin('province', 'area_job.province_id', '=', 'province.id')
+
+            ->groupBy('job_post.id')
             ->select(
                 'job_post.id',
                 'job_post.title',
@@ -43,8 +45,8 @@ class JobPostController extends Controller
                 'working_form.working_form',
                 'academic_level.academic_level',
                 'major.major',
-                'district.name',
-                'province.province',
+                // 'district.name',
+                // 'province.province',
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
@@ -56,6 +58,7 @@ class JobPostController extends Controller
                 'job_post.status',
                 'job_post.type_job_post_id',
                 'type_job_post.name as type_job_post',
+                DB::raw('GROUP_CONCAT(province.province SEPARATOR "-") as province'),
             )->get();
 
         if ($jobPost->count() > 0) {

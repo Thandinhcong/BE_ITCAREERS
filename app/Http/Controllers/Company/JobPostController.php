@@ -117,8 +117,10 @@ class JobPostController extends Controller
             // ->leftjoin('district', 'district.id', '=', 'job_post.area_id')
             // ->leftjoin('province', 'district.province_id', '=', 'province.id',)
             ->leftjoin('type_job_post', 'type_job_post.id', '=', 'job_post.type_job_post_id',)
-            // ->leftjoin('area_job', 'area_job.job_post_id', '=', 'job_post.id',)
-            ->select(
+            ->leftjoin('area_job', 'area_job.job_post_id', '=', 'job_post.id',)
+            ->leftjoin('province', 'area_job.province_id', '=', 'province.id')
+
+            ->groupBy('job_post.id')->select(
                 'job_post.id',
                 'job_post.title',
                 'job_post.min_salary',
@@ -149,6 +151,7 @@ class JobPostController extends Controller
                 'job_post.gender',
                 // 'district.province_id',
                 // 'district.id as district_id',
+                DB::raw('GROUP_CONCAT(province.province SEPARATOR "-") as province'),
                 'type_job_post.name as type_job_post_name',
                 'type_job_post.id as type_job_post_id',
             )
@@ -229,7 +232,7 @@ class JobPostController extends Controller
             'interest' => 'required|',
             'gender' => 'required',
             'gender' => 'in:0,1,2',
-            'area_id' => 'required|',
+            // 'area_id' => 'required|',
             'desc' => 'required|',
             'desc' => 'required|',
             'major_id' => 'required|',
@@ -238,28 +241,28 @@ class JobPostController extends Controller
             'type_job_post_id' => 'required',
             'area_job' => 'required',
         ]);
-        $newJobArea=[];
-        foreach ($request->area_job as $key => $value) {
-            $newJobArea[$key]=$value['province_id'];
-        };
-        if (count(array_unique($newJobArea)) != count($request->area_job)) {
-            return response()->json([
-                'status' => 422,
-                'errors' =>"Bạn đang nhập trùng thanh phố",
-            ], 422);
-        }
+        // $newJobArea = [];
+        // foreach ($request->area_job as $key => $value) {
+        //     $newJobArea[$key] = $value['province_id'];
+        // };
+        // if (count(array_unique($newJobArea)) != count($request->area_job)) {
+        //     return response()->json([
+        //         'status' => 422,
+        //         'errors' => "Bạn đang nhập trùng thanh phố",
+        //     ], 422);
+        // }
         if ($valdator->fails()) {
             return response()->json([
                 'status' => 422,
                 'errors' => $valdator->messages(),
             ], 422);
         }
-        if (count(array_unique($newJobArea)) != count($request->area_job)) {
-            return response()->json([
-                'status' => 422,
-                'errors' =>"Bạn đang nhập trùng thành phố",
-            ], 422);
-        }
+        // if (count(array_unique($newJobArea)) != count($request->area_job)) {
+        //     return response()->json([
+        //         'status' => 422,
+        //         'errors' => "Bạn đang nhập trùng thành phố",
+        //     ], 422);
+        // }
         // if (!$request->area_job) {
         //    return response()->json([
         //     'status'=>422,
@@ -292,7 +295,7 @@ class JobPostController extends Controller
                 [
                     'job_post_id' => $job_post->id,
                     'province_id' => $value['province_id'],
-                    'detail'=>$value['detail']
+                    'detail' => $value['detail']
                 ]
             );
         }
