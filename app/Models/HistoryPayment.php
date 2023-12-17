@@ -126,29 +126,30 @@ class HistoryPayment extends Model
         )
             ->groupBy('month')
             ->get()->toArray();
-        $jobPost = JobPost::where('start_date', '<=', now()->format('Y-m-d'))
+        $jobPostMonth = JobPost::where('start_date', '<=', now()->format('Y-m-d'))
             ->where('end_date', '>=', now()->format('Y-m-d'))
             ->where('job_post.status', 1)
             ->select(
-                DB::raw('count(status) '),
+                DB::raw('count(status) as count'),
                 DB::raw('MONTH(created_at) as month')
             )
             ->groupBy('month')
             ->get()
             ->toArray();
-        $jobPostVip = JobPost::where('job_post.status', 1)
+            // dd($jobPostMonth);
+        $jobPostVipMonth = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 2)
             ->select(
-                DB::raw('count(status) '),
+                DB::raw('count(status) as count'),
                 DB::raw('MONTH(created_at) as month')
             )
             ->groupBy('month')
             ->get()
             ->toArray();
-        $jobPostNormal = JobPost::where('job_post.status', 1)
+        $jobPostNormalMonth = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 1)
             ->select(
-                DB::raw('count(status) '),
+                DB::raw('count(status) as count'),
                 DB::raw('MONTH(created_at) as month')
             )
             ->groupBy('month')
@@ -170,18 +171,19 @@ class HistoryPayment extends Model
 
         foreach ($monthRange as $month) {
             $total = 0;
-            foreach ($jobPost as $key => $value) {
-                if (strtotime($value['month']) == strtotime($day)) {
+            foreach ($jobPostMonth as $key => $value) {
+                if ($value['month'] == $month['month']) {
                     $total = $value['count'];
                     break;
                 }
             }
             $followMonth['staticJobFollowMonth'][] = $total;
         }
+            // dd($followMonth['staticJobFollowMonth']);
         foreach ($monthRange as $month) {
             $total = 0;
-            foreach ($jobPostVip as $key => $value) {
-                if (strtotime($value['month']) == strtotime($day)) {
+            foreach ($jobPostVipMonth as $key => $value) {
+                if ($value['month'] == $month['month']) {
                     $total = $value['count'];
                     break;
                 }
@@ -190,8 +192,8 @@ class HistoryPayment extends Model
         }
         foreach ($monthRange as $month) {
             $total = 0;
-            foreach ($jobPostNormal as $key => $value) {
-                if (strtotime($value['month']) == strtotime($day)) {
+            foreach ($jobPostNormalMonth as $key => $value) {
+                if ($value['month'] == $month['month']) {
                     $total = $value['count'];
                     break;
                 }
