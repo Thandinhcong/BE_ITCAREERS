@@ -46,7 +46,7 @@ class JobPostController extends Controller
                 'academic_level.academic_level',
                 'major.major',
                 // 'district.name',
-                // 'province.province',
+                DB::raw('GROUP_CONCAT(province.province SEPARATOR "-") as province'),
                 'job_post.start_date',
                 'job_post.end_date',
                 'job_post.quantity',
