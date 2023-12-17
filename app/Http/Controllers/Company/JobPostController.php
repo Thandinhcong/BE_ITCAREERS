@@ -317,26 +317,27 @@ class JobPostController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            // 'title' => 'required|',
-            // 'job_position_id' => 'required|',
-            // 'quantity' => 'required|integer',
-            // 'academic_level_id' => 'required|',
-            // 'exp_id' => 'required|',
-            // 'working_form_id' => 'required|',
-            // 'min_salary' => 'required',
-            // 'max_salary' => 'required',
-            // 'min_salary' => 'lte:max_salary',
-            // 'requirement' => 'required|',
-            // 'interest' => 'required|',
-            // 'gender' => 'required',
-            // 'gender' => 'in:0,1,2',
-            // //Bắt buộc 1 trong 3 số trên
+            'title' => 'required|',
+            'job_position_id' => 'required|',
+            'quantity' => 'required|integer',
+            'academic_level_id' => 'required|',
+            'exp_id' => 'required|',
+            'working_form_id' => 'required|',
+            'min_salary' => 'required',
+            'max_salary' => 'required',
+            'min_salary' => 'lte:max_salary',
+            'requirement' => 'required|',
+            'interest' => 'required|',
+            'gender' => 'required',
+            'gender' => 'in:0,1,2',
             // 'area_id' => 'required|',
-            // 'desc' => 'required|',
-            // 'major_id' => 'required|',
-            // // 'start_date' => 'required|',
-            // // 'start_date' => 'required|date|',
-            // // 'end_date' => 'required|date|after:start_date|after:now',
+            'desc' => 'required|',
+            'desc' => 'required|',
+            'major_id' => 'required|',
+            'start_date' => 'required|after:yesterday',
+            'end_date' => 'required|after:start_date',
+            'type_job_post_id' => 'required',
+            'area_job' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -346,7 +347,8 @@ class JobPostController extends Controller
         }
 
         $job_post = JobPost::find($id);
-
+        // $area_job=AreaJob::where('job_post_id',$id)->delete();
+// dd($area_job);
         if ($job_post->status == 1) {
             return response()->json([
                 'status' => 'fail',
@@ -355,6 +357,16 @@ class JobPostController extends Controller
         }
         if ($job_post->status != 1) {
             $job_post->update($request->all());
+            $area_job=AreaJob::where('job_post_id',$id)->delete();
+            foreach ($request->area_job as $key => $value) {
+                $new_area_job = AreaJob::create(
+                    [
+                        'job_post_id' => $id,
+                        'province_id' => $value['province_id'],
+                        'detail' => $value['detail']
+                    ]
+                );
+            }
             $job_post->update(['status' => 0]);
             return response()->json([
                 'status' => 'success',
