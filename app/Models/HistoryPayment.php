@@ -36,9 +36,10 @@ class HistoryPayment extends Model
         $jobPost = JobPost::where('start_date', '<=', now()->format('Y-m-d'))
             ->where('end_date', '>=', now()->format('Y-m-d'))
             ->where('job_post.status', 1)
-            ->whereBetween('created_at', [$dayRange[0], $dayRange[6]])
+            ->whereDate('created_at','>=',$dayRange[0])
+            ->whereDate('created_at', '<=', $dayRange[6])
             ->select(
-                DB::raw('count(status) '),
+                DB::raw('count(status) as count'),
                 DB::raw('DATE(created_at) as day')
             )
             ->groupBy('day')
@@ -46,9 +47,10 @@ class HistoryPayment extends Model
             ->toArray();
         $jobPostVip = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 1)
-            ->whereBetween('created_at', [$dayRange[0], $dayRange[6]])
-            ->select(
-                DB::raw('count(status) '),
+            ->whereDate('created_at','>=',$dayRange[0])
+            ->whereDate('created_at', '<=', $dayRange[6])
+                        ->select(
+                DB::raw('count(status) as count'),
                 DB::raw('DATE(created_at) as day')
             )
             ->groupBy('day')
@@ -56,9 +58,9 @@ class HistoryPayment extends Model
             ->toArray();
         $jobPostNormal = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 0)
-            ->whereBetween('created_at', [$dayRange[0], $dayRange[6]])
-            ->select(
-                DB::raw('count(status) '),
+            ->whereDate('created_at','>=',$dayRange[0])
+            ->whereDate('created_at', '<=', $dayRange[6])            ->select(
+                DB::raw('count(status) as count'),
                 DB::raw('DATE(created_at) as day')
             )
             ->groupBy('day')

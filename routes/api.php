@@ -85,7 +85,8 @@ Route::group([
 Route::resource('experience', ExperienceController::class);
 Route::resource('major  ', \App\Http\Controllers\Admin\MajorController::class);
 
-        
+Route::resource('rev-sta', \App\Http\Controllers\Admin\RevenueStatisticsController::class);
+  
 
 
 //Candidates

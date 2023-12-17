@@ -20,6 +20,7 @@ class ManageCandidateApply extends Controller
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
             ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
+            ->orderByDesc('job_post.type_apply')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post.id as job_post_id',

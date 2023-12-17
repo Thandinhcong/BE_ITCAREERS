@@ -153,23 +153,22 @@ class FindJobFast extends Controller
                         'candidate_id' => $candidate->id,
                         'type_apply' => 1, // ứng tuyển nhanh
                     ]);
-                    // $company_apply = Company::find($item->company_id);
-                    // $manage_web = ManagementWeb::find(1);
-                    // $data = [];
-                    // $data['email'] = $candidate_apply->email;;
-                    // $data['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
-                    // $data['view'] = 'emails.candidate_apply';
-                    // $data['title'] = $item->title;
-                    // $data['name'] = $candidate_apply->name;
-                    // $data['logo'] = $manage_web->logo;
-                    // $data['name_web'] = $manage_web->name_web;
-                    // $data['company_name'] = $company_apply->company_name;
-
-                    // dispatch(new SendEmailJob(
-                    //     $data,
-                    //     $manage_web->name_web . ' - Ứng viên ứng tuyển',
-                    //     'emails.notification_company_candidate_apply'
-                    // ));
+                    $company_apply = Company::find($item->company_id);
+                    $manage_web = ManagementWeb::find(1);
+                    $data = [];
+                    $data['email'] = $candidate_apply->email;;
+                    $data['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
+                    $data['view'] = 'emails.candidate_apply';
+                    $data['title'] = $item->title;
+                    $data['name'] = $candidate_apply->name;
+                    $data['logo'] = $manage_web->logo;
+                    $data['name_web'] = $manage_web->name_web;
+                    $data['company_name'] = $company_apply->company_name;
+                    dispatch(new SendEmailJob(
+                        $data,
+                        $manage_web->name_web . ' - Ứng viên ứng tuyển',
+                        'emails.notification_company_candidate_apply'
+                    ));
                 }
                 $candidate->update([
                     'coin' => $coin - $price,
