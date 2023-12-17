@@ -85,7 +85,7 @@ Route::group([
 Route::resource('experience', ExperienceController::class);
 Route::resource('major  ', \App\Http\Controllers\Admin\MajorController::class);
 
-
+        
 
 
 //Candidates

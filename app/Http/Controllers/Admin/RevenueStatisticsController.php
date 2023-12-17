@@ -37,6 +37,7 @@ class RevenueStatisticsController extends Controller
         $totalMoney = HistoryPayment::getMoneyMonthly();
         $this->v['months'] = $totalMoney['time'];
         $this->v['totalMoneyMonth'] =  $totalMoney['money'];
+        $this->v['data'] = $totalMoney;
 
         return $this->v;
     }
