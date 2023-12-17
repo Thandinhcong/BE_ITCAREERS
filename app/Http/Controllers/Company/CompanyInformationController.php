@@ -23,7 +23,7 @@ class CompanyInformationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage.1
      */
     public function store(Request $request)
     {
