@@ -254,7 +254,7 @@ class JobPostController extends Controller
                 }
                 //Thanh toán  $coinForJob_post xu cho bài đăng loại $jobPostType->name  $request->title trong $interval ngày
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
-                updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề la {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
+                updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề là {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
                 $job_post = JobPost::create($request->all());
                 break;
         }
