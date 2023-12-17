@@ -68,11 +68,11 @@ class CompanyInformationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource.ss
      */
     public function show(string $id)
     {
-        //
+        //sssss
     }
 
     /**
