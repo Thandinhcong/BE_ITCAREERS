@@ -22,8 +22,6 @@ class DashBoardController extends Controller
     }
     public function index(Request $request)
     {
-        // $data = HistoryPayment::getMoneyMonthly();
-        // dd($data);
         $company_id = Auth::user()->id;
         $today = Carbon::now();
         $dayRange = [];
@@ -39,7 +37,6 @@ class DashBoardController extends Controller
                 'year' => $year
             ));
         }
-
         $this->v['count_apply_post'] = DB::table('job_post')
             ->where('job_post.company_id', '=', $company_id)
             ->leftJoin('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
@@ -71,6 +68,8 @@ class DashBoardController extends Controller
 
             $item->coin_post = $coin_post ? $coin_post->coin : 0;
         }
+        $this->v['day'] = $dayRange;
+        $this->v['month'] = $monthRange;
         // coin post vip
         $coin_post_vip_by_day = [];
         $coin_post_vip_by_month = [];
