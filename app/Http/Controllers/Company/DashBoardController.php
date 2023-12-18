@@ -25,7 +25,7 @@ class DashBoardController extends Controller
         $company_id = Auth::user()->id;
         $today = Carbon::now();
         $dayRange = [];
-        for ($i = 1; $i <= 7; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $dayRange[] = $today->copy()->subDays($i)->format('Y-m-d');
         }
         $monthRange = array();
@@ -342,6 +342,22 @@ class DashBoardController extends Controller
 
         $this->v['count_apply_by_day'] = $count_apply_by_day;
         $this->v['count_apply_by_month'] = $count_apply_by_month;
+        $this->v['count_view'] = JobPost::where('company_id', '=', $company_id)
+        ->sum('view');
+    $this->v['count_profile_new'] = JobPost::where('company_id', '=', $company_id)
+        ->join('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
+        ->where('job_post_apply.status', '=', 0)
+        ->count('job_post_apply.id');
+    $this->v['count_matching_qualifiers'] = JobPost::where('company_id', '=', $company_id)
+        ->join('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
+        ->where('job_post_apply.status', '=', 1)
+        ->where('job_post_apply.qualifying_round_id', '=', 1)
+        ->count('job_post_apply.id');
+    $this->v['count_inappropriate_qualifiers'] = JobPost::where('company_id', '=', $company_id)
+        ->join('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
+        ->where('job_post_apply.status', '=', 1)
+        ->where('job_post_apply.qualifying_round_id', '=', 0)
+        ->count('job_post_apply.id');
         return  $this->v;
     }
 }
