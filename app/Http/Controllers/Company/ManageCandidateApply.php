@@ -20,7 +20,7 @@ class ManageCandidateApply extends Controller
             ->join('job_post', 'job_post.id', '=', 'job_post_apply.job_post_id')
             ->join('candidates', 'candidates.id', '=', 'job_post_apply.candidate_id')
             ->join('profile', 'profile.id', '=', 'job_post_apply.curriculum_vitae_id')
-            ->orderByDesc('job_post.type_apply')
+            ->orderByDesc('job_post_apply.type_apply')
             ->select(
                 'job_post.title as job_post_name',
                 'job_post.id as job_post_id',
@@ -130,7 +130,7 @@ class ManageCandidateApply extends Controller
                 'job_post.title as job_post_title',
                 'companies.company_name',
             )
-            ->where('profile.id', $id)
+            ->where('job_post_apply.id', $id)
             ->first();
         if ($profile) {
             $jobPostApply = JobPostApply::find( $profile->candidate_code);

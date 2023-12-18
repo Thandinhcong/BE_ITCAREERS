@@ -24,8 +24,8 @@ class HistoryPayment extends Model
             $dayRange[] = Carbon::now()->subDays($i)->format('Y-m-d');
         }
         $totalMoneyDay = HistoryPayment::where('type_coin', 0)
-            ->where('type_account', 0)
-            ->whereBetween('created_at', [$dayRange[0], $dayRange[6]])
+        ->whereDate('created_at', '>=', $dayRange[0])
+        ->whereDate('created_at', '<=', $dayRange[6])
             ->select(
                 DB::raw('sum(coin) as totalMoneyDay'),
                 DB::raw('DATE(created_at) as day')
