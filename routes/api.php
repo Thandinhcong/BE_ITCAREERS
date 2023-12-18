@@ -96,6 +96,8 @@ Route::group([
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login'])->name('login');
     Route::post('forget_password', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'forget_password']);
+    Route::get('/actived/{candidate}/{token}',[\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'activeCandidate'])->name('actived');
+
     Route::group([
         'middleware' => 'auth:candidate-api'
     ], function () {

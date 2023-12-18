@@ -39,6 +39,8 @@ class Candidate extends Authenticatable
         'major',
         'date_to_top',
         'status_to_top',
+        'remember_token',
+        'email_verified_at'
     ];
     /**
      * The attributes that should be hidden for serialization.
