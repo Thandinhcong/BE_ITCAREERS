@@ -25,7 +25,7 @@ class DashBoardController extends Controller
         $company_id = Auth::user()->id;
         $today = Carbon::now();
         $dayRange = [];
-        for ($i = 0; $i < 7; $i++) {
+        for ($i = 6; $i >=0; $i--) {
             $dayRange[] = $today->copy()->subDays($i)->format('Y-m-d');
         }
         $monthRange = array();

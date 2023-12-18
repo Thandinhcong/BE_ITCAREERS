@@ -49,10 +49,10 @@ class FindJobFast extends Controller
             $job_apply = JobPostApply::where('curriculum_vitae_id', $profile->id)->get();
             $today = strtotime(Carbon::now());
             // $date = date('Y/m/d H:i:s', time());
-            $date = now()->format('Y/m/d H:i:s');
+            $date = date('Y/m/d', time());
             $job_fast = JobPostApply::where('candidate_id', $candidate->id)
                 ->where('type_apply', 1)
-                ->where('created_at', '<=', $date) // Sử dụng '>=', nhưng có thể sử dụng '<=' tùy vào yêu cầu
+                ->whereDate('created_at', $date)
                 ->first();
             $major = $candidate->major;
             $skill_profile = SkillProfile::where('profile_id', $profile->id)->get();

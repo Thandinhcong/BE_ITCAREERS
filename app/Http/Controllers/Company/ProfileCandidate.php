@@ -395,9 +395,9 @@ class ProfileCandidate extends Controller
             $profile_open->comment = $request->comment;
             $profile_open->update();
             $company  = Company::where('id', $this->company_id())->first();
-            $company->coin += 500;
+            $company->coin += 200;
             $company->update();
-            updateProcess($this->company_id(), 'Thực hiện Feedback ứng viên + 500 coin', 500, 0, 0);
+            updateProcess($this->company_id(), 'Thực hiện Feedback ứng viên + 200 coin', 200, 0, 0);
             return response()->json([
                 'status' => 'success',
                 'errors' => "Đánh giá thành công",

@@ -19,7 +19,7 @@ class HistoryPayment extends Model
         $dayRange = [];
         $data = [];
 
-        for ($i = 7; $i >= 1; $i--) {
+        for ($i = 6; $i >= 0; $i--) {
 
             $dayRange[] = Carbon::now()->subDays($i)->format('Y-m-d');
         }
@@ -59,7 +59,8 @@ class HistoryPayment extends Model
         $jobPostNormal = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 1)
             ->whereDate('created_at','>=',$dayRange[0])
-            ->whereDate('created_at', '<=', $dayRange[6])            ->select(
+            ->whereDate('created_at', '<=', $dayRange[6])            
+            ->select(
                 DB::raw('count(status) as count'),
                 DB::raw('DATE(created_at) as day')
             )
