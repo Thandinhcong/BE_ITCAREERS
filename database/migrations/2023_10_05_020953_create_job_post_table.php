@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('desc')->comment('Mô tả công việc')->fulltext();
             $table->text('interest')->comment('quyền lợi công việc');
             $table->integer('gender');
-            $table->integer('area_id')->nullable();
+            $table->string('area_id')->nullable();
             $table->integer('major_id');
             $table->date('start_date');
             $table->date('end_date');

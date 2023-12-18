@@ -148,6 +148,7 @@ class JobPostController extends Controller
                 'job_post.working_form_id',
                 'job_post.academic_level_id',
                 'job_post.major_id',
+                'job_post.area_id',
                 'job_post.gender',
                 // 'district.province_id',
                 // 'district.id as district_id',
@@ -295,7 +296,6 @@ class JobPostController extends Controller
                 [
                     'job_post_id' => $job_post->id,
                     'province_id' => $value['province_id'],
-                    'detail' => $value['detail']
                 ]
             );
         }

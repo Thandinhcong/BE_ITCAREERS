@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->tinyInteger('job_post_id');
             $table->integer('province_id');
-            $table->string('detail');
             $table->timestamps();
         });
     }
