@@ -22,7 +22,24 @@ class DashBoardController extends Controller
     }
     public function index(Request $request)
     {
+        // $data = HistoryPayment::getMoneyMonthly();
+        // dd($data);
         $company_id = Auth::user()->id;
+        $today = Carbon::now();
+        $dayRange = [];
+        for ($i = 1; $i <= 7; $i++) {
+            $dayRange[] = $today->copy()->subDays($i)->format('Y-m-d');
+        }
+        $monthRange = array();
+        for ($i = 11; $i >= 0; $i--) {
+            $month = Carbon::today()->startOfMonth()->subMonth($i);
+            $year = Carbon::today()->startOfMonth()->subMonth($i)->format('Y');
+            array_push($monthRange, array(
+                'month' => $month->month,
+                'year' => $year
+            ));
+        }
+
         $this->v['count_apply_post'] = DB::table('job_post')
             ->where('job_post.company_id', '=', $company_id)
             ->leftJoin('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
@@ -54,151 +71,210 @@ class DashBoardController extends Controller
 
             $item->coin_post = $coin_post ? $coin_post->coin : 0;
         }
+        // coin post vip
+        $coin_post_vip_by_day = [];
+        $coin_post_vip_by_month = [];
 
-        // Hiển thị dữ liệu hoàn chỉnh
-        // dd($this->v['count_apply_post']);
-
-
-
-        $this->v['coin_post_vip'] = DB::table('history_payments')
-            ->where('user_id', '=', $company_id)
-            ->where('type_account', '=', 0)
-            ->where('type_coin', '=', 1)
+        $coin_post_vip_day = HistoryPayment::where('user_id', $company_id)
+            ->where('type_account', 0)
+            ->where('type_coin', 1)
             ->where('note', 'LIKE', '%vip%')
-            ->sum('coin');
-        $this->v['coin_post_normal'] = DB::table('history_payments')
-            ->where('user_id', '=', $company_id)
-            ->where('type_account', '=', 0)
-            ->where('type_coin', '=', 1)
+            ->select(
+                DB::raw('DATE(created_at) as day'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('day')
+            ->get()
+            ->toArray();
+
+        foreach ($dayRange as $day) {
+            $total = 0;
+            foreach ($coin_post_vip_day as $item) {
+                if (strtotime($item['day']) == strtotime($day)) {
+                    $total = $item['total_coin'];
+                }
+            }
+            $coin_post_vip_by_day[] = $total;
+        }
+        $coin_post_vip_month = HistoryPayment::where('user_id', $company_id)
+            ->where('type_account', 0)
+            ->where('type_coin', 1)
+            ->where('note', 'LIKE', '%vip%')
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('month')
+            ->get()
+            ->toArray();
+
+        foreach ($monthRange as $month) {
+            $total = 0;
+            foreach ($coin_post_vip_month as $item) {
+                if ($item['month'] == $month['month']) {
+                    $total = $item['total_coin'];
+                }
+            }
+            $coin_post_vip_by_month[] = $total;
+        }
+
+        $this->v['coin_post_vip_by_day'] = $coin_post_vip_by_day;
+        $this->v['coin_post_vip_by_month'] = $coin_post_vip_by_month;
+        // coin post normal
+        $coin_post_normal_by_day = [];
+        $coin_post_normal_by_month = [];
+
+        $coin_post_normal_day = HistoryPayment::where('user_id', $company_id)
+            ->where('type_account', 0)
+            ->where('type_coin', 1)
             ->where('note', 'LIKE', '%thường%')
-            ->sum('coin');
-        $this->v['coin_profile_open'] = DB::table('profile_open')
-            ->where('company_id', '=', $company_id)
-            ->sum('coin');
-
-        $today = Carbon::now();
-        $oneMonthAgo = $today->copy()->subMonth();
-        $oneYearAgo = $today->copy()->subYear();
-        $sevenDaysAgo = $today->copy()->subDays(7);
-
-        $profile_history_last_7_days = DB::table('profile_open')
-            ->where('company_id', $company_id)
-            ->whereBetween('created_at', [$sevenDaysAgo, $today])
-            ->groupBy('date')
-            ->selectRaw('DATE(created_at) as date, SUM(coin) as total_coin')
+            ->select(
+                DB::raw('DATE(created_at) as day'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('day')
             ->get()
             ->toArray();
-        $spend_coin_last_7_days = DB::table('history_payments')
-            ->where('user_id', '=', $company_id)
-            ->where('type_account', '=', 0)
-            ->where('type_coin', '=', 1)
-            ->whereBetween('created_at', [$sevenDaysAgo, $today])
-            ->groupBy('date')
-            ->selectRaw('DATE(created_at) as date, SUM(coin) as total_coin')
-            ->get()
-            ->toArray();
-        $mergedData = [];
-
-        foreach ($profile_history_last_7_days as $item) {
-            $mergedData[$item->date]['profile_total_coin'] = $item->total_coin;
-        }
-
-        foreach ($spend_coin_last_7_days as $item) {
-            if (!isset($mergedData[$item->date])) {
-                $mergedData[$item->date] = [];
+        foreach ($dayRange as $day) {
+            $total = 0;
+            foreach ($coin_post_normal_day as $item) {
+                if (strtotime($item['day']) == strtotime($day)) {
+                    $total = $item['total_coin'];
+                }
             }
-            $mergedData[$item->date]['spend_total_coin'] = $item->total_coin;
+            $coin_post_normal_by_day[] = $total;
         }
-        $totalCoinByDate = [];
-        for ($i = 0; $i < 7; $i++) {
-            $date = date('Y-m-d', strtotime("-$i days"));
-            $profileTotalCoin = isset($mergedData[$date]['profile_total_coin']) ? $mergedData[$date]['profile_total_coin'] : 0;
-            $spendTotalCoin = isset($mergedData[$date]['spend_total_coin']) ? $mergedData[$date]['spend_total_coin'] : 0;
-            $totalCoinByDate[$date] = $profileTotalCoin + $spendTotalCoin;
+        $coin_post_normal_month = HistoryPayment::where('user_id', $company_id)
+            ->where('type_account', 0)
+            ->where('type_coin', 1)
+            ->where('note', 'LIKE', '%thường%')
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('month')
+            ->get()
+            ->toArray();
+
+        foreach ($monthRange as $month) {
+            $total = 0;
+            foreach ($coin_post_normal_month as $item) {
+                if ($item['month'] == $month['month']) {
+                    $total = $item['total_coin'];
+                }
+            }
+            $coin_post_normal_by_month[] = $total;
         }
 
-        $this->v['spend_coin_last_7_days'] = $totalCoinByDate;
+        $this->v['coin_post_normal_by_day'] = $coin_post_normal_by_day;
+        $this->v['coin_post_normal_by_month'] = $coin_post_normal_by_month;
+        // coin open profile
+        $coin_open_profile_by_day = [];
+        $coin_open_profile_by_month = [];
+
+        $coin_cv_day = ProfileOpen::where('company_id', $company_id)
+            ->select(
+                DB::raw('DATE(created_at) as day'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('day')
+            ->get()
+            ->toArray();
+        foreach ($dayRange as $day) {
+            $total = 0;
+            foreach ($coin_cv_day as $item) {
+                if (strtotime($item['day']) == strtotime($day)) {
+                    $total = $item['total_coin'];
+                }
+            }
+            $coin_open_profile_by_day[] = $total;
+        }
+        $coin_cv_month = ProfileOpen::where('company_id', $company_id)
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('month')
+            ->get()
+            ->toArray();
+
+        foreach ($monthRange as $month) {
+            $total = 0;
+            foreach ($coin_cv_month as $item) {
+                if ($item['month'] == $month['month']) {
+                    $total = $item['total_coin'];
+                }
+            }
+            $coin_open_profile_by_month[] = $total;
+        }
+        $this->v['coin_open_profile_by_day'] = $coin_open_profile_by_day;
+        $this->v['coin_open_profile_by_month'] = $coin_open_profile_by_month;
+        ////////////////////////////////////////////////////////////////
+        // SỐ TIỀN CHI TIÊU
+        // day
+        $spend_coin_payment_day = HistoryPayment::where('user_id', $company_id)
+            ->where('type_account', 0)
+            ->where('type_coin', 1)
+            ->select(
+                DB::raw('DATE(created_at) as day'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('day')
+            ->get()
+            ->toArray();
+        $spend_coin_day = [];
+        foreach ($dayRange as $day) {
+            $totalCoinCV = 0;
+            $totalSpendCoin = 0;
+
+            foreach ($coin_cv_day as $item) {
+                if (strtotime($item['day']) == strtotime($day)) {
+                    $totalCoinCV = $item['total_coin'];
+                }
+            }
+
+            foreach ($spend_coin_payment_day as $item) {
+                if (strtotime($item['day']) == strtotime($day)) {
+                    $totalSpendCoin = $item['total_coin'];
+                }
+            }
+
+            $spend_coin_day[] = $totalCoinCV + $totalSpendCoin;
+        }
+
+        $this->v['spend_coin_day'] = $spend_coin_day;
         // month
-        // Câu truy vấn lịch sử mở profile theo tháng
-        $profile_history_by_month = DB::table('profile_open')
-            ->where('company_id', $company_id)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->selectRaw('MONTH(created_at) as month, SUM(coin) as total_coin')
+        $spend_coin_payment_month = HistoryPayment::where('user_id', $company_id)
+            ->where('type_account', 0)
+            ->where('type_coin', 1)
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(coin) as total_coin'),
+            )
+            ->groupBy('month')
             ->get()
             ->toArray();
+        $spend_coin_month = [];
+        foreach ($monthRange as $month) {
+            $totalCoinCV = 0;
+            $totalSpendCoin = 0;
 
-        // Câu truy vấn lịch sử thanh toán theo tháng
-        $spend_coin_by_month = DB::table('history_payments')
-            ->where('user_id', '=', $company_id)
-            ->where('type_account', '=', 0)
-            ->where('type_coin', '=', 1)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->selectRaw('MONTH(created_at) as month, SUM(coin) as total_coin')
-            ->get()
-            ->toArray();
-
-        $mergedData = [];
-
-        foreach ($profile_history_by_month as $item) {
-            $mergedData[$item->month]['profile_total_coin'] = $item->total_coin;
-        }
-
-        foreach ($spend_coin_by_month as $item) {
-            if (!isset($mergedData[$item->month])) {
-                $mergedData[$item->month] = [];
+            foreach ($coin_cv_month as $item) {
+                if ($item['month'] == $month['month']) {
+                    $totalCoinCV = $item['total_coin'];
+                }
             }
-            $mergedData[$item->month]['spend_total_coin'] = $item->total_coin;
-        }
 
-        $totalCoinByMonth = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $profileTotalCoin = isset($mergedData[$i]['profile_total_coin']) ? $mergedData[$i]['profile_total_coin'] : 0;
-            $spendTotalCoin = isset($mergedData[$i]['spend_total_coin']) ? $mergedData[$i]['spend_total_coin'] : 0;
-            $totalCoinByMonth[$i] = $profileTotalCoin + $spendTotalCoin;
-        }
-        $this->v['spend_coin_by_month'] = $totalCoinByMonth;
-
-        // Câu truy vấn lịch sử mở profile theo năm
-        $profile_history_by_year = DB::table('profile_open')
-            ->where('company_id', $company_id)
-            ->whereBetween('created_at', [$oneYearAgo, $today])
-            ->groupBy(DB::raw('YEAR(created_at)'))
-            ->selectRaw('YEAR(created_at) as year, SUM(coin) as total_coin')
-            ->get()
-            ->toArray();
-
-        // Câu truy vấn lịch sử thanh toán theo năm
-        $spend_coin_by_year = DB::table('history_payments')
-            ->where('user_id', '=', $company_id)
-            ->where('type_account', '=', 0)
-            ->where('type_coin', '=', 1)
-            ->whereBetween('created_at', [$oneYearAgo, $today])
-            ->groupBy(DB::raw('YEAR(created_at)'))
-            ->selectRaw('YEAR(created_at) as year, SUM(coin) as total_coin')
-            ->get()
-            ->toArray();
-
-        $mergedData = [];
-
-        foreach ($profile_history_by_year as $item) {
-            $mergedData[$item->year]['profile_total_coin'] = $item->total_coin;
-        }
-
-        foreach ($spend_coin_by_year as $item) {
-            if (!isset($mergedData[$item->year])) {
-                $mergedData[$item->year] = [];
+            foreach ($spend_coin_payment_month as $item) {
+                if ($item['month'] == $month['month']) {
+                    $totalSpendCoin = $item['total_coin'];
+                }
             }
-            $mergedData[$item->year]['spend_total_coin'] = $item->total_coin;
-        }
-        $totalCoinByYear = [];
 
-        for ($i = date('Y'); $i >= date('Y') - 1; $i--) {
-            $profileTotalCoin = isset($mergedData[$i]['profile_total_coin']) ? $mergedData[$i]['profile_total_coin'] : 0;
-            $spendTotalCoin = isset($mergedData[$i]['spend_total_coin']) ? $mergedData[$i]['spend_total_coin'] : 0;
-            $totalCoinByYear[$i] = $profileTotalCoin + $spendTotalCoin;
+            $spend_coin_month[] = $totalCoinCV + $totalSpendCoin;
         }
-
-        $this->v['spend_coin_by_year'] = $totalCoinByYear;
+        $this->v['spend_coin_month'] = $spend_coin_month;
+        ////////////////////////////////
         $this->v['coin_payment'] = DB::table('history_payments')
             ->where('user_id', '=', $company_id)
             ->where('note', 'like', '%' . 'coin vào tài khoản' . '%')
@@ -215,9 +291,6 @@ class DashBoardController extends Controller
             ->where('company_id', '=', $company_id)
             ->sum('coin');
         $this->v['spend_coin'] = $spend_coin_profile + $spend_coin_payment;
-        return response()->json([
-            'status' => true,
-            $this->v
-        ], 200);
+        return  $this->v;
     }
 }
