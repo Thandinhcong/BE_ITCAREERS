@@ -293,6 +293,55 @@ class DashBoardController extends Controller
             ->where('company_id', '=', $company_id)
             ->sum('coin');
         $this->v['spend_coin'] = $spend_coin_profile + $spend_coin_payment;
+        // statistics apply 
+        $this->v['count_all_apply'] = DB::table('job_post')
+            ->join('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->where('company_id', '=', $company_id)
+            ->count('job_post_apply.id');
+        $count_apply_by_day = [];
+        $count_apply_by_month = [];
+        $count_apply_day = JobPost::where('company_id', '=', $company_id)
+            ->join('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->where('company_id', '=', $company_id)
+            ->select(
+                DB::raw('DATE(job_post_apply.created_at) as day'),
+                DB::raw('COUNT(job_post_apply.id) as count_apply'),
+            )
+            ->groupBy('day')
+            ->get()
+            ->toArray();
+        foreach ($dayRange as $day) {
+            $total = 0;
+            foreach ($count_apply_day as $item) {
+                if (strtotime($item['day']) == strtotime($day)) {
+                    $total = $item['count_apply'];
+                }
+            }
+            $count_apply_by_day[] = $total;
+        }
+
+        $count_apply_month = JobPost::where('company_id', '=', $company_id)
+            ->join('job_post_apply', 'job_post.id', '=', 'job_post_apply.job_post_id')
+            ->where('company_id', '=', $company_id)
+            ->select(
+                DB::raw('MONTH(job_post_apply.created_at) as month'),
+                DB::raw('COUNT(job_post_apply.id) as count_apply'),
+            )
+            ->groupBy('month')
+            ->get()
+            ->toArray();
+        foreach ($monthRange as $month) {
+            $total = 0;
+            foreach ($count_apply_month as $item) {
+                if ($item['month'] == $month['month']) {
+                    $total = $item['count_apply'];
+                }
+            }
+            $count_apply_by_month[] = $total;
+        }
+
+        $this->v['count_apply_by_day'] = $count_apply_by_day;
+        $this->v['count_apply_by_month'] = $count_apply_by_month;
         return  $this->v;
     }
 }
