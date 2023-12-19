@@ -516,8 +516,8 @@
                                     @if ( $data['status']==2)
 
                                         <p>Bài đăng của bạn với tiêu đề là
-                                            <a href="#"><b>{{$data['title']}}</b></a> có vấn đề như sau: $data['assess_admin']
-                                            vui lòng sửa lại theo đúng quy định của web
+                                            <a href="#"><b>{{$data['title']}}</b></a> có vấn đề như sau: {{$data['assess_admin']}}.
+                                             Vui lòng sửa lại theo đúng quy định của web
                                         </p>
                                         </p>
                                       @else
