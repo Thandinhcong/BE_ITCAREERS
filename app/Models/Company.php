@@ -40,7 +40,9 @@ class Company extends Authenticatable
         'coin',
         'status',
         'company_size_max',
-        'company_size_min'
+        'company_size_min',
+        'remember_token',
+        'email_verified_at'
     ];
     /**
      * The attributes that should be hidden for serialization.

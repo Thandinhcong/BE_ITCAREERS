@@ -33,10 +33,11 @@ class HistoryPayment extends Model
             ->groupBy('day')
             ->get()
             ->toArray();
+        dd($dayRange[0], $dayRange[6], $totalMoneyDay, $dayRange);
         $jobPost = JobPost::where('start_date', '<=', now()->format('Y-m-d'))
             ->where('end_date', '>=', now()->format('Y-m-d'))
             ->where('job_post.status', 1)
-            ->whereDate('created_at','>=',$dayRange[0])
+            ->whereDate('created_at', '>=', $dayRange[0])
             ->whereDate('created_at', '<=', $dayRange[6])
             ->select(
                 DB::raw('count(status) as count'),
@@ -47,9 +48,9 @@ class HistoryPayment extends Model
             ->toArray();
         $jobPostVip = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 2)
-            ->whereDate('created_at','>=',$dayRange[0])
+            ->whereDate('created_at', '>=', $dayRange[0])
             ->whereDate('created_at', '<=', $dayRange[6])
-                        ->select(
+            ->select(
                 DB::raw('count(status) as count'),
                 DB::raw('DATE(created_at) as day')
             )
@@ -137,7 +138,7 @@ class HistoryPayment extends Model
             ->groupBy('month')
             ->get()
             ->toArray();
-            // dd($jobPostMonth);
+        // dd($jobPostMonth);
         $jobPostVipMonth = JobPost::where('job_post.status', 1)
             ->where('job_post.type_job_post_id', 2)
             ->select(
@@ -180,7 +181,7 @@ class HistoryPayment extends Model
             }
             $followMonth['staticJobFollowMonth'][] = $total;
         }
-            // dd($followMonth['staticJobFollowMonth']);
+        // dd($followMonth['staticJobFollowMonth']);
         foreach ($monthRange as $month) {
             $total = 0;
             foreach ($jobPostVipMonth as $key => $value) {
