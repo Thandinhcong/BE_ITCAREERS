@@ -25,13 +25,13 @@ class RegisterCompanyController extends Controller
             'link_web' => 'required|string',
         ]);
 
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'status' => 'fails',
-        //         'message' => $validator->errors()->first(),
-        //         'errors' => $validator->errors()->toArray(),
-        //     ]);
-        // }
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'fails',
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
         $company = new Company([
             'company_name' => $request->input('company_name'),
             'email' => $request->input('email'),
@@ -76,7 +76,7 @@ class RegisterCompanyController extends Controller
             return redirect("http://localhost:5173/login");
         } elseif ($company->remember_token == null) {
             // return view('email.404');
-        } 
+        }
     }
     public function PassCompanies(Request $request)
     {
