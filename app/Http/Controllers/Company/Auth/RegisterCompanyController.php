@@ -40,7 +40,7 @@ class RegisterCompanyController extends Controller
             'link_web' => $request->input('link_web'),
             'name' => $request->input('name'),
             'address' => $request->input('address'),
-            'remember_token'=>strtoupper(Str::random(10))
+            'remember_token' => strtoupper(Str::random(10))
 
         ]);
         $company->save();
@@ -58,20 +58,17 @@ class RegisterCompanyController extends Controller
             $manage_web->name_web . ' - Xác nhận tài khoản',
             'emails.active_acc_company'
         ));
-        Mail::send('emails.active_acc_company', compact('data'), function ($email) use ($data) {
-            $email->subject('UbWork - Xác nhận tài khoản');
-            $email->to($data['email'], $data['name']);
-        });
         return response()->json([
             'status' => 'success',
         ], 200);
     }
-    public function activeCompany(Company $company,$token)
+    public function activeCompany(Company $company, $token)
     {
         if ($company->remember_token === $token) {
             $company->update([
                 'email_verified_at' => Carbon::now(),
-                'remember_token' => null
+                'remember_token' => null,
+                'status' => 1,
             ]);
             return redirect("http://localhost:5173/login");
         } elseif ($company->remember_token == null) {
