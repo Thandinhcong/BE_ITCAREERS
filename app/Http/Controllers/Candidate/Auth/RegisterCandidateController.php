@@ -66,7 +66,7 @@ class RegisterCandidateController extends Controller
     {
         if ($candidate->remember_token === $token) {
             $candidate->update([
-                
+                'status'=>1,
                 'email_verified_at' => Carbon::now(),
                 'remember_token' => null
             ]);

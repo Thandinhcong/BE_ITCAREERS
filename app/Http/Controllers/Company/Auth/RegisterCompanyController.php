@@ -20,9 +20,17 @@ class RegisterCompanyController extends Controller
         $validator = Validator::make($request->all(), [
             'company_name' => 'required|string',
             'email' => 'required|string|email|unique:companies',
-            'password' => 'required|string|confirmed',
+            // 'password' => 'required|string|confirmed',
             'phone' => 'required|string|unique:companies',
             'link_web' => 'required|string',
+            'address'=>'required',
+            // 'founded_in'=>'required|date',
+            'name'=>'required',
+            'office'=>'required',
+            'image_paper'=>'required',
+            'description'=>'required',
+            'company_size_max' => 'required',
+            'company_size_min' => 'required|lte:company_size_max'
         ]);
 
         // if ($validator->fails()) {
@@ -40,7 +48,13 @@ class RegisterCompanyController extends Controller
             'link_web' => $request->input('link_web'),
             'name' => $request->input('name'),
             'address' => $request->input('address'),
-            'remember_token'=>strtoupper(Str::random(10))
+            'remember_token'=>strtoupper(Str::random(10)),
+            // 'founded_in'=>$request->input('founded_in'),
+            'office'=>$request->input('office'),
+            'image_paper'=>$request->input('image_paper'),
+            'description'=>$request->input('description'),
+            'company_size_max' => $request->input('company_size_max'),
+            'company_size_min' => $request->input('company_size_min')
 
         ]);
         $company->save();
@@ -58,10 +72,10 @@ class RegisterCompanyController extends Controller
             $manage_web->name_web . ' - Xác nhận tài khoản',
             'emails.active_acc_company'
         ));
-        Mail::send('emails.active_acc_company', compact('data'), function ($email) use ($data) {
-            $email->subject('UbWork - Xác nhận tài khoản');
-            $email->to($data['email'], $data['name']);
-        });
+        // Mail::send('emails.active_acc_company', compact('data'), function ($email) use ($data) {
+        //     $email->subject('UbWork - Xác nhận tài khoản');
+        //     $email->to($data['email'], $data['name']);
+        // });
         return response()->json([
             'status' => 'success',
         ], 200);
@@ -73,7 +87,7 @@ class RegisterCompanyController extends Controller
                 'email_verified_at' => Carbon::now(),
                 'remember_token' => null
             ]);
-            return redirect("http://localhost:5173/login");
+            return redirect("http://localhost:5173/business/signin");
         } elseif ($company->remember_token == null) {
             // return view('email.404');
         } 
