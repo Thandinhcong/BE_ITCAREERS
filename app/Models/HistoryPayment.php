@@ -24,6 +24,7 @@ class HistoryPayment extends Model
             $dayRange[] = Carbon::now()->subDays($i)->format('Y-m-d');
         }
         $totalMoneyDay = HistoryPayment::where('type_coin', 0)
+        ->whereNot('note','like','%Thực hiện Feedback ứng viên + 200 coin%')
         ->whereDate('created_at', '>=', $dayRange[0])
         ->whereDate('created_at', '<=', $dayRange[6])
             ->select(
@@ -33,7 +34,6 @@ class HistoryPayment extends Model
             ->groupBy('day')
             ->get()
             ->toArray();
-        dd($dayRange[0], $dayRange[6], $totalMoneyDay, $dayRange);
         $jobPost = JobPost::where('start_date', '<=', now()->format('Y-m-d'))
             ->where('end_date', '>=', now()->format('Y-m-d'))
             ->where('job_post.status', 1)
