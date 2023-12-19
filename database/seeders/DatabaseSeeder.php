@@ -61,10 +61,10 @@ class DatabaseSeeder extends Seeder
         ManagementWeb::create([
             'logo' => 'https://res.cloudinary.com/dxzlnojyv/image/upload/v1700241139/essxedc0cwpivyfztsog.png',
             'banner' => 150,
-            'name_web' => 'Beework',
+            'name_web' => 'BEWORK',
             'company_name' => 'Công ty cổ phần bework',
             'address' => 'Hà nội',
-            'email' => 'beework@gmail.com',
+            'email' => 'bework@gmail.com',
             'phone' => '09842751073',
             'sdt_lienhe' => '09842751073',
         ]);
