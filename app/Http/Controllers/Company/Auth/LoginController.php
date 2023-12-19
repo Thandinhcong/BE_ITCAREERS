@@ -41,6 +41,11 @@ class LoginController extends Controller
                 'status' => false,
                 'message' => 'Tài khoản của bạn đã bị khóa!!!'
             ], 400);
+        } if (Auth::guard('company')->user()->email_verified_at == null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản của bạn chưa xác thực!!!'
+            ], 400);
         }
         $user = Auth::guard('company')->user();
         $tokenResult = $user->createToken('Personal Access Token');

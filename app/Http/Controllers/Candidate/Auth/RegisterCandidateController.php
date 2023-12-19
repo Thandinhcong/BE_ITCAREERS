@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Candidate\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use App\Models\Candidate;
 use App\Models\ManagementWeb;
 use Carbon\Carbon;
@@ -48,11 +49,15 @@ class RegisterCandidateController extends Controller
         $data['id'] = $candidate->id;
         $data['name_web'] = $manage_web->name_web;
         $data['logo'] =  $manage_web->logo;
-        // dd($data);
-        Mail::send('emails.active-acc', compact('data'), function ($email) use ($data) {
-            $email->subject('UbWork - Xác nhận tài khoản');
-            $email->to($data['email'], $data['name']);
-        });
+         dispatch(new SendEmailJob(
+                    $data,
+                    $manage_web->name_web . ' - Xác nhận tài khoản',
+                    'emails.active-acc'
+                ));
+        // Mail::send('emails.active-acc', compact('data'), function ($email) use ($data) {
+        //     $email->subject('UbWork - Xác nhận tài khoản');
+        //     $email->to($data['email'], $data['name']);
+        // });
         return response()->json([
             'status' => 'success',
         ], 200);

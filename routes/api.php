@@ -187,6 +187,7 @@ Route::group([
     Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
     Route::post('forget_password', [\App\Http\Controllers\Company\Auth\LoginController::class, 'forget_password']);
+    Route::get('/actived/{company}/{token}',[\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'activeCompany'])->name('activedCompany');
 
     Route::group([
         'middleware' => 'auth:company-api'
