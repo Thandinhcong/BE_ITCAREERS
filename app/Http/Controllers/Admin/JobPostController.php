@@ -85,7 +85,7 @@ class JobPostController extends Controller
     {
         $valdator = Validator::make($request->all(), [
             'status' => 'required|in:1,2',
-            'assess_admin' => 'required'
+            // 'assess_admin' => 'required'
         ]);
         if ($valdator->fails()) {
             return response()->json([
