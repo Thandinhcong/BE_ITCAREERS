@@ -19,47 +19,49 @@ class LoginGoogleController extends Controller
 
     public function handleGoogleCallback(Request $request)
     {
-        // try {
-        //     $google_user = Socialite::driver('google')->user();
-        //     $google_user->expiresIn = 6 * 3600;
-
-        //     $user = Candidate::where('google_id', $google_user->getId())
-        //         ->orWhere('email', $google_user->getEmail())
-        //         ->first();
-        //     if ($user) {
-        //         $token = $user->createToken('API Token')->accessToken;
-        //         $cookie = Cookie::make('access_token', $token, 120); // 120 phút
-        //         return redirect()->away('http://localhost:5173')->withCookie($cookie);
-        //     } else {
-        //         $new_user = Candidate::create([
-        //             'name' => $google_user->getName(),
-        //             'email' => $google_user->getEmail(),
-        //             'google_id' => $google_user->getId(),
-        //             'image' => $google_user->getAvatar(),
-        //         ]);
-        //         $token = $new_user->createToken('API Token')->accessToken;
-        //         $cookie = Cookie::make('access_token', $token, 120); // 120 phút
-        //         return redirect()->away('http://localhost:5173')->withCookie($cookie);
-        //     }
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => $e->getMessage()], 500);
-        // }
         try {
             $google_user = Socialite::driver('google')->user();
+            $google_user->expiresIn = 6 * 3600;
+
             $user = Candidate::where('google_id', $google_user->getId())
                 ->orWhere('email', $google_user->getEmail())
                 ->first();
-            if (!$user) {
-                Candidate::create([
+            if ($user) {
+                $token = $user->createToken('API Token')->accessToken;
+                $cookie = Cookie::make('user', $token, 120); // 120 phút
+                return redirect()->away('http://localhost:5173')->withCookie($cookie);
+            } else {
+                $new_user = Candidate::create([
                     'name' => $google_user->getName(),
                     'email' => $google_user->getEmail(),
                     'google_id' => $google_user->getId(),
                     'image' => $google_user->getAvatar(),
                 ]);
+                $token = $new_user->createToken('API Token')->accessToken;
+                $cookie = Cookie::make('user', $token, 120); // 120 phút
+                return redirect()->away('http://localhost:5173')->withCookie($cookie);
             }
-            return redirect('http://localhost:5173?token=' . $google_user->token);
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+        // $google_user = Socialite::driver('google')->user();
+        // $user = Candidate::where('google_id', $google_user->getId())
+        //     ->orWhere('email', $google_user->getEmail())
+        //     ->first();
+    
+        // if (!$user) {
+        //     $user = Candidate::create([
+        //         'name' => $google_user->getName(),
+        //         'email' => $google_user->getEmail(),
+        //         'google_id' => $google_user->getId(),
+        //         'image' => $google_user->getAvatar(),
+        //     ]);
+        // }
+    
+        // // Tạo token và đặt cho user
+        // $token = $user->createToken('AppName')->accessToken;
+    
+        // // Redirect với token
+        // return redirect()->to("http://127.0.0.1:8000?token=$token");
     }        
 }
