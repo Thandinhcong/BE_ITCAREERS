@@ -19,10 +19,10 @@ class RegisterCandidateController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            // 'name' => 'required|string',
-            // 'email' => 'required|string|email|unique:candidates',
-            // // 'password' => 'required|string|confirmed',
-            // 'phone' => 'required|string|unique:candidates',
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:candidates',
+            'password' => 'required|string|confirmed',
+            'phone' => 'required|string|unique:candidates',
 
         ]);
 

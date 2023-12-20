@@ -253,9 +253,31 @@ class JobPostController extends Controller
                     ], 422);
                 }
                 //Thanh toán  $coinForJob_post xu cho bài đăng loại $jobPostType->name  $request->title trong $interval ngày
+                $job_post = JobPost::create(
+                    [
+                        "working_form_id"=>$request->working_form_id,
+                        "title"=>$request->title,
+                        "desc"=>$request->desc,
+                        "job_position_id"=>$request->job_position_id  ,                   
+                        "area_id"=>$request->area_id,
+                        "academic_level_id"=>$request->academic_level_id,
+                        "exp_id"=>$request->exp_id,
+                        "gender"=>$request->gender,
+                        "major_id"=>$request->major_id,
+                        "type_job_post_id"=>$request->type_job_post_id,
+                        "quantity"=>$request->quantity,
+                        "min_salary"=>$request->min_salary,
+                        "max_salary"=>$request->max_salary,
+                        "interest"=>$request->interest,
+                        "requirement"=>$request->requirement,
+                        "start_date"=>$request->start_date,
+                        "end_date"=>$request->end_date,
+                       "company_id"=>$this->company_id(),
+                        
+                    ]
+                );
                 Company::find($this->company_id())->update(['coin' => $coinCompanyAffter]);
                 updateProcess($this->company_id(), "Thanh toán bài đăng loại {$jobPostType->name} với tiêu đề là {$request->title} trong {$interval} ngày", $coinForJob_post, 1, 0);
-                $job_post = JobPost::create($request->all());
                 break;
         }
         if ($job_post) {

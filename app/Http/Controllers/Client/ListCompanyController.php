@@ -58,8 +58,8 @@ class ListCompanyController extends Controller
             $count_company = $list_company->count();
         } else {
             $list_company = DB::table('companies')
-                ->join('job_post', 'job_post.company_id', '=', 'companies.id')
-                ->groupBy('job_post.company_id')
+                ->leftJoin('job_post', 'job_post.company_id', '=', 'companies.id')
+                ->groupBy('companies.id')
                 ->select(
                     'companies.id',
                     'companies.company_name',
@@ -85,7 +85,7 @@ class ListCompanyController extends Controller
                     'companies.created_at',
                     'companies.updated_at',
                     'companies.deleted_at',
-                    DB::raw('count(*) as job_post_company'),
+                    DB::raw('count(job_post.id) as job_post_company'),
 
                 )->get();
             $count_company = $list_company->count();
