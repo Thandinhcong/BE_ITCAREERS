@@ -45,8 +45,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 // Login google candidate
-Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
-Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleCallback']);
+// Route::get('/auth/google', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [\App\Http\Controllers\Client\Auth\LoginGoogleController::class, 'handleGoogleLogin']);
 Route::post('get-pass-company/{candidate}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'postPassCompany']);
 
 
@@ -86,7 +86,7 @@ Route::resource('experience', ExperienceController::class);
 Route::resource('major  ', \App\Http\Controllers\Admin\MajorController::class);
 
 Route::resource('rev-sta', \App\Http\Controllers\Admin\RevenueStatisticsController::class);
-  
+
 
 
 //Candidates
@@ -96,7 +96,7 @@ Route::group([
     Route::post('register', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'register']);
     Route::post('login', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'login'])->name('login');
     Route::post('forget_password', [\App\Http\Controllers\Candidate\Auth\LoginController::class, 'forget_password']);
-    Route::get('/actived/{candidate}/{token}',[\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'activeCandidate'])->name('actived');
+    Route::get('/actived/{candidate}/{token}', [\App\Http\Controllers\Candidate\Auth\RegisterCandidateController::class, 'activeCandidate'])->name('actived');
 
     Route::group([
         'middleware' => 'auth:candidate-api'
@@ -187,7 +187,7 @@ Route::group([
     Route::post('refresh-pass-company', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'PassCompanies']);
     Route::post('login', [\App\Http\Controllers\Company\Auth\LoginController::class, 'login']);
     Route::post('forget_password', [\App\Http\Controllers\Company\Auth\LoginController::class, 'forget_password']);
-    Route::get('/actived/{company}/{token}',[\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'activeCompany'])->name('activedCompany');
+    Route::get('/actived/{company}/{token}', [\App\Http\Controllers\Company\Auth\RegisterCompanyController::class, 'activeCompany'])->name('activedCompany');
 
     Route::group([
         'middleware' => 'auth:company-api'
