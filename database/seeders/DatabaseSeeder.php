@@ -51,12 +51,13 @@ class DatabaseSeeder extends Seeder
         ]);
         JobPostType::create([
             'name' => 'Bài đăng thường',
-            'desc'=>'nội dung',
-            'salary' => 100,
-        ]);JobPostType::create([
+            'desc' => '<p>-&nbsp;Tiêu đề tin: chữ in thường, có màu đen</p><p>-&nbsp;Hiển thị phía dưới cùng kết quả tìm kiếm&nbsp;và dưới tin vip</p><p>-&nbsp;Lựa chọn thời gian đăng tin tối thiểu 10 ngày</p><p>-&nbsp;Tin được hệ thống duyệt sau 2 tiếng đăng tin</p><p>-&nbsp;Mức giá từ 1.000đ/ngày</p>',
+            'salary' => 1000,
+        ]);
+        JobPostType::create([
             'name' => 'Bài đăng Vip',
-            'desc'=>'nội dung 1',
-            'salary' => 150,
+            'desc' => '<p>-&nbsp;Tiêu đề tin: chữ in thường, có màu cam nổi bật</p><p>-&nbsp;Hiển thị vị trí tìm kiếm trên tin thường</p><p>-&nbsp;Lựa chọn thời gian đăng tin tối thiểu 10 ngày</p><p>-&nbsp;Nhãn nổi bật (nếu có) có background màu đỏ nổi bật thu hút sự chú ý.</p><p>-&nbsp;Tin được hệ thống duyệt nhanh chóng, tự động sau 30 phút đăng tin</p><p>-&nbsp;Mức giá từ 2.000đ/ngày</p>',
+            'salary' => 2000,
         ]);
         ManagementWeb::create([
             'logo' => 'https://res.cloudinary.com/dxzlnojyv/image/upload/v1700241139/essxedc0cwpivyfztsog.png',
@@ -75,8 +76,9 @@ class DatabaseSeeder extends Seeder
                 'price' => 100000,
                 'reduced_price' => 1,
                 'status' => 1,
-                'type_account'=>0,
-            ]);
+                'type_account' => 0,
+            ]
+        );
         Packages::create(
             [
                 'title' => 'Gói nạp ứng viên',
@@ -84,7 +86,7 @@ class DatabaseSeeder extends Seeder
                 'price' => 100000,
                 'reduced_price' => 1,
                 'status' => 1,
-                'type_account'=>1,
+                'type_account' => 1,
             ]
         );
     }
