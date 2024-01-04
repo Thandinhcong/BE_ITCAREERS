@@ -38,7 +38,7 @@ class RegisterCandidateController extends Controller
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'phone' => $request->input('phone'),
-            'remember_token'=>strtoupper(Str::random(10))
+            'remember_token' => strtoupper(Str::random(10))
         ]);
         $candidate->save();
         $manage_web = ManagementWeb::find(1);
@@ -49,11 +49,11 @@ class RegisterCandidateController extends Controller
         $data['id'] = $candidate->id;
         $data['name_web'] = $manage_web->name_web;
         $data['logo'] =  $manage_web->logo;
-         dispatch(new SendEmailJob(
-                    $data,
-                    $manage_web->name_web . ' - Xác nhận tài khoản',
-                    'emails.active-acc'
-                ));
+        dispatch(new SendEmailJob(
+            $data,
+            $manage_web->name_web . ' - Xác nhận tài khoản',
+            'emails.active-acc'
+        ));
         // Mail::send('emails.active-acc', compact('data'), function ($email) use ($data) {
         //     $email->subject('UbWork - Xác nhận tài khoản');
         //     $email->to($data['email'], $data['name']);
@@ -62,18 +62,19 @@ class RegisterCandidateController extends Controller
             'status' => 'success',
         ], 200);
     }
-    public function activeCandidate(Candidate $candidate,$token)
+    public function activeCandidate(Candidate $candidate, $token)
     {
         if ($candidate->remember_token === $token) {
             $candidate->update([
-                
+
                 'email_verified_at' => Carbon::now(),
                 'remember_token' => null
             ]);
-            return redirect("http://localhost:5173/login");
+            // return redirect(env('CLIENT_HOST') . "/login");
+            // return redirect()->to(env('CLIENT_HOST') . "/login");
+            return "<script>alert('Kích hoạt tài khoản thành công, Vui lòng đăng nhập');</script>" . redirect()->to(env('CLIENT_HOST') . "/login");
         } elseif ($candidate->remember_token == null) {
-            // return view('email.404');
-        } 
+            return "<script>alert('Tài khoản đã được kích hoạt, Vui lòng không kích hoạt lại');</script>" . redirect()->to(env('CLIENT_HOST') . "/login");
+        }
     }
-
 }

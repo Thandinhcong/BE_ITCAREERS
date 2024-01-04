@@ -496,11 +496,11 @@
             <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
                 style="margin: auto;">
                 <tr>
-                <td valign="top" class="bg_white" style="padding: 1em 2.5em;">
+                    <td valign="top" class="bg_white" style="padding: 1em 2.5em;">
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
-                                    <h1><a href="#"><img src="{{$data['logo']}}" width="40%"></a></h1>
+                                    <h1><a href="#"><img src="{{ $data['logo'] }}" width="40%"></a></h1>
                                 </td>
                             </tr>
                         </table>
@@ -515,11 +515,14 @@
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
                                         <h2 style="color: black;">Beework Xin chào!</h2>
-                                        <p>Đây là email xác thực tài khoản vui lòng nhấn vào kích hoạt tài khoản để sử dụng website của chúng tôi.</p>
+                                        <p>Đây là email xác thực tài khoản vui lòng nhấn vào kích hoạt tài khoản để sử
+                                            dụng website của chúng tôi.</p>
                                         </p>
                                         <button
-                                            style="background-color:#C46F01;border:none;width: 150px;height: 40px;color: #fff;border-radius: 8px;"><a
-                                                href="{{ route('actived', ['candidate' =>  $data['id'], 'token' =>  $data['remeber_token']]) }}" style="color: #fff;text-decoration: none">Kích hoạt tài khoản</a></button>
+                                            style="background-color:#0064fa;border:none;width: 150px;height: 40px;color: #fff;border-radius: 8px;"><a
+                                                href="{{ route('actived', ['candidate' => $data['id'], 'token' => $data['remeber_token']]) }}"
+                                                style="color: #fff;text-decoration: none">Kích hoạt tài
+                                                khoản</a></button>
                                     </div>
                                     <center>
                                         <p>Lưu ý không chia sẻ email này cho bất kỳ ai.</p>
@@ -535,5 +538,3 @@
 </body>
 
 </html>
-
-

@@ -70,9 +70,9 @@ class RegisterCompanyController extends Controller
                 'remember_token' => null,
                 'status' => 1,
             ]);
-            return redirect("http://localhost:5173/login");
+            return "<script>alert('Kích hoạt tài khoản thành công, Vui lòng đăng nhập');</script>" . redirect()->to(env('CLIENT_HOST') . "/business/signin");
         } elseif ($company->remember_token == null) {
-            // return view('email.404');
+            return "<script>alert('Tài khoản đã được kích hoạt, Vui lòng không kích hoạt lại');</script>" . redirect()->to(env('CLIENT_HOST') . "/business/signin");
         }
     }
     public function PassCompanies(Request $request)

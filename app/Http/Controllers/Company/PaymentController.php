@@ -19,9 +19,15 @@ class PaymentController extends Controller
     private $data;
     private $vnp_TmnCode = 'MSJEPJ3Z';
     private $vnp_HashSecret = 'SIXNKWGJKGANJAGNYZCGLDDRASWRIIIU';
+    private $host;
     public function __construct()
     {
         $this->data = [];
+        $this->host = $this->getHost();
+    }
+    private function getHost()
+    {
+        return env('CLIENT_HOST');
     }
     public function getListPackage()
     {
@@ -78,7 +84,7 @@ class PaymentController extends Controller
         $host = $request->getHttpHost();
         // $vnp_Returnurl = url('') . "/api/company/vnpay_return";
         // $vnp_Returnurl = "http://127.0.0.1:5173/business/deposit";
-        $vnp_Returnurl = "http://localhost:5173/business/deposit";
+        $vnp_Returnurl = $this->host . "/business/deposit";
 
         $vnp_TmnCode = $this->vnp_TmnCode; //Website ID in VNPAY System
         $vnp_HashSecret = $this->vnp_HashSecret; //Secret key
@@ -366,7 +372,7 @@ class PaymentController extends Controller
         // }
         return response()->json([
             'status' => true,
-'message' => 'Giao dịch đã thực hiện: ',
+            'message' => 'Giao dịch đã thực hiện: ',
             'data' => $this->data,
 
         ], 200);

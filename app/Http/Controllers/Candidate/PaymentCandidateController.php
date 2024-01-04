@@ -17,9 +17,15 @@ class PaymentCandidateController extends Controller
     private $data;
     private $vnp_TmnCode = 'MSJEPJ3Z';
     private $vnp_HashSecret = 'SIXNKWGJKGANJAGNYZCGLDDRASWRIIIU';
+    private $host;
     public function __construct()
     {
         $this->data = [];
+        $this->host = $this->getHost();
+    }
+    private function getHost()
+    {
+        return env('CLIENT_HOST');
     }
     public function getListPackage()
     {
@@ -74,8 +80,8 @@ class PaymentCandidateController extends Controller
     public function payment(Request $request)
     {
         $host = $request->getHttpHost();
-        $vnp_Returnurl = url('') . "/api/candidate/vnpay_return";
-        $vnp_Returnurl = "http://localhost:5173/user/recharge";
+        // $vnp_Returnurl = url('') . "/api/candidate/vnpay_return";
+        $vnp_Returnurl = $this->host . "/user/recharge";
         $vnp_TmnCode = $this->vnp_TmnCode; //Website ID in VNPAY System
         $vnp_HashSecret = $this->vnp_HashSecret; //Secret key
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
