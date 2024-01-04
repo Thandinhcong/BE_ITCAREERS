@@ -10,16 +10,21 @@ class LevelSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     */protected $level = [
+     */ protected $level = [
         [
-            'level' => 'Fresher',
-            'description' => 'test',
-        ], [
             'level' => 'Senior',
             'description' => 'test',
         ],
         [
             'level' => 'Junior',
+            'description' => 'test',
+        ],
+        [
+            'level' => 'Fresher',
+            'description' => 'test',
+        ],
+        [
+            'level' => 'Intern',
             'description' => 'test',
         ]
     ];
