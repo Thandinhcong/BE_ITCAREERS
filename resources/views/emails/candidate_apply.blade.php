@@ -515,7 +515,7 @@
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
                                         <h2 style="color: black;">{{$data['name_web']}} Xin chào ứng viên {{$data['name']}}!</h2>
-                                        <p>Hiện tại <b>{{$data['name']}}</b> đã ứng tuyển vào bài tuyển dụng <a href="#"><b>{{$data['title']}}</b></a> thành công.</p>
+                                        <p>Xác nhận ứng viên <b>{{$data['name']}}</b> đã ứng tuyển vào bài tuyển dụng có tiêu đề là <a href="#"><b>{{$data['title']}}</b></a> thành công.</p>
                                         </p>
                                     </div>
                                     <!-- <center>

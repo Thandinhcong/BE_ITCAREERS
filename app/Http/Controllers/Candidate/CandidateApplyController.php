@@ -42,6 +42,7 @@ class CandidateApplyController extends Controller
                 'job_post.max_salary',
                 'companies.company_name as company_name',
                 'companies.logo',
+                'companies.email',
                 'job_post_apply.created_at as time_apply',
                 'job_post_apply.updated_at',
                 'job_post_apply.status',
@@ -70,7 +71,12 @@ class CandidateApplyController extends Controller
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
             ->get();
-        $job_apply = JobPost::find($id);
+    $job_apply = DB::table('job_post')
+    ->where('job_post.id', '=', $id)
+    ->join('companies', 'job_post.company_id', '=', 'companies.id')
+    ->select('job_post.*', 'companies.email')
+    ->first();
+
         $now = now();
         if ($job_apply->status == 2 || $job_apply->end_date < $now) {
             return response()->json([
@@ -142,8 +148,17 @@ class CandidateApplyController extends Controller
                     $manage_web->name_web . ' - Bạn đã ứng tuyển thành công',
                     'emails.candidate_apply'
                 ));
+                $data_company = [];
+                $data_company['email'] = $job_apply->email;;
+                $data_company['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
+                $data_company['view'] = 'emails.candidate_apply';
+                $data_company['title'] = $job_apply->title;
+                $data_company['name'] = $candidate_apply->name;
+                $data_company['logo'] = $manage_web->logo;
+                $data_company['name_web'] = $manage_web->name_web;
+                $data_company['company_name'] = $company_apply->company_name;
                 dispatch(new SendEmailJob(
-                    $data,
+                    $data_company,
                     $manage_web->name_web . ' - Ứng viên ứng tuyển',
                     'emails.notification_company_candidate_apply'
                 ));
