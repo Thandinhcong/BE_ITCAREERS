@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class FindJobFast extends Controller
 {
@@ -69,6 +70,7 @@ class FindJobFast extends Controller
                     'job_post.desc',
                     'companies.company_name as company_name',
                     'companies.logo',
+                    'companies.email',
                     'job_post.company_id'
                 )
                 ->leftJoin('companies', 'job_post.company_id', '=', 'companies.id')
@@ -156,9 +158,11 @@ class FindJobFast extends Controller
                     $company_apply = Company::find($item->company_id);
                     $manage_web = ManagementWeb::find(1);
                     $data = [];
+                    $data['id'] = $item->id;
                     $data['email'] = $candidate_apply->email;;
                     $data['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
                     $data['view'] = 'emails.candidate_apply';
+                    $data['href'] =  Str::slug($item->title);
                     $data['title'] = $item->title;
                     $data['name'] = $candidate_apply->name;
                     $data['logo'] = $manage_web->logo;
@@ -166,6 +170,23 @@ class FindJobFast extends Controller
                     $data['company_name'] = $company_apply->company_name;
                     dispatch(new SendEmailJob(
                         $data,
+                        $manage_web->name_web . ' - Bạn đã ứng tuyển thành công',
+                        'emails.candidate_apply'
+                    ));
+
+                    $data_company = [];
+                    $data['id'] = $item->id;
+                    $data_company['email'] = $item->email;;
+                    $data_company['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
+                    $data_company['view'] = 'emails.candidate_apply';
+                    $data['href'] =  Str::slug($item->title);
+                    $data_company['title'] = $item->title;
+                    $data_company['name'] = $candidate_apply->name;
+                    $data_company['logo'] = $manage_web->logo;
+                    $data_company['name_web'] = $manage_web->name_web;
+                    $data_company['company_name'] = $company_apply->company_name;
+                    dispatch(new SendEmailJob(
+                        $data_company,
                         $manage_web->name_web . ' - Ứng viên ứng tuyển',
                         'emails.notification_company_candidate_apply'
                     ));

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class CandidateApplyController extends Controller
 {
@@ -71,11 +72,11 @@ class CandidateApplyController extends Controller
             ->where('job_post_id', $id)
             ->where('candidate_id', $candidate_id)
             ->get();
-    $job_apply = DB::table('job_post')
-    ->where('job_post.id', '=', $id)
-    ->join('companies', 'job_post.company_id', '=', 'companies.id')
-    ->select('job_post.*', 'companies.email')
-    ->first();
+        $job_apply = DB::table('job_post')
+            ->where('job_post.id', '=', $id)
+            ->join('companies', 'job_post.company_id', '=', 'companies.id')
+            ->select('job_post.*', 'companies.email')
+            ->first();
 
         $now = now();
         if ($job_apply->status == 2 || $job_apply->end_date < $now) {
@@ -117,6 +118,9 @@ class CandidateApplyController extends Controller
                 ], 400);
             } else {
                 if ($request['path_cv']) {
+                    $path_cv_old =  $request['path_cv'];
+                    $path_cv_https = str_replace('http://', 'https://', $path_cv_old);
+                    $request['path_cv'] = $path_cv_https;
                     $request['curriculum_vitae_id'] = DB::table('profile')->insertGetId(
                         [
                             'name' => $request['name'],
@@ -134,9 +138,11 @@ class CandidateApplyController extends Controller
             if ($candidate_apply) {
                 $manage_web = ManagementWeb::find(1);
                 $data = [];
+                $data['id'] = $job_apply->id;
                 $data['email'] = $candidate_apply->email;;
                 $data['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
                 $data['view'] = 'emails.candidate_apply';
+                $data['href'] =  Str::slug($job_apply->title);
                 $data['title'] = $job_apply->title;
                 $data['name'] = $candidate_apply->name;
                 $data['logo'] = $manage_web->logo;
@@ -149,9 +155,11 @@ class CandidateApplyController extends Controller
                     'emails.candidate_apply'
                 ));
                 $data_company = [];
+                $data_company['id'] = $job_apply->id;
                 $data_company['email'] = $job_apply->email;;
                 $data_company['subject'] = $manage_web->name_web . ' - Bạn đã ứng tuyển thành công';
                 $data_company['view'] = 'emails.candidate_apply';
+                $data_company['href'] =  Str::slug($job_apply->title);
                 $data_company['title'] = $job_apply->title;
                 $data_company['name'] = $candidate_apply->name;
                 $data_company['logo'] = $manage_web->logo;

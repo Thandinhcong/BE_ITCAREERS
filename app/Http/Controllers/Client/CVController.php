@@ -52,16 +52,16 @@ class CVController extends Controller
                 'message' => 'Bạn đã upload tối đa 3 CV !!!'
             ], 400);
         } else {
-
-            $path_cv = $request->path_cv;
+            $path_cv_old = $request->path_cv;
+            $path_cv_https = str_replace('http://', 'https://', $path_cv_old);
+            $path_cv = $path_cv_https;
             $title = $request->title;
-            $pathInfo = pathinfo($path_cv);
+            $pathInfo = pathinfo($path_cv_https);
             $fileExtension = strtolower($pathInfo['extension']);
             if ($fileExtension === 'pdf') {
                 $candidate = Auth::user();
                 $candidate_id = $candidate->id;
                 $cv = new Profile();
-                $path_cv = $request->path_cv;
                 if ($candidate) {
                     $cv->title = $title;
                     $cv->candidate_id = $candidate_id;

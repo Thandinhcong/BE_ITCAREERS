@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Cookie;
 
 class LoginGoogleController extends Controller
 {
-    // public function redirectToGoogle()
-    // {
-    //     return Socialite::driver('google')->redirect();
-    // }
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')
+        ->with(['hd' => 'http://localhost:5173/'])
+        ->redirect();
+    }
 
     // public function handleGoogleCallback(Request $request)
     // {

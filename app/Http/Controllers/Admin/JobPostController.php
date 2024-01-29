@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ManagementWeb;
 use App\Models\Company;
-
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 class JobPostController extends Controller
@@ -66,7 +66,10 @@ class JobPostController extends Controller
                 'job_post.status',
                 'job_post.type_job_post_id',
                 'type_job_post.name as type_job_post',
-            )->get();
+            )
+            ->selectRaw("(CASE WHEN job_post.status = 0 THEN 1 WHEN job_post.status = 3 THEN 2 WHEN job_post.status = 2 THEN 3 ELSE 4 END) as status_order")
+            ->orderBy('status_order')
+            ->get();
 
         if ($jobPost->count() > 0) {
             return response()->json([
@@ -109,7 +112,7 @@ class JobPostController extends Controller
             $data['title'] = $job_post->title;
             $data['id'] = $job_post->id;
             $data['logo'] =  $manage_web->logo;
-            $data['href'] = preg_replace("/ /", "%20", $job_post->title);
+            $data['href'] =  Str::slug($job_post->title);
             $data['name_web'] =  $manage_web->name_web;
             $data['company_name'] = $company_info->company_name;
             $data['assess_admin'] = $job_post->assess_admin;

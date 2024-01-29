@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+    xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
     <meta charset="utf-8"> <!-- utf-8 works for most cases -->
@@ -491,31 +492,38 @@
 
 <body width="100%" style="margin: 0; padding: 0 !important; mso-line-height-rule: exactly;">
     <center style="width: 100%; background-color: #f1f1f1;">
-        <div style="display: none; font-size: 1px;max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+        <div
+            style="display: none; font-size: 1px;max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
             &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
         </div>
         <div style="max-width: 600px; margin: 0 auto;" class="email-container">
-            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
+                style="margin: auto;">
                 <tr>
                     <td valign="top" class="bg_white" style="padding: 1em 2.5em;">
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                            <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
-                                    <h1><a href="#"><img src="{{$data['logo']}}" width="40%"></a></h1>
+                                <td width="40%" class="logo" style="text-align: left; margin:0 auto;">
+                                    <h1><a href="#"><img src="{{ $data['logo'] }}" width="40%"></a></h1>
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
                 <tr>
-                    <td valign="middle" class="hero bg_white" style="background-color: rgb(252, 252, 252);background-size: cover; height: 400px;">
+                    <td valign="middle" class="hero bg_white"
+                        style="background-color: rgb(252, 252, 252);background-size: cover; height: 400px;">
                         <div class="overlay"></div>
                         <table>
                             <tr>
                                 <td>
                                     <div class="text" style="padding: 0 3em; text-align: center;color: black;">
-                                        <h2 style="color: black;">{{$data['name_web']}} Xin chào ứng viên {{$data['name']}}!</h2>
-                                        <p>Xác nhận ứng viên <b>{{$data['name']}}</b> đã ứng tuyển vào bài tuyển dụng có tiêu đề là <a href="#"><b>{{$data['title']}}</b></a> thành công.</p>
+                                        <h2 style="color: black;">{{ $data['name_web'] }} Xin chào ứng viên
+                                            {{ $data['name'] }}!</h2>
+                                        <p>Xác nhận ứng viên <b>{{ $data['name'] }}</b> đã ứng tuyển vào bài tuyển dụng
+                                            có tiêu đề là <a
+                                                href="{{ env('CLIENT_HOST') }}/job-detail/{{ $data['href'] }}/{{ $data['id'] }}"><b>{{ $data['title'] }}</b></a>
+                                            thành công.</p>
                                         </p>
                                     </div>
                                     <!-- <center>
