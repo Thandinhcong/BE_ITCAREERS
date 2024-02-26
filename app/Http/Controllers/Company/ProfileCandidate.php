@@ -226,6 +226,7 @@ class ProfileCandidate extends Controller
             ->get();
         foreach ($data as $customer) {
             $this->avgStart($customer);
+            $this->check_save($customer);
             if ($customer->type === 1) {
                 $this->check_info($customer);
             }
